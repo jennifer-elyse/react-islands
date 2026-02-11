@@ -1,4 +1,4 @@
-# react-islands (Option C)
+# react-islands
 
 This zip contains:
 
