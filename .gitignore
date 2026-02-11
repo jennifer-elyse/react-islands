@@ -1,1 +1,5 @@
 .DS_Store
+/node_modules
+/packages/react-islands/node_modules
+*.tgz
+/packages/react-islands/dist
