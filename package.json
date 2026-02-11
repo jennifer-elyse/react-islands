@@ -1,0 +1,13 @@
+{
+	"name": "react-islands-workspace",
+	"private": true,
+	"type": "module",
+	"workspaces": [
+		"packages/*",
+		"apps/*"
+	],
+	"scripts": {
+		"build": "yarn workspace @jennifer-elyse/react-islands build && yarn workspace example-host build",
+		"dev": "yarn workspace example-host dev"
+	}
+}
