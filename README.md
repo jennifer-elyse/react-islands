@@ -2,13 +2,13 @@
 
 This zip contains:
 
-- `packages/react-islands`: an npm-ready library (`@jennifer-elyse/react-islands`) implementing **SSR-first React islands** with **Option C** module-specifier manifests.
+- `packages/react-islands`: an npm-ready library (`@jennifer-elyse/react-islands`) implementing **SSR-first React islands** with module-specifier manifests.
 - `apps/example-host`: a small SSR + Vite example showing:
 	- Streaming SSR (`renderToPipeableStream`)
 	- File-based routing with nested layouts (`_layout.route.jsx`)
 	- CMS-like blocks that stay SSR-first for SEO
 	- Islands that hydrate lazily (`visible`, `idle`, `interaction`, `immediate`)
-	- Production build that emits `dist/client/islands-manifest.json` (Option C format)
+	- Production build that emits `dist/client/islands-manifest.json`
 
 ## Quick start
 
