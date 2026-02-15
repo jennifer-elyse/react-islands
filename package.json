@@ -1,13 +1,49 @@
 {
-	"name": "react-islands-workspace",
-	"private": true,
+	"name": "react-island-runtime",
+	"license": "MIT",
+	"version": "0.1.1",
 	"type": "module",
-	"workspaces": [
-		"packages/*",
-		"apps/*"
+	"description": "SSR-first React islands runtime and server helpers",
+	"main": "dist/server/index.js",
+	"sideEffects": false,
+	"engines": {
+		"node": ">=18"
+	},
+	"files": [
+		"dist"
 	],
+	"exports": {
+		".": "./dist/server/index.js",
+		"./server": "./dist/server/index.js",
+		"./client/runtime": "./dist/client/islands-runtime.js",
+		"./client/pwa-register": "./dist/client/pwa-register.js",
+		"./client/pwa-toast": "./dist/client/pwa-toast.js"
+	},
+	"bin": {
+		"react-islands-gen-manifest": "./dist/server/genManifest.js"
+	},
+	"peerDependencies": {
+		"react": ">=19.0.0",
+		"react-dom": ">=19.0.0"
+	},
+	"devDependencies": {
+		"esbuild": "^0.24.0",
+		"react": "^19.0.0",
+		"react-dom": "^19.0.0"
+	},
+	"dependencies": {
+		"path-to-regexp": "^6.2.1"
+	},
 	"scripts": {
-		"build": "yarn workspace @jennifer-elyse/react-islands build && yarn workspace example-host build",
-		"dev": "yarn workspace example-host dev"
+		"clean": "rm -rf dist",
+		"build": "node ./scripts/build.mjs",
+		"test": "node --test",
+		"prepublishOnly": "yarn build",
+		"pack": "npm pack",
+		"package": "yarn clean && yarn build && yarn pack",
+		"publish": "npm publish --access public"
+	},
+	"publishConfig": {
+		"access": "public"
 	}
 }

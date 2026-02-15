@@ -1,43 +1,153 @@
-# react-islands
+# react-island-runtime
 
-This zip contains:
+SSR-first React islands you can drop into any server-rendered app. Ships server helpers (router, renderer, HTML shell, manifest builder) and a tiny client runtime that hydrates lazily (`visible`, `idle`, `interaction`, or `immediate`).
 
-- `packages/react-islands`: an npm-ready library (`@jennifer-elyse/react-islands`) implementing **SSR-first React islands** with module-specifier manifests.
-- `apps/example-host`: a small SSR + Vite example showing:
-	- Streaming SSR (`renderToPipeableStream`)
-	- File-based routing with nested layouts (`_layout.route.jsx`)
-	- CMS-like blocks that stay SSR-first for SEO
-	- Islands that hydrate lazily (`visible`, `idle`, `interaction`, `immediate`)
-	- Production build that emits `dist/client/islands-manifest.json`
-
-## Quick start
+## Install
 
 ```bash
-cd apps/example-host
-yarn
-yarn dev
+yarn add react-island-runtime
+# or
+npm i react-island-runtime
 ```
 
-- SSR server: http://localhost:3000
-- Vite dev server: http://localhost:5173
+Peer deps: `react@>=19.0.0`, `react-dom@>=19.0.0`.
 
-## Production build
+## Quick start (Vite example)
+
+1) **Server: map CMS keys to island modules**
+
+```js
+// src/server/islandsPolicy.js
+export const resolveIslandModule = (key) => ({
+	filter: "/src/client/islands/Filters.entry.jsx",
+	cart: "/src/client/islands/AddToCartButton.entry.jsx",
+}[key] || null);
+
+export const getAllIslandModuleSpecifiers = () => [
+	"/src/client/islands/Filters.entry.jsx",
+	"/src/client/islands/AddToCartButton.entry.jsx",
+];
+```
+
+2) **Server: file-based router + renderer**
+
+```js
+// src/server/index.js
+import express from "express";
+import { createFileRouter, createRenderRequest, HtmlDocument } from "react-island-runtime/server";
+import { resolveIslandModule, getAllIslandModuleSpecifiers } from "./islandsPolicy.js";
+
+const router = await createFileRouter({ routesDir: new URL("../app/routes/", import.meta.url) });
+const renderRequest = createRenderRequest({
+	HtmlDocument,
+	resolveIslandModule,
+	getAllIslandModuleSpecifiers,
+	devOrigin: process.env.VITE_DEV_ORIGIN || "http://localhost:5173",
+	manifestPath: "dist/client/islands-manifest.json",
+});
+
+const app = express();
+app.use(express.static("dist/client", { immutable: true, maxAge: "1y" }));
+app.get("*", (req, res) => renderRequest({ req, res, router }));
+app.listen(3000);
+```
+
+3) **Server: mark islands in routes**
+
+```jsx
+import React from "react";
+import { Island } from "react-island-runtime/server";
+
+export const Page = ({ sku }) => (
+	<Island
+		islandKey="cart"
+		hydrate="interaction" // visible | idle | interaction | immediate
+		props={{ sku }}
+		resolveIslandModule={resolveIslandModule}
+	>
+		<button type="button">Add to cart</button>
+	</Island>
+);
+```
+
+4) **Client: import the runtime**
+
+```js
+// src/client/islands-runtime.entry.js
+import "react-island-runtime/client/runtime";
+```
+
+5) **Build and emit islands manifest (CLI)**
 
 ```bash
-yarn build
-cd apps/example-host
-NODE_ENV=production yarn start
+yarn build      # runs your Vite build
+react-islands-gen-manifest --in dist/client/.vite/manifest.json --out dist/client/islands-manifest.json
 ```
+
+## API surface
+
+- `Island`: server component that serializes props and tags markup for hydration.
+- `createFileRouter`: file-based router for `.route.jsx` files (layouts + pages).
+- `createRenderRequest`: composes layouts/pages, merges `head`, and embeds the manifest/runtime/optional PWA toast.
+- `HtmlDocument`: default HTML shell (manifest inline script + runtime + optional toast + preload hooks).
+- `createManifestProvider`: reads your manifest (prod) or accepts explicit module URLs (dev) and can emit a SHA-256 integrity string.
+- `serializePropsForAttr` / `escapeJsonForInlineScript`: helpers if you need custom HTML shells.
+- `bootIslands`: client runtime; auto-runs on `DOMContentLoaded`, or call manually with `{ selector, manifestElId, onError, reportEvent }`. Supports manifest integrity verification (via `data-integrity` attribute) and reports issues through `reportEvent`.
+- `cspMiddleware`: drop-in HTTP middleware that sets restrictive CSP + security headers with optional dev origins (no external deps).
+- `createSecurityEventHandler`: Express-style handler for client security telemetry (e.g., manifest integrity failures).
+- `registerServiceWorker`: lightweight helper to register your SW with lifecycle callbacks (importable at `react-island-runtime/client/pwa-register`).
+- `installPwaToast`: drop-in helper that registers your SW and shows a kawaii tropical toast on cache/update/error events (importable at `react-island-runtime/client/pwa-toast`).
+
+### Manifest integrity (optional)
+
+If you want a defense-in-depth check for the inlined manifest, call `provider.getManifestIntegrity()` and attach it to the `<script>` as `data-integrity`. The client runtime will SHA-256 the JSON and, on mismatch, call your `reportEvent` hook.
+
+```jsx
+const provider = createManifestProvider({ mode: "prod", manifestPath: "dist/client/islands-manifest.json" });
+const manifestJson = provider.getManifestJson();
+const manifestIntegrity = provider.getManifestIntegrity();
+
+<script
+	id="islands-manifest"
+	data-integrity={manifestIntegrity}
+	type="application/json"
+	dangerouslySetInnerHTML={{ __html: manifestJson }}
+/>
+```
+
+### PWA helper
+
+Drop this into any client bundle to register your SW (no-op on unsupported browsers):
+
+```js
+import { installPwaToast } from "react-island-runtime/client/pwa-toast";
+// Registers /sw.js and shows a kawaii tropical toast on cache/update/error
+installPwaToast({ url: "/sw.js", scope: "/", emoji: "🏝️🌺🍍" });
+```
+
+### CSP and client security telemetry
+
+Add a CSP and a POST endpoint to capture client-side security events:
+
+```js
+import express from "express";
+import { cspMiddleware, createSecurityEventHandler } from "react-island-runtime/server";
+
+const app = express();
+app.use(express.json());
+app.use(cspMiddleware());
+app.post("/api/client-security-event", createSecurityEventHandler({ logger: console.warn }));
+```
+
+## Hydration strategies
+
+- `visible` (default): hydrate when the island enters the viewport.
+- `idle`: hydrate when the browser is idle.
+- `interaction`: hydrate on first click/focus/keydown.
+- `immediate`: hydrate as soon as the runtime executes.
 
 ## Security guardrails
 
-- The client runtime **refuses** to `import()` anything not present in `manifest.modules`.
-- The server emits islands only via an allowlist resolver (`resolveIslandModule`).
-- Island props are JSON-serialized and escaped for safe embedding in HTML attributes.
-- The inline manifest JSON is escaped to prevent accidental HTML/script parsing.
-
-### Recommended hardening for real deployments
-
-- Add a CSP with nonces/hashes (the manifest script is inline).
-- Validate/shape island props (e.g., with Zod) before rendering.
-- Consider limiting island props size and enabling gzip/brotli at the edge.
+- Client refuses to `import()` modules that are not present in the manifest.
+- Server must resolve island keys via an allowlist; `null` keeps a block SSR-only.
+- Props and manifest JSON are escaped to avoid breaking HTML/JS contexts.

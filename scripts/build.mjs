@@ -1,0 +1,66 @@
+import esbuild from "esbuild";
+import fs from "node:fs";
+
+fs.rmSync("dist", { recursive: true, force: true });
+fs.mkdirSync("dist/server", { recursive: true });
+fs.mkdirSync("dist/client", { recursive: true });
+
+await esbuild.build({
+	entryPoints: ["src/server/index.js"],
+	outfile: "dist/server/index.js",
+	bundle: true,
+	format: "esm",
+	platform: "node",
+	target: "node18",
+	sourcemap: true,
+	minify: true,
+	// Keep react external to avoid bundling it into the library.
+	external: ["react", "react-dom", "react-dom/server"],
+});
+
+await esbuild.build({
+	entryPoints: ["src/server/genManifest.js"],
+	outdir: "dist/server",
+	bundle: true,
+	format: "esm",
+	platform: "node",
+	target: "node18",
+	minify: true,
+	packages: "external",
+	banner: {
+		js: "#!/usr/bin/env node",
+	},
+});
+
+await esbuild.build({
+	entryPoints: ["src/client/islands-runtime.js"],
+	outfile: "dist/client/islands-runtime.js",
+	bundle: true,
+	format: "esm",
+	platform: "browser",
+	// The host app must provide these; don't bundle.
+	external: ["react", "react-dom/client"],
+	minify: true,
+});
+
+await esbuild.build({
+	entryPoints: ["src/client/pwa-register.js"],
+	outfile: "dist/client/pwa-register.js",
+	bundle: true,
+	format: "esm",
+	platform: "browser",
+	target: ["es2019", "chrome90", "edge90", "safari14"],
+	sourcemap: true,
+	minify: true,
+});
+
+await esbuild.build({
+	entryPoints: ["src/client/pwa-toast.js"],
+	outfile: "dist/client/pwa-toast.js",
+	bundle: true,
+	format: "esm",
+	platform: "browser",
+	target: ["es2019", "chrome90", "edge90", "safari14"],
+	sourcemap: true,
+	minify: true,
+});
