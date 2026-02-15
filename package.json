@@ -1,7 +1,7 @@
 {
 	"name": "react-island-runtime",
 	"license": "MIT",
-	"version": "0.1.1",
+	"version": "0.1.2",
 	"type": "module",
 	"description": "SSR-first React islands runtime and server helpers",
 	"main": "dist/server/index.js",
