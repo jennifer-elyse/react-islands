@@ -1,6 +1,6 @@
 import React from "react";
 
-export const HtmlDocument = ({ head, children, manifestJson, manifestIntegrity, runtimeSrc, pwaToastSrc, preloadHrefs = [] }) => {
+export const HtmlDocument = ({ head, children, manifestJson, manifestIntegrity, runtimeSrc, preloadHrefs = [] }) => {
 	const title = head?.title || "React Islands";
 	const meta = head?.meta || [];
 	const links = head?.links || [];
@@ -30,7 +30,6 @@ export const HtmlDocument = ({ head, children, manifestJson, manifestIntegrity, 
 				/>
 
 				<script type="module" src={runtimeSrc} />
-				{pwaToastSrc ? <script type="module" src={pwaToastSrc} /> : null}
 			</head>
 			<body>
 				<div id="app">{children}</div>

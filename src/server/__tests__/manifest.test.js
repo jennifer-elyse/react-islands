@@ -18,11 +18,11 @@ test("createManifestProvider (prod) emits integrity and merges extra fields", ()
 	const provider = createManifestProvider({
 		mode: "prod",
 		manifestPath: file,
-		extraManifestFields: { "pwa-toast": "/toast.js" },
+		extraManifestFields: { "custom-extra": "/extra.js" },
 	});
 
 	const manifest = provider.getManifest();
-	assert.equal(manifest["pwa-toast"], "/toast.js");
+	assert.equal(manifest["custom-extra"], "/extra.js");
 	assert.equal(manifest.modules.a, "/a.js");
 
 	const integrity = provider.getManifestIntegrity();
@@ -37,11 +37,11 @@ test("createManifestProvider (dev) includes runtime and extras", () => {
 		mode: "dev",
 		devModules: { "/x": "http://localhost:5173/x.js" },
 		runtimeDevSrc: "http://localhost:5173/runtime.js",
-		extraManifestFields: { "pwa-toast": "http://localhost:5173/pwa-toast.js" },
+		extraManifestFields: { "custom-extra": "http://localhost:5173/extra.js" },
 	});
 
 	const manifest = provider.getManifest();
 	assert.equal(manifest.modules["/x"], "http://localhost:5173/x.js");
 	assert.equal(manifest["islands-runtime"], "http://localhost:5173/runtime.js");
-	assert.equal(manifest["pwa-toast"], "http://localhost:5173/pwa-toast.js");
+	assert.equal(manifest["custom-extra"], "http://localhost:5173/extra.js");
 });

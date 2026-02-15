@@ -88,15 +88,12 @@ react-islands-gen-manifest --in dist/client/.vite/manifest.json --out dist/clien
 
 - `Island`: server component that serializes props and tags markup for hydration.
 - `createFileRouter`: file-based router for `.route.jsx` files (layouts + pages).
-- `createRenderRequest`: composes layouts/pages, merges `head`, and embeds the manifest/runtime/optional PWA toast.
-- `HtmlDocument`: default HTML shell (manifest inline script + runtime + optional toast + preload hooks).
+- `createRenderRequest`: composes layouts/pages, merges `head`, and embeds the manifest/runtime.
+- `HtmlDocument`: default HTML shell (manifest inline script + runtime + preload hooks).
 - `createManifestProvider`: reads your manifest (prod) or accepts explicit module URLs (dev) and can emit a SHA-256 integrity string.
 - `serializePropsForAttr` / `escapeJsonForInlineScript`: helpers if you need custom HTML shells.
 - `bootIslands`: client runtime; auto-runs on `DOMContentLoaded`, or call manually with `{ selector, manifestElId, onError, reportEvent }`. Supports manifest integrity verification (via `data-integrity` attribute) and reports issues through `reportEvent`.
-- `cspMiddleware`: drop-in HTTP middleware that sets restrictive CSP + security headers with optional dev origins (no external deps).
 - `createSecurityEventHandler`: Express-style handler for client security telemetry (e.g., manifest integrity failures).
-- `registerServiceWorker`: lightweight helper to register your SW with lifecycle callbacks (importable at `react-island-runtime/client/pwa-register`).
-- `installPwaToast`: drop-in helper that registers your SW and shows a kawaii tropical toast on cache/update/error events (importable at `react-island-runtime/client/pwa-toast`).
 
 ### Manifest integrity (optional)
 
@@ -113,16 +110,6 @@ const manifestIntegrity = provider.getManifestIntegrity();
 	type="application/json"
 	dangerouslySetInnerHTML={{ __html: manifestJson }}
 />
-```
-
-### PWA helper
-
-Drop this into any client bundle to register your SW (no-op on unsupported browsers):
-
-```js
-import { installPwaToast } from "react-island-runtime/client/pwa-toast";
-// Registers /sw.js and shows a kawaii tropical toast on cache/update/error
-installPwaToast({ url: "/sw.js", scope: "/", emoji: "🏝️🌺🍍" });
 ```
 
 ### CSP and client security telemetry

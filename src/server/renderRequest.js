@@ -40,9 +40,6 @@ export const createRenderRequest = ({ HtmlDocument, resolveIslandModule, getAllI
 			mode: "dev",
 			devModules,
 			runtimeDevSrc: `${devOrigin}/src/client/islands-runtime.entry.js`,
-			extraManifestFields: {
-				"pwa-toast": `${devOrigin}/src/client/pwa-toast.entry.js`,
-			},
 		});
 	};
 
@@ -91,7 +88,6 @@ export const createRenderRequest = ({ HtmlDocument, resolveIslandModule, getAllI
 		const manifestIntegrity = provider.getManifestIntegrity ? provider.getManifestIntegrity() : null;
 
 		const runtimeSrc = manifest["islands-runtime"] || "/assets/islands-runtime.js";
-		const pwaToastSrc = manifest["pwa-toast"] || null;
 
 		let element = React.createElement(match.page.Page, props);
 		for (let i = match.layouts.length - 1; i >= 0; i--)
@@ -109,7 +105,6 @@ export const createRenderRequest = ({ HtmlDocument, resolveIslandModule, getAllI
 				manifestJson,
 				manifestIntegrity,
 				runtimeSrc,
-				pwaToastSrc,
 				resolveIslandModule,
 			},
 			element

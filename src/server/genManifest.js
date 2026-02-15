@@ -33,17 +33,12 @@ export const buildIslandsManifest = ({ viteManifestPath, outPath }) => {
 	}
 
 	let runtimeFile = null;
-	let pwaToastFile = null;
 
 	for (const [key, rec] of Object.entries(viteManifest))
 	{
 		if (key === "src/client/islands-runtime.entry.js")
 		{
 			runtimeFile = `/${rec.file}`;
-		}
-		if (key === "src/client/pwa-toast.entry.js")
-		{
-			pwaToastFile = `/${rec.file}`;
 		}
 	}
 
@@ -55,7 +50,6 @@ export const buildIslandsManifest = ({ viteManifestPath, outPath }) => {
 	const islandsManifest = {
 		modules,
 		"islands-runtime": runtimeFile,
-		"pwa-toast": pwaToastFile,
 	};
 
 	fs.writeFileSync(outPath, JSON.stringify(islandsManifest, null, "\t"), "utf8");

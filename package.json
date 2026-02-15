@@ -15,9 +15,7 @@
 	"exports": {
 		".": "./dist/server/index.js",
 		"./server": "./dist/server/index.js",
-		"./client/runtime": "./dist/client/islands-runtime.js",
-		"./client/pwa-register": "./dist/client/pwa-register.js",
-		"./client/pwa-toast": "./dist/client/pwa-toast.js"
+		"./client/runtime": "./dist/client/islands-runtime.js"
 	},
 	"bin": {
 		"react-islands-gen-manifest": "./dist/server/genManifest.js"

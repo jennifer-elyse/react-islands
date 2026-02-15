@@ -42,25 +42,3 @@ await esbuild.build({
 	external: ["react", "react-dom/client"],
 	minify: true,
 });
-
-await esbuild.build({
-	entryPoints: ["src/client/pwa-register.js"],
-	outfile: "dist/client/pwa-register.js",
-	bundle: true,
-	format: "esm",
-	platform: "browser",
-	target: ["es2019", "chrome90", "edge90", "safari14"],
-	sourcemap: true,
-	minify: true,
-});
-
-await esbuild.build({
-	entryPoints: ["src/client/pwa-toast.js"],
-	outfile: "dist/client/pwa-toast.js",
-	bundle: true,
-	format: "esm",
-	platform: "browser",
-	target: ["es2019", "chrome90", "edge90", "safari14"],
-	sourcemap: true,
-	minify: true,
-});
