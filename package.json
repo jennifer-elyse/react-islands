@@ -1,7 +1,7 @@
 {
 	"name": "react-island-runtime",
 	"license": "MIT",
-	"version": "0.1.4",
+	"version": "0.1.12",
 	"type": "module",
 	"description": "SSR-first React islands runtime and server helpers",
 	"main": "dist/server/index.js",
@@ -10,6 +10,8 @@
 		"node": ">=18"
 	},
 	"files": [
+		"dist/server/*.js",
+		"dist/client/*.js",
 		"dist"
 	],
 	"exports": {
@@ -33,13 +35,16 @@
 		"path-to-regexp": "^6.2.1"
 	},
 	"scripts": {
-		"clean": "rm -rf dist",
+		"clean": "rm -rf dist node_modules",
 		"build": "node ./scripts/build.mjs",
 		"test": "node --test",
 		"prepublishOnly": "yarn build",
 		"pack": "npm pack",
 		"package": "yarn clean && yarn build && yarn pack",
-		"publish": "npm publish --access public"
+		"publish": "npm publish --access public",
+		"bump:patch": "npm version patch",
+		"bump:minor": "npm version minor",
+		"bump:major": "npm version major"
 	},
 	"publishConfig": {
 		"access": "public"

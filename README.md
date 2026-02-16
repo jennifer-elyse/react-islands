@@ -2,6 +2,10 @@
 
 SSR-first React islands you can drop into any server-rendered app. Ships server helpers (router, renderer, HTML shell, manifest builder) and a tiny client runtime that hydrates lazily (`visible`, `idle`, `interaction`, or `immediate`).
 
+**Build output:** All server modules are emitted as `.js` files in `dist/server`. Ensure all imports reference `.js` extensions (not `.jsx`).
+
+**SSR error handling:** All loader/head accesses use optional chaining to prevent runtime errors when properties are missing.
+
 ## Install
 
 ```bash
@@ -37,6 +41,9 @@ import express from "express";
 import { createFileRouter, createRenderRequest, HtmlDocument } from "react-island-runtime/server";
 import { resolveIslandModule, getAllIslandModuleSpecifiers } from "./islandsPolicy.js";
 
+// All imports must use .js extensions:
+// import { Island } from "react-island-runtime/dist/server/Island.js";
+
 const router = await createFileRouter({ routesDir: new URL("../app/routes/", import.meta.url) });
 const renderRequest = createRenderRequest({
 	HtmlDocument,
@@ -56,7 +63,7 @@ app.listen(3000);
 
 ```jsx
 import React from "react";
-import { Island } from "react-island-runtime/server";
+import { Island } from "react-island-runtime/dist/server/Island.js";
 
 export const Page = ({ sku }) => (
 	<Island
@@ -76,6 +83,12 @@ export const Page = ({ sku }) => (
 // src/client/islands-runtime.entry.js
 import "react-island-runtime/client/runtime";
 ```
+
+## Migration notes
+
+- All server imports must use `.js` extensions after build.
+- Published package includes all `dist/server/*.js` files.
+- SSR error handling is improved with optional chaining for loader/head accesses.
 
 5) **Build and emit islands manifest (CLI)**
 

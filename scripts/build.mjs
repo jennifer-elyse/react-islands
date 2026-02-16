@@ -5,17 +5,30 @@ fs.rmSync("dist", { recursive: true, force: true });
 fs.mkdirSync("dist/server", { recursive: true });
 fs.mkdirSync("dist/client", { recursive: true });
 
+// Server build (esbuild, now using package-local src/server)
 await esbuild.build({
-	entryPoints: ["src/server/index.js"],
-	outfile: "dist/server/index.js",
-	bundle: true,
+	entryPoints: [
+		"src/server/index.js",
+		"src/server/fileRouter.js",
+		"src/server/genManifest.js",
+		"src/server/HtmlDocument.jsx",
+		"src/server/Island.jsx",
+		"src/server/manifest.js",
+		"src/server/renderRequest.js",
+		"src/server/security.js",
+		"src/server/serialize.js"
+	],
+	outdir: "dist/server",
+	bundle: false,
 	format: "esm",
 	platform: "node",
-	target: "node18",
+	target: "node22",
 	sourcemap: true,
 	minify: true,
-	// Keep react external to avoid bundling it into the library.
-	external: ["react", "react-dom", "react-dom/server"],
+	loader: {
+		".js": "js",
+		".jsx": "jsx"
+	}
 });
 
 await esbuild.build({
@@ -24,7 +37,7 @@ await esbuild.build({
 	bundle: true,
 	format: "esm",
 	platform: "node",
-	target: "node18",
+	target: "node22",
 	minify: true,
 	packages: "external",
 	banner: {

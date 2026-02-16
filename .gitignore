@@ -4,3 +4,4 @@
 *.tgz
 /packages/react-islands/dist
 /dist
+/package

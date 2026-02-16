@@ -59,25 +59,25 @@ export const createRenderRequest = ({ HtmlDocument, resolveIslandModule, getAllI
 
 		for (const layout of match.layouts)
 		{
-			if (layout.loader)
+			if (layout && typeof layout === "object" && layout?.loader)
 			{
-				const add = await layout.loader(ctx);
+				const add = await layout?.loader?.(ctx);
 				if (add && typeof add === "object") props = { ...props, ...add };
 			}
-			if (layout.head)
+			if (layout && typeof layout === "object" && layout?.head)
 			{
-				heads.push(await layout.head(props, ctx));
+				heads.push(await layout?.head?.(props, ctx));
 			}
 		}
 
-		if (match.page.loader)
+		if (match.page?.loader)
 		{
-			const add = await match.page.loader(ctx);
+			const add = await match.page?.loader?.(ctx);
 			if (add && typeof add === "object") props = { ...props, ...add };
 		}
-		if (match.page.head)
+		if (match.page?.head)
 		{
-			heads.push(await match.page.head(props, ctx));
+			heads.push(await match.page?.head?.(props, ctx));
 		}
 
 		const head = mergeHeads(heads);
