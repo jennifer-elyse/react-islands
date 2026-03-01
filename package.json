@@ -1,7 +1,7 @@
 {
 	"name": "react-islands-runtime",
 	"license": "MIT",
-	"version": "0.1.22",
+	"version": "0.1.23",
 	"type": "module",
 	"description": "SSR-first React islands runtime and server helpers",
 	"main": "dist/server/index.js",
@@ -36,7 +36,7 @@
 		"./rsc": "./packages/rsc/index.js"
 	},
 	"bin": {
-		"react-islands-gen-manifest": "./src/server/genManifest.js"
+		"react-islands-gen-manifest": "src/server/genManifest.js"
 	},
 	"peerDependencies": {
 		"react": ">=19.0.0",
