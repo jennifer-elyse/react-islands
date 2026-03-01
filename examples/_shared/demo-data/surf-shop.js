@@ -14,17 +14,10 @@ const toPrice = (centAmount, currencyCode = 'USD') => ({
 	display: `$${(centAmount / 100).toFixed(2)}`,
 });
 
-
 const matchesQuery = (item, query) => {
 	if (!query) return true;
 	const q = query.toLowerCase();
-	const haystack = [
-		item.name,
-		item.description,
-		item.sku,
-		item.id,
-		...(item.tags || []),
-	]
+	const haystack = [item.name, item.description, item.sku, item.id, ...(item.tags || [])]
 		.filter(Boolean)
 		.join(' ')
 		.toLowerCase();

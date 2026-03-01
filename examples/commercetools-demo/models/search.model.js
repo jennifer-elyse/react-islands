@@ -3,13 +3,7 @@ import { listProducts } from './product.model.js';
 const matchesQuery = (product, query) => {
 	if (!query) return true;
 	const q = query.toLowerCase();
-	const haystack = [
-		product.name,
-		product.description,
-		product.sku,
-		product.id,
-		...(product.tags || []),
-	]
+	const haystack = [product.name, product.description, product.sku, product.id, ...(product.tags || [])]
 		.filter(Boolean)
 		.join(' ')
 		.toLowerCase();

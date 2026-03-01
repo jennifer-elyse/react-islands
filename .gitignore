@@ -10,3 +10,4 @@
 !/\.env\.example
 !/\.env\..*\.example
 /examples/node_modules
+/examples/dist

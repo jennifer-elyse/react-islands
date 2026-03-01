@@ -4,13 +4,7 @@ import { listSurfSuggestions } from '../../_shared/demo-data/surf-shop.js';
 const matchesQuery = (product, query) => {
 	if (!query) return true;
 	const q = query.toLowerCase();
-	const haystack = [
-		product.name,
-		product.description,
-		product.sku,
-		product.id,
-		...(product.tags || []),
-	]
+	const haystack = [product.name, product.description, product.sku, product.id, ...(product.tags || [])]
 		.filter(Boolean)
 		.join(' ')
 		.toLowerCase();

@@ -5,20 +5,12 @@ import { createApiBuilderFromCtpClient } from '@commercetools/platform-sdk';
 const parseBool = (value) => /^(1|true|yes)$/i.test(String(value || ''));
 const isDemoMode = parseBool(process.env.USE_DEMO_DATA);
 
-const {
-	CTP_PROJECT_KEY,
-	CTP_CLIENT_ID,
-	CTP_CLIENT_SECRET,
-	CTP_SCOPES,
-	CTP_REGION,
-} = process.env;
+const { CTP_PROJECT_KEY, CTP_CLIENT_ID, CTP_CLIENT_SECRET, CTP_SCOPES, CTP_REGION } = process.env;
 
 let apiRoot = null;
 let projectKey = CTP_PROJECT_KEY || null;
 
-const hasCredentials = Boolean(
-	CTP_PROJECT_KEY && CTP_CLIENT_ID && CTP_CLIENT_SECRET && CTP_SCOPES && CTP_REGION,
-);
+const hasCredentials = Boolean(CTP_PROJECT_KEY && CTP_CLIENT_ID && CTP_CLIENT_SECRET && CTP_SCOPES && CTP_REGION);
 
 if (!isDemoMode && !hasCredentials) {
 	console.warn(
@@ -27,7 +19,6 @@ if (!isDemoMode && !hasCredentials) {
 }
 
 if (!isDemoMode && hasCredentials) {
-
 	const scopes = CTP_SCOPES.split(' ').filter(Boolean);
 	const regionHost = CTP_REGION.includes('.') ? CTP_REGION : `${CTP_REGION}.gcp`;
 
