@@ -1,56 +1,56 @@
 [
-  {
-    "id": "surf-001",
-    "sku": "surf-001",
-    "name": "Aqua Driftboard",
-    "description": "Transparent resin board with liquid-glass finish.",
-    "price": 18999,
-    "image": "/demo-images/liquid-glass-board-1.svg",
-    "tags": ["board", "glass", "aqua"]
-  },
-  {
-    "id": "surf-002",
-    "sku": "surf-002",
-    "name": "Glacier Fins",
-    "description": "Ice-clear fins for smooth turns.",
-    "price": 4999,
-    "image": "/demo-images/liquid-glass-fins.svg",
-    "tags": ["fins", "glass"]
-  },
-  {
-    "id": "surf-003",
-    "sku": "surf-003",
-    "name": "Pearl Leash",
-    "description": "Pearlescent leash with reinforced core.",
-    "price": 2999,
-    "image": "/demo-images/liquid-glass-leash.svg",
-    "tags": ["leash", "pearl"]
-  },
-  {
-    "id": "surf-004",
-    "sku": "surf-004",
-    "name": "Ocean Prism Wetsuit",
-    "description": "Liquid-glass sheen with thermal lining.",
-    "price": 14999,
-    "image": "/demo-images/liquid-glass-wetsuit.svg",
-    "tags": ["wetsuit", "thermal"]
-  },
-  {
-    "id": "surf-005",
-    "sku": "surf-005",
-    "name": "Mist Spray Wax",
-    "description": "Micro-crystal wax for glassy grip.",
-    "price": 1299,
-    "image": "/demo-images/liquid-glass-wax.svg",
-    "tags": ["wax", "grip"]
-  },
-  {
-    "id": "surf-006",
-    "sku": "surf-006",
-    "name": "Clearview Goggles",
-    "description": "Anti-fog goggles with liquid-glass lenses.",
-    "price": 3599,
-    "image": "/demo-images/liquid-glass-goggles.svg",
-    "tags": ["goggles", "glass"]
-  }
+	{
+		"id": "surf-001",
+		"sku": "surf-001",
+		"name": "Aqua Driftboard",
+		"description": "Transparent resin board with liquid-glass finish.",
+		"price": 18999,
+		"image": "/demo-images/liquid-glass-board-1.svg",
+		"tags": ["board", "glass", "aqua"]
+	},
+	{
+		"id": "surf-002",
+		"sku": "surf-002",
+		"name": "Glacier Fins",
+		"description": "Ice-clear fins for smooth turns.",
+		"price": 4999,
+		"image": "/demo-images/liquid-glass-fins.svg",
+		"tags": ["fins", "glass"]
+	},
+	{
+		"id": "surf-003",
+		"sku": "surf-003",
+		"name": "Pearl Leash",
+		"description": "Pearlescent leash with reinforced core.",
+		"price": 2999,
+		"image": "/demo-images/liquid-glass-leash.svg",
+		"tags": ["leash", "pearl"]
+	},
+	{
+		"id": "surf-004",
+		"sku": "surf-004",
+		"name": "Ocean Prism Wetsuit",
+		"description": "Liquid-glass sheen with thermal lining.",
+		"price": 14999,
+		"image": "/demo-images/liquid-glass-wetsuit.svg",
+		"tags": ["wetsuit", "thermal"]
+	},
+	{
+		"id": "surf-005",
+		"sku": "surf-005",
+		"name": "Mist Spray Wax",
+		"description": "Micro-crystal wax for glassy grip.",
+		"price": 1299,
+		"image": "/demo-images/liquid-glass-wax.svg",
+		"tags": ["wax", "grip"]
+	},
+	{
+		"id": "surf-006",
+		"sku": "surf-006",
+		"name": "Clearview Goggles",
+		"description": "Anti-fog goggles with liquid-glass lenses.",
+		"price": 3599,
+		"image": "/demo-images/liquid-glass-goggles.svg",
+		"tags": ["goggles", "glass"]
+	}
 ]

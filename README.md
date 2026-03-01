@@ -15,34 +15,23 @@ yarn dev
 # visits: http://localhost:3000
 ```
 
-## Demo apps
+## Demo apps (standalone)
 
-Contentstack demo:
+Examples are self-contained. Run them from the examples workspace:
 
 ```bash
+cd examples
+yarn install
 yarn dev:contentstack
 # visits: http://localhost:3001
 ```
 
-Commercetools demo:
+Other demos:
 
 ```bash
-yarn dev:commercetools
-# visits: http://localhost:3000
-```
-
-Agility demo:
-
-```bash
-yarn dev:agility
-# visits: http://localhost:3002
-```
-
-Contentstack + Commercetools demo:
-
-```bash
-yarn dev:contentstack-commercetools
-# visits: http://localhost:3003
+yarn dev:commercetools   # http://localhost:3000
+yarn dev:agility         # http://localhost:3002
+yarn dev:contentstack-commercetools # http://localhost:3003
 ```
 
 Dev runs Vite (client) and the Express server with automatic port cleanup. Prod build:
@@ -56,18 +45,9 @@ yarn start
 
 This repo publishes the conceptual runtime as separate entry points (no UI components):
 
-- `react-island-runtime/ssr`
-- `react-island-runtime/islands`
-- `react-island-runtime/rsc`
-
-To test locally with the examples, pack and install the tarball (uses semver filename):
-
-```bash
-yarn pack --filename builds/react-island-runtime-0.1.15.tgz
-yarn --cwd examples add file:../builds/react-island-runtime-0.1.15.tgz
-```
-
-Examples import SSR helpers from the package (e.g. `react-island-runtime/ssr`).
+- `react-islands-runtime/ssr`
+- `react-islands-runtime/islands`
+- `react-islands-runtime/rsc`
 
 ## Key routes
 
@@ -80,6 +60,7 @@ Examples import SSR helpers from the package (e.g. `react-island-runtime/ssr`).
 ## Configuration
 
 Environment variables (optional but recommended):
+
 - `CART_CURRENCY` (default `USD`)
 - `DEFAULT_LOCALE` (default `en-US`)
 - `USE_DEMO_DATA` (set to `true` to use demo data instead of commercetools)

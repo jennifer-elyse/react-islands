@@ -6,4 +6,7 @@
 /dist
 /package
 .env
+.env.*
+!/\.env\.example
+!/\.env\..*\.example
 /examples/node_modules

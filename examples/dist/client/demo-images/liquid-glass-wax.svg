@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600">
+  <defs>
+    <linearGradient id="glass" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#e9ecef" stop-opacity="0.9"/>
+      <stop offset="1" stop-color="#74c0fc" stop-opacity="0.7"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="600" fill="#0b1220"/>
+  <rect x="250" y="220" width="300" height="180" rx="24" fill="url(#glass)" stroke="#e7f5ff" stroke-width="6"/>
+  <text x="400" y="520" text-anchor="middle" fill="#e7f5ff" font-family="Arial" font-size="28">Mist Spray Wax</text>
+</svg>

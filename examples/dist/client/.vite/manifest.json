@@ -1,0 +1,48 @@
+{
+  "_client-CKv3Qlnq.js": {
+    "file": "assets/client-CKv3Qlnq.js",
+    "name": "client",
+    "imports": [
+      "_index-DYrVU9rO.js"
+    ]
+  },
+  "_index-DYrVU9rO.js": {
+    "file": "assets/index-DYrVU9rO.js",
+    "name": "index"
+  },
+  "_jsx-runtime-D_zvdyIk.js": {
+    "file": "assets/jsx-runtime-D_zvdyIk.js",
+    "name": "jsx-runtime"
+  },
+  "src/client/islands-runtime.entry.js": {
+    "file": "assets/islands-runtime-DKk_hEX3.js",
+    "name": "islands-runtime",
+    "src": "src/client/islands-runtime.entry.js",
+    "isEntry": true,
+    "imports": [
+      "_index-DYrVU9rO.js",
+      "_client-CKv3Qlnq.js"
+    ]
+  },
+  "src/islands/Cart.entry.jsx": {
+    "file": "assets/islands/Cart-Dap1eGKM.js",
+    "name": "islands/Cart",
+    "src": "src/islands/Cart.entry.jsx",
+    "isEntry": true,
+    "imports": [
+      "_jsx-runtime-D_zvdyIk.js",
+      "_index-DYrVU9rO.js"
+    ]
+  },
+  "src/islands/ProductSearch.entry.jsx": {
+    "file": "assets/islands/ProductSearch-D8qEoCae.js",
+    "name": "islands/ProductSearch",
+    "src": "src/islands/ProductSearch.entry.jsx",
+    "isEntry": true,
+    "imports": [
+      "_jsx-runtime-D_zvdyIk.js",
+      "_index-DYrVU9rO.js",
+      "_client-CKv3Qlnq.js"
+    ]
+  }
+}
