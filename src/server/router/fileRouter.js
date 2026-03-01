@@ -1,26 +1,23 @@
-import { readdir } from "node:fs/promises";
-import path from "node:path";
-import { pathToFileURL, fileURLToPath } from "node:url";
-import { match as pathMatch } from "path-to-regexp";
+import { readdir } from 'node:fs/promises';
+import path from 'node:path';
+import { pathToFileURL, fileURLToPath } from 'node:url';
+import { match as pathMatch } from 'path-to-regexp';
 
-const isRouteFile = (name) => name.endsWith(".route.jsx") || name.endsWith(".route.js");
+const isRouteFile = (name) => name.endsWith('.route.jsx') || name.endsWith('.route.js');
 
 const walk = async (dirAbs) => {
 	const entries = await readdir(dirAbs, { withFileTypes: true });
 	const files = [];
 
-	for (const entry of entries)
-	{
+	for (const entry of entries) {
 		const abs = path.join(dirAbs, entry.name);
 
-		if (entry.isDirectory())
-		{
+		if (entry.isDirectory()) {
 			files.push(...(await walk(abs)));
 			continue;
 		}
 
-		if (entry.isFile() && isRouteFile(entry.name))
-		{
+		if (entry.isFile() && isRouteFile(entry.name)) {
 			files.push(abs);
 		}
 	}
@@ -29,29 +26,31 @@ const walk = async (dirAbs) => {
 };
 
 const filePathToPattern = (routesRootAbs, fileAbs) => {
-	const rel = path.relative(routesRootAbs, fileAbs).replaceAll(path.sep, "/");
-	const noExt = rel.replace(/\.route\.(jsx|js)$/i, "");
+	const rel = path.relative(routesRootAbs, fileAbs).replaceAll(path.sep, '/');
+	const noExt = rel.replace(/\.route\.(jsx|js)$/i, '');
 
-	let pattern = "/" + noExt
-		.split("/")
-		.map((seg) => {
-			if (seg === "index") return "";
-			if (seg === "_layout") return "";
-			const m = seg.match(/^\[(.+)\]$/);
-			if (m) return `:${m[1]}`;
-			return seg;
-		})
-		.filter(Boolean)
-		.join("/");
+	let pattern =
+		'/' +
+		noExt
+			.split('/')
+			.map((seg) => {
+				if (seg === 'index') return '';
+				if (seg === '_layout') return '';
+				const m = seg.match(/^\[(.+)\]$/);
+				if (m) return `:${m[1]}`;
+				return seg;
+			})
+			.filter(Boolean)
+			.join('/');
 
-	if (pattern === "") pattern = "/";
+	if (pattern === '') pattern = '/';
 	return pattern;
 };
 
 const getDirSegments = (routesRootAbs, fileAbs) => {
-	const rel = path.relative(routesRootAbs, path.dirname(fileAbs)).replaceAll(path.sep, "/");
-	if (!rel || rel === ".") return [];
-	return rel.split("/").filter(Boolean);
+	const rel = path.relative(routesRootAbs, path.dirname(fileAbs)).replaceAll(path.sep, '/');
+	if (!rel || rel === '.') return [];
+	return rel.split('/').filter(Boolean);
 };
 
 export const createFileRouter = async ({ routesDir }) => {
@@ -61,26 +60,22 @@ export const createFileRouter = async ({ routesDir }) => {
 	const layoutsByFolder = new Map();
 	const pages = [];
 
-	for (const fileAbs of filesAbs)
-	{
+	for (const fileAbs of filesAbs) {
 		const url = pathToFileURL(fileAbs).href;
 		const mod = await import(url);
 
 		const baseName = path.basename(fileAbs);
-		const folderKey = getDirSegments(routesRootAbs, fileAbs).join("/");
+		const folderKey = getDirSegments(routesRootAbs, fileAbs).join('/');
 
-		if (baseName.startsWith("_layout.route."))
-		{
-			if (!mod.Layout)
-			{
+		if (baseName.startsWith('_layout.route.')) {
+			if (!mod.Layout) {
 				throw new Error(`Layout module missing export "Layout": ${fileAbs}`);
 			}
 			layoutsByFolder.set(folderKey, mod);
 			continue;
 		}
 
-		if (!mod.Page)
-		{
+		if (!mod.Page) {
 			throw new Error(`Route module missing export "Page": ${fileAbs}`);
 		}
 
@@ -89,19 +84,16 @@ export const createFileRouter = async ({ routesDir }) => {
 	}
 
 	const records = pages.map((p) => {
-		const segs = p.folderKey ? p.folderKey.split("/") : [];
+		const segs = p.folderKey ? p.folderKey.split('/') : [];
 		const chain = [];
 
-		if (layoutsByFolder.has(""))
-		{
-			chain.push(layoutsByFolder.get(""));
+		if (layoutsByFolder.has('')) {
+			chain.push(layoutsByFolder.get(''));
 		}
 
-		for (let i = 0; i < segs.length; i++)
-		{
-			const key = segs.slice(0, i + 1).join("/");
-			if (layoutsByFolder.has(key))
-			{
+		for (let i = 0; i < segs.length; i++) {
+			const key = segs.slice(0, i + 1).join('/');
+			if (layoutsByFolder.has(key)) {
 				chain.push(layoutsByFolder.get(key));
 			}
 		}
@@ -118,11 +110,9 @@ export const createFileRouter = async ({ routesDir }) => {
 
 	return {
 		match: (pathname) => {
-			for (const rec of records)
-			{
+			for (const rec of records) {
 				const m = rec.matcher(pathname);
-				if (m)
-				{
+				if (m) {
 					return {
 						params: m.params,
 						page: rec.page,

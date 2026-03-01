@@ -10,15 +10,11 @@
  * Compatible with Express-style `(req, res)` signatures. Ensure `express.json()`
  * or equivalent body parsing runs before this handler.
  */
-export const createSecurityEventHandler = ({
-	logger = console.warn,
-	onEvent,
-}) => {
+export const createSecurityEventHandler = ({ logger = console.warn, onEvent }) => {
 	return (req, res) => {
 		const { event, detail, path: pagePath, timestamp } = req.body || {};
 
-		if (!event || typeof event !== "string")
-		{
+		if (!event || typeof event !== 'string') {
 			res.status(400).json({ ok: false });
 			return;
 		}
@@ -29,16 +25,21 @@ export const createSecurityEventHandler = ({
 			path: pagePath || req.path,
 			timestamp: timestamp || new Date().toISOString(),
 			ip: req.ip,
-			userAgent: req.get ? (req.get("user-agent") || "") : "",
+			userAgent: req.get ? req.get('user-agent') || '' : '',
 		};
 
-		try { logger("client-security-event", payload); }
-		catch { /* ignore logger errors */ }
+		try {
+			logger('client-security-event', payload);
+		} catch {
+			/* ignore logger errors */
+		}
 
-		if (typeof onEvent === "function")
-		{
-			try { onEvent(payload); }
-			catch { /* ignore */ }
+		if (typeof onEvent === 'function') {
+			try {
+				onEvent(payload);
+			} catch {
+				/* ignore */
+			}
 		}
 
 		res.status(204).end();

@@ -26,27 +26,44 @@
 		"react": ">=19.0.0",
 		"react-dom": ">=19.0.0"
 	},
-	"devDependencies": {
-		"esbuild": "^0.27.3",
+	"scripts": {
+		"dev:client": "vite --config vite.client.config.js",
+		"dev:server": "cross-env NODE_ENV=development nodemon --watch src --ext js,jsx --exec \"node --loader @esbuild-kit/esm-loader src/server/index.js\"",
+		"dev": "kill -9 $(lsof -ti:3000,5173) 2>/dev/null || true; yarn dev:client & yarn dev:server",
+		"start": "cross-env NODE_ENV=production node --loader @esbuild-kit/esm-loader src/server/index.js",
+		"build:client": "node scripts/build.mjs",
+		"lint": "yarn lint:js && yarn lint:css",
+		"lint:js": "eslint .",
+		"lint:css": "stylelint \"**/*.{css,scss,sass,less}\" --allow-empty-input",
+		"lint:fix": "eslint . --fix && stylelint \"**/*.{css,scss,sass,less}\" --fix --allow-empty-input",
+		"format:fix": "prettier --write ."
+	},
+	"dependencies": {
+		"@commercetools/platform-sdk": "^8.24.0",
+		"@commercetools/ts-client": "^3.2.0",
+		"@esbuild-kit/esm-loader": "^2.6.5",
+		"contentstack": "^3.26.4",
+		"dotenv": "^16.4.5",
+		"express": "^4.19.2",
+		"node-fetch": "^3.3.2",
+		"path-to-regexp": "^6.2.2",
 		"react": "^19.0.0",
 		"react-dom": "^19.0.0"
 	},
-	"dependencies": {
-		"path-to-regexp": "^6.2.1"
-	},
-	"scripts": {
-		"clean": "rm -rf dist node_modules",
-		"build": "node ./scripts/build.mjs",
-		"test": "node --test",
-		"prepublishOnly": "yarn build",
-		"pack": "npm pack",
-		"package": "yarn clean && yarn && yarn build && yarn pack",
-		"publish": "npm publish --access public",
-		"bump:patch": "npm version patch",
-		"bump:minor": "npm version minor",
-		"bump:major": "npm version major"
-	},
-	"publishConfig": {
-		"access": "public"
+	"devDependencies": {
+		"esbuild": "^0.27.3",
+		"@eslint/js": "^9.17.0",
+		"@vitejs/plugin-react": "^4.3.4",
+		"cross-env": "^10.1.0",
+		"eslint": "^9.17.0",
+		"eslint-plugin-react": "^7.37.5",
+		"eslint-plugin-react-hooks": "^7.0.1",
+		"glob": "^13.0.2",
+		"globals": "^17.3.0",
+		"nodemon": "^3.1.0",
+		"prettier": "^3.8.1",
+		"stylelint": "^17.2.0",
+		"stylelint-config-standard": "^40.0.0",
+		"vite": "^6.1.0"
 	}
 }

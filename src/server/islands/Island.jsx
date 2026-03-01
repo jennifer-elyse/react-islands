@@ -1,7 +1,7 @@
-"use server";
+'use server';
 
-import React from "react";
-import { serializePropsForAttr } from "./serialize.js";
+import React from 'react';
+import { serializePropsForAttr } from '../../shared/serialize.js';
 
 /**
  * Server-side wrapper that renders an island placeholder and marks it with
@@ -17,21 +17,19 @@ import { serializePropsForAttr } from "./serialize.js";
  */
 export const Island = ({
 	islandKey,
-	hydrate = "visible", // "idle" | "interaction" | "immediate"
+	hydrate = 'visible', // "idle" | "interaction" | "immediate"
 	props,
 	children,
 	resolveIslandModule, // (islandKey) => moduleSpecifier|null
 }) => {
-	if (typeof resolveIslandModule !== "function")
-	{
-		throw new Error("Island requires resolveIslandModule(islandKey) to be provided.");
+	if (typeof resolveIslandModule !== 'function') {
+		throw new Error('Island requires resolveIslandModule(islandKey) to be provided.');
 	}
 
 	const moduleSpecifier = resolveIslandModule(islandKey);
 
 	// No module = SSR-only. This is intentional for SEO.
-	if (!moduleSpecifier)
-	{
+	if (!moduleSpecifier) {
 		return <>{children || null}</>;
 	}
 
