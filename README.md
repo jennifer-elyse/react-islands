@@ -52,6 +52,23 @@ yarn build:client
 yarn start
 ```
 
+## Runtime packaging
+
+This repo publishes the conceptual runtime as separate entry points (no UI components):
+
+- `react-island-runtime/ssr`
+- `react-island-runtime/islands`
+- `react-island-runtime/rsc`
+
+To test locally with the examples, pack and install the tarball (uses semver filename):
+
+```bash
+yarn pack --filename builds/react-island-runtime-0.1.15.tgz
+yarn --cwd examples add file:../builds/react-island-runtime-0.1.15.tgz
+```
+
+Examples import SSR helpers from the package (e.g. `react-island-runtime/ssr`).
+
 ## Key routes
 
 - `/` home with search and mini-cart islands
