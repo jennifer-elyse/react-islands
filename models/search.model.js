@@ -1,6 +1,8 @@
 // models/search.model.js
 
-import { apiRoot } from './commercetools.client.js';
+import { apiRoot, isDemoMode } from './commercetools.client.js';
+
+import { demoProducts } from './demo.model.js';
 
 import { parseEdge } from './validate.js';
 
@@ -24,6 +26,24 @@ const searchProducts = async ({
 	filters = {},
 	facets = [],
 } = {}) => {
+	if (isDemoMode || !apiRoot) {
+		const q = String(query || '').toLowerCase();
+		const filtered = q
+			? demoProducts.filter((p) =>
+					String(p.name || '').toLowerCase().includes(q) ||
+					String(p.sku || '').toLowerCase().includes(q),
+			  )
+			: demoProducts;
+
+		const items = filtered.slice(offset, offset + limit);
+		return {
+			products: items,
+			total: filtered.length,
+			offset,
+			count: items.length,
+			facets: {},
+		};
+	}
 	const queryArgs = {
 		staged: false,
 		limit,
@@ -97,6 +117,30 @@ const searchSuggestions = async ({
 	fuzzy = true,
 	includeCategories = true,
 } = {}) => {
+	if (isDemoMode || !apiRoot) {
+		const q = String(query || '').trim().toLowerCase();
+		if (!q || q.length < 2) {
+			return { suggestions: [] };
+		}
+
+		const filtered = demoProducts.filter(
+			(p) =>
+				String(p.name || '').toLowerCase().includes(q) ||
+				String(p.sku || '').toLowerCase().includes(q),
+		);
+
+		return {
+			suggestions: filtered.slice(0, limit).map((p) => ({
+				id: p.id,
+				type: 'product',
+				text: p.name,
+				slug: p.slug || p.sku,
+				imageUrl: p.imageUrl,
+				price: p.price?.display,
+				sku: p.sku,
+			})),
+		};
+	}
 	if (!query || query.trim().length < 2) {
 		return { suggestions: [] };
 	}

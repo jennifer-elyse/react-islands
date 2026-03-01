@@ -15,6 +15,36 @@ yarn dev
 # visits: http://localhost:3000
 ```
 
+## Demo apps
+
+Contentstack demo:
+
+```bash
+yarn dev:contentstack
+# visits: http://localhost:3001
+```
+
+Commercetools demo:
+
+```bash
+yarn dev:commercetools
+# visits: http://localhost:3000
+```
+
+Agility demo:
+
+```bash
+yarn dev:agility
+# visits: http://localhost:3002
+```
+
+Contentstack + Commercetools demo:
+
+```bash
+yarn dev:contentstack-commercetools
+# visits: http://localhost:3003
+```
+
 Dev runs Vite (client) and the Express server with automatic port cleanup. Prod build:
 
 ```bash
@@ -33,9 +63,9 @@ yarn start
 ## Configuration
 
 Environment variables (optional but recommended):
-
 - `CART_CURRENCY` (default `USD`)
 - `DEFAULT_LOCALE` (default `en-US`)
+- `USE_DEMO_DATA` (set to `true` to use demo data instead of commercetools)
 - commercetools creds (see `.env.example` if present)
 
 ### .env example
@@ -44,6 +74,9 @@ Environment variables (optional but recommended):
 # Core
 CART_CURRENCY=USD
 DEFAULT_LOCALE=en-US
+
+# Demo data
+USE_DEMO_DATA=true
 
 # Commercetools
 CT_PROJECT_KEY=your-project-key

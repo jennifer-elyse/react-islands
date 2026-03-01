@@ -7,7 +7,7 @@
 	"main": "dist/server/index.js",
 	"sideEffects": false,
 	"engines": {
-		"node": ">=18"
+		"node": ">=22.0.0"
 	},
 	"files": [
 		"dist/server/*.js",
@@ -29,7 +29,19 @@
 	"scripts": {
 		"dev:client": "vite --config vite.client.config.js",
 		"dev:server": "cross-env NODE_ENV=development nodemon --watch src --ext js,jsx --exec \"node --loader @esbuild-kit/esm-loader src/server/index.js\"",
-		"dev": "kill -9 $(lsof -ti:3000,5173) 2>/dev/null || true; yarn dev:client & yarn dev:server",
+		"dev:contentstack-demo": "cross-env NODE_ENV=development nodemon --watch examples/contentstack-demo --watch src --ext js,jsx --exec \"node --loader @esbuild-kit/esm-loader examples/contentstack-demo/server/index.js\"",
+		"dev:commercetools-demo": "cross-env NODE_ENV=development nodemon --watch examples/commercetools-demo --watch src --ext js,jsx --exec \"node --loader @esbuild-kit/esm-loader examples/commercetools-demo/server/index.js\"",
+		"dev:agility-demo": "cross-env NODE_ENV=development nodemon --watch examples/agility-demo --watch src --ext js,jsx --exec \"node --loader @esbuild-kit/esm-loader examples/agility-demo/server/index.js\"",
+		"dev:contentstack-commercetools-demo": "cross-env NODE_ENV=development nodemon --watch examples/contentstack-commercetools-demo --watch src --ext js,jsx --exec \"node --loader @esbuild-kit/esm-loader examples/contentstack-commercetools-demo/server/index.js\"",
+		"dev": "cross-env DEMO_TARGET=main node scripts/dev-run.mjs",
+		"dev:commercetools": "yarn kill:commercetools && cross-env DEMO_TARGET=commercetools node scripts/dev-run.mjs",
+		"dev:contentstack": "yarn kill:contentstack && cross-env DEMO_TARGET=contentstack node scripts/dev-run.mjs",
+		"dev:agility": "yarn kill:agility && cross-env DEMO_TARGET=agility node scripts/dev-run.mjs",
+		"dev:contentstack-commercetools": "yarn kill:contentstack-commercetools && cross-env DEMO_TARGET=contentstack-commercetools node scripts/dev-run.mjs",
+		"kill:contentstack": "lsof -ti tcp:3001 | xargs -r kill -9",
+		"kill:commercetools": "lsof -ti tcp:3000 | xargs -r kill -9",
+		"kill:agility": "lsof -ti tcp:3002 | xargs -r kill -9",
+		"kill:contentstack-commercetools": "lsof -ti tcp:3003 | xargs -r kill -9",
 		"start": "cross-env NODE_ENV=production node --loader @esbuild-kit/esm-loader src/server/index.js",
 		"build:client": "node scripts/build.mjs",
 		"lint": "yarn lint:js && yarn lint:css",

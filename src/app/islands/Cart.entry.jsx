@@ -29,7 +29,16 @@ const Cart = () => {
 		};
 	}, []);
 
-	if (!cart) return <div>Loading cart…</div>;
+	if (!cart) {
+		return (
+			<div>
+				<div>
+					<strong>Mini Cart</strong>
+				</div>
+				<div>Loading cart…</div>
+			</div>
+		);
+	}
 
 	return (
 		<div>

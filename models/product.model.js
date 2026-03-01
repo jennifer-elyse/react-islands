@@ -1,6 +1,8 @@
 // models/product.model.js
 
-import { apiRoot } from './commercetools.client.js';
+import { apiRoot, isDemoMode } from './commercetools.client.js';
+
+import { listDemoProducts, getDemoProductById, getDemoProductBySlug } from './demo.model.js';
 
 import { parseEdge } from './validate.js';
 
@@ -140,6 +142,9 @@ const listProducts = async ({
 	locale = DEFAULT_LOCALE,
 	currency = DEFAULT_CURRENCY,
 } = {}) => {
+	if (isDemoMode || !apiRoot) {
+		return listDemoProducts({ limit, offset, categoryId, locale, currency });
+	}
 	const key = cacheKeyFromArgs({ limit, offset, categoryId });
 	const cached = readCache(key);
 
@@ -175,6 +180,9 @@ const listProducts = async ({
 };
 
 const getProductById = async (id, { locale = DEFAULT_LOCALE, currency = DEFAULT_CURRENCY } = {}) => {
+	if (isDemoMode || !apiRoot) {
+		return getDemoProductById(id);
+	}
 	const response = await apiRoot
 		.productProjections()
 		.withId({ ID: id })
@@ -195,6 +203,9 @@ const getProductById = async (id, { locale = DEFAULT_LOCALE, currency = DEFAULT_
 };
 
 const getProductBySlug = async (slug, { locale = DEFAULT_LOCALE, currency = DEFAULT_CURRENCY } = {}) => {
+	if (isDemoMode || !apiRoot) {
+		return getDemoProductBySlug(slug);
+	}
 	const response = await apiRoot
 		.productProjections()
 		.get({

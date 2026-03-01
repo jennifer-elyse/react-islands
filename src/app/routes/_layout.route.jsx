@@ -13,7 +13,7 @@ export const Layout = ({ children, siteName }) => {
 					<a href="/" style={{ marginRight: 12 }}>
 						Home
 					</a>
-					<a href="/products">Product</a>
+					<a href="/products">Products</a>
 				</span>
 			</header>
 

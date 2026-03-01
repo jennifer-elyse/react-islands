@@ -1,6 +1,8 @@
 // models/cart.model.js
 
-import { apiRoot } from './commercetools.client.js';
+import { apiRoot, isDemoMode } from './commercetools.client.js';
+
+import { getDemoProductById } from './demo.model.js';
 
 import { parseEdge } from './validate.js';
 
@@ -9,6 +11,7 @@ import { cartSchema } from './schemas/cartSchemas.js';
 import { pickLocalized } from './product.model.js';
 
 const DEFAULT_LOCALE = process.env.DEFAULT_LOCALE || 'en-US';
+const DEFAULT_CURRENCY = process.env.CART_CURRENCY || 'USD';
 
 // Cache controls
 const getCartCacheTtlMs = () => {
@@ -35,6 +38,80 @@ const cartCache = new Map();
 
 // In-flight coalescing: cartId -> Promise
 const inFlight = new Map();
+
+const demoCartState = {
+	id: 'demo-cart',
+	version: 1,
+	items: [],
+};
+
+const getDemoPrice = (centAmount = 399) => ({
+	centAmount,
+	currencyCode: DEFAULT_CURRENCY,
+	display: `$${(centAmount / 100).toFixed(2)}`,
+});
+
+const buildDemoCartView = () => {
+	const items = demoCartState.items.map((item) => ({
+		...item,
+		totalPrice: getDemoPrice(item.pricePerUnit * item.qty),
+	}));
+
+	const totalQty = items.reduce((sum, item) => sum + item.qty, 0);
+	const totalAmount = items.reduce((sum, item) => sum + item.pricePerUnit * item.qty, 0);
+
+	return {
+		id: demoCartState.id,
+		version: demoCartState.version,
+		items,
+		total: getDemoPrice(totalAmount),
+		totalQty,
+	};
+};
+
+const demoAddLineItem = ({ productId, quantity = 1 } = {}) => {
+	const product = getDemoProductById(productId) || {
+		id: productId,
+		sku: productId,
+		name: `Product ${productId}`,
+		imageUrl: null,
+		price: getDemoPrice(399),
+	};
+
+	const lineItemId = `li-${product.sku || product.id || productId}`;
+	const existing = demoCartState.items.find((item) => item.lineItemId === lineItemId);
+
+	if (existing) {
+		existing.qty += quantity;
+	} else {
+		demoCartState.items.push({
+			lineItemId,
+			productId: product.id || productId,
+			sku: product.sku || productId,
+			name: product.name || 'Demo product',
+			imageUrl: product.imageUrl || null,
+			qty: quantity,
+			pricePerUnit: product.price?.centAmount || 399,
+		});
+	}
+
+	demoCartState.version += 1;
+	return buildDemoCartView();
+};
+
+const demoSetLineItemQuantity = ({ lineItemId, quantity } = {}) => {
+	const idx = demoCartState.items.findIndex((item) => item.lineItemId === lineItemId);
+	if (idx === -1) return buildDemoCartView();
+
+	if (!quantity || quantity <= 0) {
+		demoCartState.items.splice(idx, 1);
+	} else {
+		demoCartState.items[idx].qty = quantity;
+	}
+
+	demoCartState.version += 1;
+	return buildDemoCartView();
+};
 
 const normalizeCart = (cart, locale = DEFAULT_LOCALE) => {
 	const items = (cart.lineItems || []).map((li) => {
@@ -135,6 +212,9 @@ const clearCartCache = () => {
 };
 
 const getCartById = async (cartId) => {
+	if (isDemoMode || !apiRoot) {
+		return buildDemoCartView();
+	}
 	try {
 		const response = await apiRoot.carts().withId({ ID: cartId }).get().execute();
 
@@ -154,6 +234,9 @@ const createCart = async ({
 	anonymousId = undefined,
 	customerId = undefined,
 } = {}) => {
+	if (isDemoMode || !apiRoot) {
+		return buildDemoCartView();
+	}
 	const draft = {
 		currency: currencyCode,
 	};
@@ -179,6 +262,9 @@ const getOrCreateCart = async ({
 	anonymousId = undefined,
 	customerId = undefined,
 } = {}) => {
+	if (isDemoMode || !apiRoot) {
+		return buildDemoCartView();
+	}
 	if (cartId) {
 		const existing = await getCartById(cartId);
 		if (existing) {
@@ -195,6 +281,9 @@ const fetchCartView = async ({
 	anonymousId = undefined,
 	customerId = undefined,
 } = {}) => {
+	if (isDemoMode || !apiRoot) {
+		return buildDemoCartView();
+	}
 	const cart = await getOrCreateCart({ cartId, currencyCode, anonymousId, customerId });
 	return normalizeCart(cart);
 };
@@ -205,6 +294,9 @@ const refreshCartView = async ({
 	anonymousId = undefined,
 	customerId = undefined,
 } = {}) => {
+	if (isDemoMode || !apiRoot) {
+		return buildDemoCartView();
+	}
 	const view = await fetchCartView({ cartId, currencyCode, anonymousId, customerId });
 	writeCache(view.id, view);
 	return view;
@@ -220,6 +312,9 @@ const getCartView = async ({
 	anonymousId = undefined,
 	customerId = undefined,
 } = {}) => {
+	if (isDemoMode || !apiRoot) {
+		return buildDemoCartView();
+	}
 	if (cartId) {
 		const cached = readCache(cartId);
 
@@ -283,6 +378,9 @@ const getCartView = async ({
 };
 
 const addLineItem = async ({ cartId, productId, variantId = 1, quantity = 1 } = {}) => {
+	if (isDemoMode || !apiRoot) {
+		return demoAddLineItem({ productId, variantId, quantity });
+	}
 	if (!cartId) {
 		throw new Error('cartId is required to addLineItem');
 	}
@@ -315,6 +413,9 @@ const addLineItem = async ({ cartId, productId, variantId = 1, quantity = 1 } = 
 };
 
 const setLineItemQuantity = async ({ cartId, lineItemId, quantity } = {}) => {
+	if (isDemoMode || !apiRoot) {
+		return demoSetLineItemQuantity({ lineItemId, quantity });
+	}
 	if (!cartId) {
 		throw new Error('cartId is required to setLineItemQuantity');
 	}
@@ -345,6 +446,9 @@ const setLineItemQuantity = async ({ cartId, lineItemId, quantity } = {}) => {
 
 // View helpers for controllers (still data-only: returns normalized data)
 const addItemAndGetView = async ({ cartId, productId, variantId = 1, quantity = 1 } = {}) => {
+	if (isDemoMode || !apiRoot) {
+		return demoAddLineItem({ productId, variantId, quantity });
+	}
 	const cart = await addLineItem({ cartId, productId, variantId, quantity });
 	const view = normalizeCart(cart);
 
@@ -354,6 +458,9 @@ const addItemAndGetView = async ({ cartId, productId, variantId = 1, quantity = 
 };
 
 const updateItemAndGetView = async ({ cartId, lineItemId, quantity } = {}) => {
+	if (isDemoMode || !apiRoot) {
+		return demoSetLineItemQuantity({ lineItemId, quantity });
+	}
 	const cart = await setLineItemQuantity({ cartId, lineItemId, quantity });
 	const view = normalizeCart(cart);
 
@@ -364,6 +471,9 @@ const updateItemAndGetView = async ({ cartId, lineItemId, quantity } = {}) => {
 
 // Merge anonymous cart to customer cart after login
 const mergeCartToCustomer = async ({ cartId, customerId } = {}) => {
+	if (isDemoMode || !apiRoot) {
+		return buildDemoCartView();
+	}
 	if (!cartId || !customerId) {
 		return null;
 	}

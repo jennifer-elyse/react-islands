@@ -54,10 +54,10 @@ export const Page = ({ page }) => {
 							<Island
 								islandKey={b.islandKey}
 								hydrate={b.hydrate || 'immediate'}
-								props={{ placeholder: 'Search products…' }}
+								props={{ placeholder: 'Search products...' }}
 								resolveIslandModule={resolveIslandModule}
 							>
-								<ProductSearchSSR placeholder="Search products…" />
+								<ProductSearchSSR placeholder="Search products..." />
 							</Island>
 						</section>
 					);
