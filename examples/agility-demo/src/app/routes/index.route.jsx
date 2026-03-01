@@ -1,6 +1,5 @@
 import React from 'react';
-import { Island } from '../../../../../src/server/islands/Island.jsx';
-import { resolveIslandModule } from '../../../../../src/server/islands/resolveIslandModule.js';
+import { Island, resolveIslandModule } from 'react-island-runtime/ssr';
 
 import CartSSR from '../../../../../src/app/islands/Cart.ssr.jsx';
 import ProductSearchSSR from '../../../../../src/app/islands/ProductSearch.ssr.jsx';

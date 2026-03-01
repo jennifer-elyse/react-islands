@@ -6,3 +6,4 @@
 /dist
 /package
 .env
+/examples/node_modules

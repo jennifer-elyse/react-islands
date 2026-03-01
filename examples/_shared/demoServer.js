@@ -5,10 +5,12 @@ import fs from 'node:fs';
 
 import dotenv from 'dotenv';
 
-import { cspMiddleware } from '../../src/server/security/csp.js';
-import { createFileRouter } from '../../src/server/router/fileRouter.js';
-import { loadAndCompose } from '../../src/server/render/composeRoute.js';
-import { renderPage } from '../../src/server/render/renderPage.js';
+import {
+  cspMiddleware,
+  createFileRouter,
+  loadAndCompose,
+  renderPage
+} from 'react-island-runtime/ssr';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);

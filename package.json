@@ -1,7 +1,7 @@
 {
 	"name": "react-island-runtime",
 	"license": "MIT",
-	"version": "0.1.13",
+	"version": "0.1.15",
 	"type": "module",
 	"description": "SSR-first React islands runtime and server helpers",
 	"main": "dist/server/index.js",
@@ -10,14 +10,23 @@
 		"node": ">=22.0.0"
 	},
 	"files": [
+		"src/server/**",
+		"src/client/islands-runtime.js",
+		"src/shared/serialize.js",
 		"dist/server/*.js",
 		"dist/client/*.js",
-		"dist"
+		"dist",
+		"packages/ssr/index.js",
+		"packages/islands/index.js",
+		"packages/rsc/index.js"
 	],
 	"exports": {
 		".": "./dist/server/index.js",
 		"./server": "./dist/server/index.js",
-		"./client/runtime": "./dist/client/islands-runtime.js"
+		"./client/runtime": "./dist/client/islands-runtime.js",
+		"./ssr": "./packages/ssr/index.js",
+		"./islands": "./packages/islands/index.js",
+		"./rsc": "./packages/rsc/index.js"
 	},
 	"bin": {
 		"react-islands-gen-manifest": "./dist/server/genManifest.js"

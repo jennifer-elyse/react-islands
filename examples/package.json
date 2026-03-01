@@ -1,0 +1,9 @@
+{
+  "name": "react-islands-examples",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "dependencies": {
+    "react-island-runtime": "file:../builds/react-island-runtime-0.1.15.tgz"
+  }
+}

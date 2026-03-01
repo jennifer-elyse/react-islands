@@ -1,4 +1,4 @@
-const CACHE_NAME = 'react-islands-v0.1.13';
+const CACHE_NAME = 'react-islands-v0.1.15';
 const CORE = ['/', '/manifest.webmanifest', '/pwa-register.js', '/icons/icon.png'];
 
 self.addEventListener('install', (event) => {
