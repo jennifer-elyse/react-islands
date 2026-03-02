@@ -5,7 +5,7 @@
 		"name": "Aqua Driftboard",
 		"description": "Transparent resin board with liquid-glass finish.",
 		"price": 18999,
-		"image": "/demo-images/liquid-glass-board-1.svg",
+		"image": "/demo-images/liquid-glass-board.jpg",
 		"tags": ["board", "glass", "aqua"]
 	},
 	{
@@ -14,7 +14,7 @@
 		"name": "Glacier Fins",
 		"description": "Ice-clear fins for smooth turns.",
 		"price": 4999,
-		"image": "/demo-images/liquid-glass-fins.svg",
+		"image": "/demo-images/liquid-glass-fins.jpg",
 		"tags": ["fins", "glass"]
 	},
 	{
