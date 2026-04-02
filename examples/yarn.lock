@@ -1662,8 +1662,8 @@ react-dom@^19.0.0:
 
 "react-islands-runtime@file:../builds/react-islands-runtime-0.3.0.tgz":
   version "0.3.0"
-  resolved "file:../builds/react-islands-runtime-0.3.0.tgz#053f0d931737b7c606664ab9f6c505a620a66128"
-  integrity sha512-ht5BpvVNGaGykS1ZIXtHMNo7oy2mU5N/IDZ3I0vYZDYbUAvx8r8RkdpYdvj/c+q6HI+DImIF9pSR15tfEo2zdQ==
+  resolved "file:../builds/react-islands-runtime-0.3.0.tgz#06f37a08233ec0fbde616edd54fac17fb0794826"
+  integrity sha512-FL5ndbziykOgAumhR+oTWzfjU+oukUtpsfCLkv95xABXk/pQsi3O+V1llU/oIyWxp1gdaYITnPK6BFp+H4U6XQ==
   dependencies:
     path-to-regexp "^6.2.2"
     react "^19.0.0"

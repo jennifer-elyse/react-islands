@@ -1,8 +1,91 @@
 'use client';
 
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 
 const cx = (...values) => values.filter(Boolean).join(' ');
+
+const useSlideCount = (slides, variant, freezeFirstFrame) =>
+	useMemo(() => {
+		if (variant === 'pin-first-marquee' && freezeFirstFrame) return slides.slice(1);
+		return slides;
+	}, [freezeFirstFrame, slides, variant]);
+
+const getSlideElements = (scroller) => Array.from(scroller?.querySelectorAll('[data-carousel-slide]') || []);
+
+const scrollToSlide = (scroller, nextIndex) => {
+	const slides = getSlideElements(scroller);
+	const target = slides[nextIndex];
+	if (!target) return;
+
+	scroller.scrollTo({
+		left: target.offsetLeft - scroller.offsetLeft,
+		behavior: 'smooth',
+	});
+};
+
+const useCarouselState = ({ count, autoPlayMs, pauseOnHover, enabledDots, scrollerRef }) => {
+	const [index, setIndex] = useState(0);
+	const [paused, setPaused] = useState(false);
+
+	useEffect(() => {
+		const scroller = scrollerRef.current;
+		if (!scroller || count <= 1) return undefined;
+
+		const slides = getSlideElements(scroller);
+		if (!slides.length) return undefined;
+
+		const observer = new IntersectionObserver(
+			(entries) => {
+				const current = entries
+					.filter((entry) => entry.isIntersecting)
+					.sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+				if (!current) return;
+				const nextIndex = Number(current.target.getAttribute('data-carousel-index'));
+				if (Number.isFinite(nextIndex)) setIndex(nextIndex);
+			},
+			{
+				root: scroller,
+				threshold: [0.6, 0.9],
+			},
+		);
+
+		slides.forEach((slide) => observer.observe(slide));
+		return () => observer.disconnect();
+	}, [count, scrollerRef]);
+
+	useEffect(() => {
+		if (!enabledDots || count <= 1 || autoPlayMs <= 0 || paused) return undefined;
+		const timer = window.setInterval(() => {
+			const nextIndex = (index + 1) % count;
+			scrollToSlide(scrollerRef.current, nextIndex);
+		}, autoPlayMs);
+
+		return () => window.clearInterval(timer);
+	}, [autoPlayMs, count, enabledDots, index, paused, scrollerRef]);
+
+	return {
+		index,
+		paused,
+		setPaused: pauseOnHover ? setPaused : () => {},
+	};
+};
+
+const SlideCard = ({ slide, index, cardClassName }) => (
+	<article
+		className={cx('demo-carousel__slide', cardClassName)}
+		data-carousel-slide=""
+		data-carousel-index={index}
+	>
+		<div className="demo-carousel__media">
+			<img src={slide.image} alt={slide.title} />
+		</div>
+		<div className="demo-carousel__copy">
+			{slide.eyebrow ? <span className="demo-carousel__eyebrow">{slide.eyebrow}</span> : null}
+			<h3 className="demo-carousel__slide-title">{slide.title}</h3>
+			<p className="demo-carousel__slide-body">{slide.body}</p>
+		</div>
+	</article>
+);
 
 const Carousel = ({
 	title,
@@ -18,143 +101,98 @@ const Carousel = ({
 		pauseOnHover = true,
 		freezeFirstFrame = false,
 	} = options;
-	const [index, setIndex] = useState(0);
-	const [paused, setPaused] = useState(false);
-	const count = slides.length;
+
 	const spotlight = variant === 'spotlight-dots';
-	const marquee = variant === 'pin-first-marquee';
+	const pinnedPane = variant === 'pin-first-marquee' && freezeFirstFrame;
+	const pinnedSlide = pinnedPane ? slides[0] : null;
+	const scrollSlides = useSlideCount(slides, variant, freezeFirstFrame);
+	const scrollerRef = useRef(null);
+	const count = scrollSlides.length;
+	const { index, paused, setPaused } = useCarouselState({
+		count,
+		autoPlayMs,
+		pauseOnHover,
+		enabledDots: spotlight,
+		scrollerRef,
+	});
 
-	const rotatingSlides = useMemo(() => {
-		if (!marquee) return slides;
-		return freezeFirstFrame ? slides.slice(1) : slides;
-	}, [slides, marquee, freezeFirstFrame]);
+	if (!slides.length) return null;
 
-	useEffect(() => {
-		if (!spotlight || count <= 1 || autoPlayMs <= 0 || paused) return undefined;
-		const timer = window.setInterval(() => {
-			setIndex((current) => (current + 1) % count);
-		}, autoPlayMs);
-		return () => window.clearInterval(timer);
-	}, [autoPlayMs, count, paused, spotlight]);
+	const goPrev = () => {
+		if (count <= 1) return;
+		scrollToSlide(scrollerRef.current, (index - 1 + count) % count);
+	};
 
-	const goPrev = () => setIndex((current) => (current - 1 + count) % count);
-	const goNext = () => setIndex((current) => (current + 1) % count);
-
-	if (!count) return null;
-
-	if (marquee) {
-		const pinned = freezeFirstFrame ? slides[0] : null;
-		const moving = rotatingSlides.length ? [...rotatingSlides, ...rotatingSlides] : [];
-
-		return (
-			<div
-				className={cx('demo-carousel', `demo-carousel--${variant}`)}
-				onMouseEnter={pauseOnHover ? () => setPaused(true) : undefined}
-				onMouseLeave={pauseOnHover ? () => setPaused(false) : undefined}
-			>
-				<div className="demo-carousel__header">
-					<h2 className="demo-carousel__title">{title}</h2>
-				</div>
-				<div className="demo-carousel__viewport">
-					{accentIconSrc ? (
-						<div className="demo-carousel__accent">
-							<img src={accentIconSrc} alt="" />
-						</div>
-					) : null}
-					<div className="demo-carousel__pinned-wrap">
-						{pinned ? (
-							<article className="demo-carousel__slide demo-carousel__slide--pinned">
-								<div className="demo-carousel__media">
-									<img src={pinned.image} alt={pinned.title} />
-								</div>
-								<div className="demo-carousel__copy">
-									{pinned.eyebrow ? <span className="demo-carousel__eyebrow">{pinned.eyebrow}</span> : null}
-									<h3 className="demo-carousel__slide-title">{pinned.title}</h3>
-									<p className="demo-carousel__slide-body">{pinned.body}</p>
-								</div>
-							</article>
-						) : null}
-						<div className={cx('demo-carousel__marquee', paused && 'is-paused')}>
-							<div className="demo-carousel__marquee-track">
-								{moving.map((slide, slideIndex) => (
-									<article key={`${slide.title}-${slideIndex}`} className="demo-carousel__slide demo-carousel__slide--marquee">
-										<div className="demo-carousel__media">
-											<img src={slide.image} alt={slide.title} />
-										</div>
-										<div className="demo-carousel__copy">
-											{slide.eyebrow ? <span className="demo-carousel__eyebrow">{slide.eyebrow}</span> : null}
-											<h3 className="demo-carousel__slide-title">{slide.title}</h3>
-											<p className="demo-carousel__slide-body">{slide.body}</p>
-										</div>
-									</article>
-								))}
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		);
-	}
+	const goNext = () => {
+		if (count <= 1) return;
+		scrollToSlide(scrollerRef.current, (index + 1) % count);
+	};
 
 	return (
 		<div
-			className={cx('demo-carousel', `demo-carousel--${variant}`)}
+			className={cx('demo-carousel', `demo-carousel--${variant}`, paused && 'is-paused')}
 			onMouseEnter={pauseOnHover ? () => setPaused(true) : undefined}
 			onMouseLeave={pauseOnHover ? () => setPaused(false) : undefined}
 		>
 			<div className="demo-carousel__header">
 				<h2 className="demo-carousel__title">{title}</h2>
-				{showArrows && count > 1 ? (
+				{showArrows && count > 0 ? (
 					<div className="demo-carousel__controls">
 						<button type="button" className="demo-carousel__control" onClick={goPrev} aria-label="Previous slide">
-							Prev
+							<span aria-hidden="true">‹</span>
 						</button>
 						<button type="button" className="demo-carousel__control" onClick={goNext} aria-label="Next slide">
-							Next
+							<span aria-hidden="true">›</span>
 						</button>
 					</div>
 				) : null}
 			</div>
 			<div className="demo-carousel__viewport">
-				<div
-					className={cx('demo-carousel__track', spotlight && 'demo-carousel__track--spotlight')}
-					style={
-						spotlight
-							? { transform: `translateX(-${index * 100}%)` }
-							: undefined
-					}
-				>
-					{slides.map((slide, slideIndex) => (
-						<article
-							key={`${slide.title}-${slideIndex}`}
-							className={cx(
-								'demo-carousel__slide',
-								slideIndex === index && 'is-current',
-								`demo-carousel__slide--${variant}`,
-							)}
-						>
-							<div className="demo-carousel__media">
-								<img src={slide.image} alt={slide.title} />
-							</div>
-							<div className="demo-carousel__copy">
-								{slide.eyebrow ? <span className="demo-carousel__eyebrow">{slide.eyebrow}</span> : null}
-								<h3 className="demo-carousel__slide-title">{slide.title}</h3>
-								<p className="demo-carousel__slide-body">{slide.body}</p>
-							</div>
-						</article>
-					))}
+				{accentIconSrc ? (
+					<div className="demo-carousel__accent">
+						<img src={accentIconSrc} alt="" />
+					</div>
+				) : null}
+
+				<div className={cx('demo-carousel__layout', pinnedPane && 'demo-carousel__layout--pinned')}>
+					{pinnedSlide ? (
+						<div className="demo-carousel__pinned">
+							<SlideCard slide={pinnedSlide} index={0} cardClassName="demo-carousel__slide--pinned" />
+						</div>
+					) : null}
+
+					<div
+						ref={scrollerRef}
+						className={cx(
+							'demo-carousel__scroller',
+							spotlight && 'demo-carousel__scroller--spotlight',
+							pinnedPane && 'demo-carousel__scroller--rail',
+						)}
+					>
+						{scrollSlides.map((slide, slideIndex) => (
+							<SlideCard
+								key={`${slide.title}-${slideIndex}`}
+								slide={slide}
+								index={slideIndex}
+								cardClassName={cx(
+									`demo-carousel__slide--${variant}`,
+									spotlight && slideIndex === index && 'is-current',
+								)}
+							/>
+						))}
+					</div>
 				</div>
 			</div>
 			{showDots && count > 1 ? (
 				<div className="demo-carousel__dots" aria-label="Carousel pagination">
-					{slides.map((slide, slideIndex) => (
+					{scrollSlides.map((slide, slideIndex) => (
 						<button
 							key={`${slide.title}-dot`}
 							type="button"
 							className="demo-carousel__dot"
 							data-active={slideIndex === index ? 'true' : 'false'}
 							aria-label={`Go to slide ${slideIndex + 1}`}
-							onClick={() => setIndex(slideIndex)}
+							onClick={() => scrollToSlide(scrollerRef.current, slideIndex)}
 						/>
 					))}
 				</div>

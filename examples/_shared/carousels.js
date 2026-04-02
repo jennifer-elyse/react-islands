@@ -29,9 +29,9 @@ export const getDemoCarouselBlock = (demo) => {
 			options: {
 				pauseOnHover: true,
 				freezeFirstFrame: true,
-				showArrows: false,
+				showArrows: true,
 				showDots: false,
-				autoPlayMs: 2800,
+				autoPlayMs: 0,
 			},
 			slides: surfSlides,
 		};

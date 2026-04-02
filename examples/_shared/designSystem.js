@@ -399,6 +399,7 @@ const shellStyles = `
 	.demo-carousel {
 		display: grid;
 		gap: 16px;
+		container-type: inline-size;
 	}
 
 	.demo-carousel__header {
@@ -429,37 +430,82 @@ const shellStyles = `
 	}
 
 	.demo-carousel__control {
-		padding: 9px 12px;
+		inline-size: 2.75rem;
+		block-size: 2.75rem;
+		display: inline-grid;
+		place-items: center;
 		border-radius: var(--radius-pill, 999px);
 		background: color-mix(in srgb, var(--surface-panel) 76%, white);
 		border: 1px solid var(--border-subtle);
 		color: var(--text-primary);
 		font: inherit;
-		font-size: 0.84rem;
+		font-size: 1.3rem;
 		font-weight: 700;
+		line-height: 1;
+		box-shadow:
+			0 12px 26px color-mix(in srgb, var(--surface-shadow) 12%, transparent),
+			inset 0 1px 0 color-mix(in srgb, white 58%, transparent);
+		transition: transform 180ms ease, background 180ms ease, box-shadow 180ms ease;
+	}
+
+	.demo-carousel__control:hover {
+		transform: translateY(-1px);
 	}
 
 	.demo-carousel__viewport {
 		position: relative;
-		overflow: hidden;
+		overflow: clip;
+		padding: 0;
 	}
 
-	.demo-carousel__track {
+	.demo-carousel__layout {
+		display: grid;
+		gap: 18px;
+	}
+
+	.demo-carousel__layout--pinned {
+		grid-template-columns: minmax(280px, 0.82fr) minmax(0, 1.18fr);
+	}
+
+	.demo-carousel__pinned {
+		position: sticky;
+		inset-block-start: 0;
+		align-self: start;
+	}
+
+	.demo-carousel__scroller {
 		display: grid;
 		grid-auto-flow: column;
-		grid-auto-columns: minmax(0, 1fr);
+		grid-auto-columns: minmax(min(84cqi, 22rem), 1fr);
 		gap: 18px;
-		transition: transform 320ms ease;
+		padding: 0;
+		overflow-x: auto;
+		overflow-y: clip;
+		overscroll-behavior-inline: contain;
+		scroll-snap-type: inline mandatory;
+		scroll-padding-inline: 0;
+		scroll-behavior: smooth;
+		scrollbar-width: none;
+		scrollbar-gutter: stable;
+		align-items: start;
 	}
 
-	.demo-carousel__track--spotlight {
+	.demo-carousel__scroller::-webkit-scrollbar {
+		display: none;
+	}
+
+	.demo-carousel__scroller--spotlight {
 		grid-auto-columns: 100%;
-		gap: 0;
+	}
+
+	.demo-carousel__scroller--rail {
+		grid-auto-columns: minmax(260px, 0.8fr);
+		align-items: stretch;
 	}
 
 	.demo-carousel__slide {
 		position: relative;
-		overflow: hidden;
+		overflow: clip;
 		display: grid;
 		gap: 16px;
 		padding: 16px;
@@ -472,12 +518,19 @@ const shellStyles = `
 			0 18px 36px color-mix(in srgb, var(--surface-shadow) 12%, transparent),
 			inset 0 1px 0 color-mix(in srgb, white 54%, transparent);
 		min-height: 100%;
+		scroll-snap-align: start;
+		scroll-snap-stop: always;
+	}
+
+	.demo-carousel__slide--pinned {
+		min-block-size: 100%;
 	}
 
 	.demo-carousel__media {
-		overflow: hidden;
+		overflow: clip;
 		border-radius: calc(var(--radius-card, 24px) - 8px);
 		aspect-ratio: 16 / 10;
+		isolation: isolate;
 	}
 
 	.demo-carousel__media img {
@@ -526,7 +579,7 @@ const shellStyles = `
 		box-shadow: 0 0 0 4px color-mix(in srgb, var(--surface-accent) 18%, transparent);
 	}
 
-	.demo-carousel--peek-strip .demo-carousel__track {
+	.demo-carousel--peek-strip .demo-carousel__scroller {
 		grid-auto-columns: minmax(280px, 1fr);
 	}
 
@@ -535,7 +588,7 @@ const shellStyles = `
 		align-items: center;
 	}
 
-	.demo-carousel--floating-cards .demo-carousel__track {
+	.demo-carousel--floating-cards .demo-carousel__scroller {
 		grid-auto-columns: minmax(260px, 1fr);
 		align-items: stretch;
 	}
@@ -556,8 +609,8 @@ const shellStyles = `
 
 	.demo-carousel__accent {
 		position: absolute;
-		right: 16px;
-		top: 16px;
+		inset-inline-end: 18px;
+		inset-block-start: 18px;
 		z-index: 2;
 		width: 56px;
 		height: 56px;
@@ -576,49 +629,12 @@ const shellStyles = `
 		display: block;
 	}
 
-	.demo-carousel__pinned-wrap {
-		display: grid;
-		grid-template-columns: minmax(260px, 0.9fr) minmax(0, 1.1fr);
-		gap: 18px;
-	}
-
-	.demo-carousel__marquee {
-		overflow: hidden;
-	}
-
-	.demo-carousel__marquee.is-paused .demo-carousel__marquee-track {
-		animation-play-state: paused;
-	}
-
-	.demo-carousel__marquee-track {
-		display: flex;
-		gap: 18px;
-		width: max-content;
-		animation: demo-carousel-marquee 24s linear infinite;
-	}
-
-	.demo-carousel__slide--marquee {
-		width: min(340px, 72vw);
-	}
-
-	@keyframes demo-carousel-marquee {
-		from {
-			transform: translateX(0);
-		}
-		to {
-			transform: translateX(calc(-50% - 9px));
-		}
-	}
-
 	.test-data-carousel-card {
-		padding: 0;
-		border: 0;
-		background: transparent;
-		box-shadow: none;
+		padding: 6px;
 	}
 
 	[data-demo-theme="test-data"] .test-data-carousel-card {
-		padding: 0;
+		padding: 6px;
 	}
 
 	[data-demo-theme="test-data"] .demo-carousel__slide,
@@ -643,6 +659,21 @@ const shellStyles = `
 		box-shadow:
 			0 18px 40px color-mix(in oklab, black 28%, transparent),
 			inset 0 1px 0 color-mix(in oklab, white 10%, transparent);
+	}
+
+	[data-demo-theme="test-data"] .demo-carousel__layout--pinned {
+		grid-template-columns: minmax(280px, 0.92fr) minmax(0, 1.08fr);
+		gap: 16px;
+	}
+
+	[data-demo-theme="test-data"] .demo-carousel__scroller--rail {
+		grid-auto-columns: minmax(300px, 0.86fr);
+	}
+
+	[data-demo-theme="test-data"] .demo-carousel__slide--pinned {
+		background:
+			linear-gradient(160deg, color-mix(in oklab, white 24%, transparent), transparent 52%),
+			color-mix(in oklab, var(--surface-panel) 76%, white);
 	}
 
 	.test-data-products-grid {
@@ -801,14 +832,17 @@ const shellStyles = `
 			grid-template-columns: 1fr;
 		}
 
+		.demo-carousel__layout--pinned,
 		.demo-carousel--editorial-stack .demo-carousel__slide,
-		.demo-carousel--spotlight-dots .demo-carousel__slide,
-		.demo-carousel__pinned-wrap {
+		.demo-carousel--spotlight-dots .demo-carousel__slide {
 			grid-template-columns: 1fr;
 		}
 
-		.demo-carousel__slide--marquee {
-			width: min(280px, 78vw);
+		.demo-carousel__scroller,
+		.demo-carousel__scroller--rail,
+		.demo-carousel--peek-strip .demo-carousel__scroller,
+		.demo-carousel--floating-cards .demo-carousel__scroller {
+			grid-auto-columns: minmax(84cqi, 1fr);
 		}
 	}
 `;
