@@ -27,7 +27,7 @@
 		"path-to-regexp": "^6.2.2",
 		"react": "^19.0.0",
 		"react-dom": "^19.0.0",
-		"react-islands-runtime": "file:../builds/react-islands-runtime-0.3.0.tgz"
+		"react-islands-runtime": "file:.."
 	},
 	"devDependencies": {
 		"@esbuild-kit/esm-loader": "^2.6.5",
