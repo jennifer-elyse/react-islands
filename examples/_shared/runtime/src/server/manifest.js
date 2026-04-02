@@ -3,7 +3,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { createHash } from 'node:crypto';
-import { escapeJsonForInlineScript } from '../shared/serialize.js';
+import { escapeJsonForInlineScript } from './serialize.js';
 
 /**
  * Creates a manifest provider that the server can use to embed the islands

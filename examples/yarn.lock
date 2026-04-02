@@ -1660,10 +1660,10 @@ react-dom@^19.0.0:
   dependencies:
     scheduler "^0.27.0"
 
-react-islands-runtime@^0.1.25:
-  version "0.1.25"
-  resolved "https://registry.yarnpkg.com/react-islands-runtime/-/react-islands-runtime-0.1.25.tgz#28c5b3b2721230c4e17968318bc65999ae804c64"
-  integrity sha512-wDPAjs338SRYqSncC+FwpAiNsJBCsJL/OnHFlkH2om1QQvtlGhQ3xyLHNbiZGdiNugur2rcdnezg5uwSE0WBmQ==
+"react-islands-runtime@file:../builds/react-islands-runtime-0.3.0.tgz":
+  version "0.3.0"
+  resolved "file:../builds/react-islands-runtime-0.3.0.tgz#4da711150e3da8278fd834ec45674a09c3344e16"
+  integrity sha512-SwiVm/EdpPLUQMTL6q20LygXrCtsqWJlJlF7Qn25hYiFrSf62vJ25ZhlppkRaQ1oHkcEsblmspUUGsjKIBRCwg==
   dependencies:
     path-to-regexp "^6.2.2"
     react "^19.0.0"

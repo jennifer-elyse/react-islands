@@ -1,110 +1,171 @@
-# react-islands demo
+# react-islands-runtime
 
-An SSR-first React islands playground plus the `react-islands-runtime` package. The demos serve a small e-commerce experience:
+`react-islands-runtime` is an SSR-first React islands runtime plus a set of working example apps.
 
-- Home with search and cart islands
-- Product detail pages with image, price, and add-to-cart form
-- Products listing that returns the first 20 products
-- Real commercetools-backed search/cart APIs (with graceful fallbacks)
+This repo has two jobs:
 
-## Getting started
+1. Provide the runtime package in `src/`, `packages/`, and `types/`
+2. Prove the runtime against concrete e-commerce-style demos in `examples/`
 
-Prereqs: Node >= 22 and Yarn.
+## What You Can Run
 
-## Demo apps (standalone)
-
-Examples are self-contained. Run them from the `examples` workspace:
-
-```bash
-cd examples
-yarn install
-yarn dev:contentstack
-# visits: http://localhost:3001
-```
-
-Other demos:
+From `examples/`, these are the current demo commands:
 
 ```bash
 yarn dev:commercetools              # http://localhost:3000
+yarn dev:contentstack               # http://localhost:3001
 yarn dev:agility                    # http://localhost:3002
 yarn dev:contentstack-commercetools # http://localhost:3003
+yarn dev:test-data                  # http://localhost:3004
 ```
 
-Dev runs Vite (client) and the Express server with automatic port cleanup. For a production-like run, build the client assets and start a demo server:
+Each `dev:*` command does three things:
+
+1. Kills any old server using the demo port or Vite port `5173`
+2. Builds the client bundle and islands manifest
+3. Starts Vite plus the matching Express demo server
+
+## Quick Start
 
 ```bash
-yarn build:client
-NODE_ENV=production node contentstack-demo/server/index.js
+git clone <repo>
+cd react-islands-runtime
+yarn install
+cd examples
+yarn install
+yarn dev:test-data
 ```
 
-## Runtime packaging
+Open `http://localhost:3004`.
 
-This repo publishes the conceptual runtime as separate entry points (no UI components):
+`test-data-demo` is the best first run because it needs no vendor credentials.
+
+## Repo Layout
+
+- `src/client` client islands runtime
+- `src/server` SSR render, router, theme, CSS, manifest, and security helpers
+- `packages/ssr` public SSR entrypoint
+- `packages/islands` public client/islands entrypoint
+- `packages/rsc` public RSC-facing entrypoint
+- `types` TypeScript declarations for the published package
+- `examples/_shared` shared demo server, design system, runtime helpers, and fixture data
+- `examples/*-demo` concrete example apps
+
+## Runtime Entry Points
+
+The package currently exposes:
 
 - `react-islands-runtime/ssr`
 - `react-islands-runtime/islands`
 - `react-islands-runtime/rsc`
 
-Install from npm:
+The examples in this repo currently consume the local tarball:
+
+`examples/package.json` points to `file:../builds/react-islands-runtime-0.3.0.tgz`
+
+## Environment Files
+
+The shared demo server loads env files in this order:
+
+1. `examples/.env`
+2. `examples/.env.<demo>` when `DEMO_TARGET` is set
+3. `./.env` from the current working directory
+
+That means `yarn dev:contentstack-commercetools` will try to load:
+
+- `examples/.env`
+- `examples/.env.contentstack-commercetools`
+
+## Demo Summary
+
+### `commercetools-demo`
+
+- Real commercetools product/search/cart path
+- Shared local content fixtures
+- Best for testing commerce integration
+
+### `contentstack-demo`
+
+- Contentstack-backed content path
+- Shared local product/cart/search fixtures
+- Falls back to built-in demo content if Contentstack is missing or invalid
+
+### `agility-demo`
+
+- Agility-flavored content example
+- Shared local product/cart/search fixtures
+- Good for seeing a CMS-driven variant without external commerce
+
+### `contentstack-commercetools-demo`
+
+- Contentstack for content
+- commercetools for catalog/search/cart
+- Closest to a real multi-system storefront setup
+
+### `test-data-demo`
+
+- Local fixture content
+- Local fixture products
+- No third-party credentials
+- Best smoke test for routing, SSR, islands, search, cart, and styling
+
+## Common Routes
+
+Most demos expose these page routes:
+
+- `/`
+- `/products`
+- `/products/:sku`
+
+Most demos expose these API routes:
+
+- `/api/search`
+- `/api/search/suggestions`
+- `/api/cart`
+- `/api/cart/items`
+
+Some demos also expose content-oriented endpoints such as:
+
+- `/api/content/home`
+- `/api/content/hero`
+- `/api/status`
+
+## Build Notes
+
+The examples client build is:
 
 ```bash
-npm install react-islands-runtime
+cd examples
+yarn build:client
 ```
 
-## Key routes
+That script:
 
-- `/` home with search and mini-cart islands
-- `/products` first 20 products
-- `/products/:sku` product detail with add-to-cart form
-- `/api/search`, `/api/search/suggestions` for the typeahead
-- `/api/cart` and `/api/cart/items` for cart island and PDP form
+1. updates the service worker cache name in `examples/_shared/public/sw.js`
+2. runs the Vite client build
+3. generates `dist/client/islands-manifest.json` with `react-islands-gen-manifest`
 
-## Configuration
+## Packaging The Runtime
 
-Environment variables (optional but recommended):
+To rebuild the local tarball used by the examples:
 
-- `CART_CURRENCY` (default `USD`)
-- `DEFAULT_LOCALE` (default `en-US`)
-- `USE_DEMO_DATA` (set to `true` to use demo data instead of commercetools)
-- commercetools creds
-- Contentstack creds (contentstack demos only)
-
-### .env example
-
-```
-# Core
-CART_CURRENCY=USD
-DEFAULT_LOCALE=en-US
-
-# Demo data
-USE_DEMO_DATA=true
-
-# Commercetools
-CT_PROJECT_KEY=your-project-key
-CT_CLIENT_ID=your-client-id
-CT_CLIENT_SECRET=your-client-secret
-CT_AUTH_URL=https://auth.europe-west1.gcp.commercetools.com
-CT_API_URL=https://api.europe-west1.gcp.commercetools.com
-
-# Contentstack (optional)
-CONTENTSTACK_API_KEY=your-api-key
-CONTENTSTACK_DELIVERY_TOKEN=your-delivery-token
-CONTENTSTACK_ENVIRONMENT=prod
-CONTENTSTACK_REGION=us
+```bash
+yarn pack --filename builds/react-islands-runtime-0.3.0.tgz
 ```
 
-The demo server loads `examples/.env` and, when `DEMO_TARGET` is set, `examples/.env.<demo>` if present.
+If you refresh the tarball, also refresh the examples install so the demos pick up the new runtime code.
 
-## Project structure
+## Current Expectations
 
-- `examples/*/src/app/routes` file-based routes (layouts + pages)
-- `examples/*/src/app/islands` SSR + client entry points
-- `src/client` islands runtime entry
-- `src/server` SSR runtime (router, renderer, manifest provider)
-- `examples/*/controllers` / `examples/*/models` commerce and CMS adapters
+- Node `>= 22`
+- Yarn classic works for the examples in this repo
+- The examples are intentionally JS-first, even though the runtime ships TypeScript declarations
 
-## Notes
+## Recommended First Checks
 
-- Server imports use ESM with `.js` extensions; the build emits to `dist/`.
-- Islands manifest is generated during `yarn build:client` via `react-islands-gen-manifest` using the Vite manifest.
-- The add-to-cart form posts to `/api/cart/items` and respects existing session cart.
+If a demo looks unstyled or broken:
+
+1. restart the demo after any tarball/runtime change
+2. rerun `cd examples && yarn build:client`
+3. verify the example is using the local tar in `examples/package.json`
+4. check the matching example README below for env and fallback behavior

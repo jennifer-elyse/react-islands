@@ -6,6 +6,7 @@ import fs from 'node:fs';
 import dotenv from 'dotenv';
 
 import { cspMiddleware, createFileRouter, loadAndCompose, renderPage } from 'react-islands-runtime/ssr';
+import { createDemoThemeFeature } from './designSystem.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -45,6 +46,7 @@ const hasContentstackEnv = Boolean(process.env.CONTENTSTACK_API_KEY && process.e
 
 export const startDemoServer = async ({ routesDir, apiRouter, port = 3000, name = 'demo' }) => {
 	const app = express();
+	const features = [createDemoThemeFeature(name)];
 
 	app.use(express.json());
 	app.use(express.urlencoded({ extended: true }));
@@ -99,14 +101,15 @@ export const startDemoServer = async ({ routesDir, apiRouter, port = 3000, name 
 			const match = router.match(req.path);
 			if (!match) return res.status(404).send('Not Found');
 
-			const { element, head } = await loadAndCompose({
+			const { element, head, documentProps } = await loadAndCompose({
 				req,
 				params: match.params,
 				layouts: match.layouts,
 				route: match.page,
+				features,
 			});
 
-			await renderPage({ req, res, appElement: element, head });
+			await renderPage({ req, res, appElement: element, head, documentProps });
 		} catch (err) {
 			console.error('Error handling request:', err);
 			res.status(500).send('Server Error');

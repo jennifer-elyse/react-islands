@@ -1,57 +1,75 @@
-# React Islands Contentstack Demo
+# Contentstack Demo
 
-This demo showcases integration of SSR, React Server Components (RSC), and React Islands using Contentstack for content. Product and cart data use the shared surf shop demo data.
+This example exercises the content side of `react-islands-runtime`.
 
-## Features
+It uses:
 
-- **SSR**: Server-side rendering using the SSR package
-- **RSC**: (Placeholder) React Server Components integration
-- **Islands**: Hydration and mounting of interactive islands
+- Contentstack for homepage/content models
+- local/shared product, search, and cart fixtures
+- SSR routes and hydrated islands
 
-## Usage
+## Run It
 
-1. Install dependencies:
-    ```sh
-    npm install
-    ```
-2. Run the demo app:
-    ```sh
-    yarn dev:contentstack
-    ```
-3. Open http://localhost:3001
+From `examples/`:
 
-## Required environment
+```bash
+yarn dev:contentstack
+```
 
-Set these before running the demo:
+Open `http://localhost:3001`.
 
-```sh
+## Main Routes
+
+- `/`
+- `/products`
+- `/products/:sku`
+
+## API Routes
+
+- `/api/status`
+- `/api/search`
+- `/api/search/suggestions`
+- `/api/cart`
+- `/api/content/home`
+- `/api/content/hero`
+- `/api/products`
+- `/api/products/:sku`
+
+## Contentstack Settings
+
+Put these in `examples/.env` or `examples/.env.contentstack`:
+
+```bash
 CONTENTSTACK_API_KEY=your-api-key
 CONTENTSTACK_DELIVERY_TOKEN=your-delivery-token
 CONTENTSTACK_ENVIRONMENT=prod
 CONTENTSTACK_REGION=us
 ```
 
-## Environment overrides
+## Fallback Behavior
 
-This demo loads `.env` plus `.env.contentstack` if present.
+This demo does not hard-fail when Contentstack is missing or invalid.
 
-## Example Integration
+Current behavior:
 
-See the demo routes and components for usage patterns:
-Controllers: `controllers/` (see `routes/apiRoutes.js` for wiring)
+- missing credentials: falls back to built-in demo content
+- placeholder credentials like `your-api-key`: treated as not configured
+- invalid stack credentials: logs a direct stack-not-found warning and falls back
 
-API endpoints:
+That makes this demo useful even before you wire up a real stack.
 
-- `/api/status` — Demo status endpoint
-- `/api/search` — Product search
-- `/api/search/suggestions` — Typeahead suggestions
-- `/api/cart` — Get cart contents
-- `/api/cart/add` — Add item to cart
-- `/api/content/home` — Contentstack demo landing page
-- `/api/content/hero` — Contentstack demo hero banners
-- `/api/products` — Commercetools demo product list
-- `/api/products/:sku` — Commercetools demo product by SKU
+## Files To Read
 
----
+- `server/index.js`
+- `routes/apiRoutes.js`
+- `models/contentstack.model.js`
+- `models/search.model.js`
+- `models/cart.model.js`
+- `src/app/routes/index.route.jsx`
 
-For more details, see the main project README.
+## What To Verify Here
+
+- content fallback path
+- CMS-driven homepage rendering
+- SSR shell and theme output
+- search/cart islands working alongside CMS content

@@ -6,20 +6,23 @@ export const head = (props) => ({ title: props.siteName });
 
 export const Layout = ({ children, siteName }) => {
 	return (
-		<div style={{ fontFamily: 'system-ui' }}>
-			<header style={{ padding: 16, borderBottom: '1px solid #eee' }}>
-				<strong>{siteName}</strong>
-				<span style={{ marginLeft: 12, opacity: 0.7 }}>
-					<a href="/" style={{ marginRight: 12 }}>
+		<div className="demo-shell">
+			<header className="demo-shell__header">
+				<div className="demo-shell__brand">
+					<span className="demo-shell__eyebrow">Integrated Design System</span>
+					<strong className="demo-shell__name">{siteName}</strong>
+				</div>
+				<nav className="demo-shell__nav">
+					<a href="/">
 						Home
 					</a>
 					<a href="/products">Products</a>
-				</span>
+				</nav>
 			</header>
 
-			<div style={{ maxWidth: 900, margin: '24px auto', padding: '0 16px' }}>{children}</div>
+			<div className="demo-shell__main">{children}</div>
 
-			<footer style={{ padding: 16, borderTop: '1px solid #eee', opacity: 0.7 }}>
+			<footer className="demo-shell__footer">
 				© {new Date().getFullYear()}
 			</footer>
 		</div>

@@ -1,1 +1,1 @@
-export { escapeJsonForInlineScript } from '../shared/serialize.js';
+export { escapeJsonForInlineScript, serializePropsForAttr } from '../shared/serialize.js';

@@ -1,4 +1,3 @@
-import fetch from 'node-fetch';
 import { ClientBuilder } from '@commercetools/ts-client';
 import { createApiBuilderFromCtpClient } from '@commercetools/platform-sdk';
 

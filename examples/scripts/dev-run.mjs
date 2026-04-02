@@ -6,6 +6,7 @@ const targets = {
 	contentstack: { port: 3001, serverScript: 'dev:contentstack-demo' },
 	commercetools: { port: 3000, serverScript: 'dev:commercetools-demo' },
 	agility: { port: 3002, serverScript: 'dev:agility-demo' },
+	'test-data': { port: 3004, serverScript: 'dev:test-data-demo' },
 	'contentstack-commercetools': { port: 3003, serverScript: 'dev:contentstack-commercetools-demo' },
 };
 

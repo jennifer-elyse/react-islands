@@ -3,7 +3,7 @@ import { renderToPipeableStream } from 'react-dom/server';
 import { HtmlDocument } from './HtmlDocument.jsx';
 import { createHostManifestProvider } from './manifestProvider.js';
 
-export const renderPage = ({ req, res, appElement, head }) => {
+export const renderPage = ({ req, res, appElement, head, documentProps }) => {
 	return new Promise((resolve, reject) => {
 		const provider = createHostManifestProvider();
 		const manifest = provider.getManifest();
@@ -17,7 +17,7 @@ export const renderPage = ({ req, res, appElement, head }) => {
 
 		const element = React.createElement(
 			HtmlDocument,
-			{ head, manifestJson, manifestIntegrity, runtimeSrc, preambleSrc },
+			{ head, manifestJson, manifestIntegrity, runtimeSrc, preambleSrc, documentProps },
 			appElement,
 		);
 

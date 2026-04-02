@@ -1,7 +1,7 @@
 'use server';
 
 import React from 'react';
-import { serializePropsForAttr } from '../../shared/serialize.js';
+import { serializePropsForAttr } from '../serialize.js';
 
 /**
  * Server-side wrapper that renders an island placeholder and marks it with

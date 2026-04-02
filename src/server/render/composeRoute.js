@@ -1,9 +1,17 @@
 import React from 'react';
+import { mergeDocumentProps } from '../css/mergeDocumentProps.js';
 
 const mergeProps = (base, next) => ({ ...(base || {}), ...(next || {}) });
 
-export const loadAndCompose = async ({ req, params, layouts, route }) => {
-	const ctx = { req, params };
+export const loadAndCompose = async ({ req, params, layouts, route, features = [], getDocumentProps }) => {
+	const match = { params, layouts, page: route };
+	let ctx = { req, params };
+
+	for (const feature of features) {
+		if (typeof feature?.extendRequestContext !== 'function') continue;
+		const extension = await feature.extendRequestContext({ req, match });
+		if (extension && typeof extension === 'object') ctx = { ...ctx, ...extension };
+	}
 
 	let props = {};
 
@@ -26,5 +34,16 @@ export const loadAndCompose = async ({ req, params, layouts, route }) => {
 		element = React.createElement(L.Layout, { ...props, req }, element);
 	}
 
-	return { element, props, head };
+	let documentProps = {};
+	for (const feature of features) {
+		if (typeof feature?.getDocumentProps !== 'function') continue;
+		const patch = await feature.getDocumentProps({ req, match, props, head, context: ctx });
+		if (patch) documentProps = mergeDocumentProps(documentProps, patch);
+	}
+	if (typeof getDocumentProps === 'function') {
+		const patch = await getDocumentProps({ req, match, props, head, context: ctx });
+		if (patch) documentProps = mergeDocumentProps(documentProps, patch);
+	}
+
+	return { element, props, head, documentProps, context: ctx };
 };

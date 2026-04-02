@@ -1,15 +1,46 @@
 import React from 'react';
 
-export const HtmlDocument = ({ head, children, manifestJson, manifestIntegrity, runtimeSrc, preambleSrc }) => {
+const renderHeadTag = (tag, idx, kind) => {
+	if (!tag || typeof tag !== 'object') return null;
+	return React.createElement(kind, { key: `${kind}-${idx}`, ...tag });
+};
+
+const renderStyleTag = (style, idx) => {
+	if (!style?.cssText) return null;
+	return React.createElement('style', {
+		key: `style-${idx}`,
+		id: style.id,
+		media: style.media,
+		dangerouslySetInnerHTML: { __html: style.cssText },
+	});
+};
+
+export const HtmlDocument = ({
+	head,
+	children,
+	manifestJson,
+	manifestIntegrity,
+	runtimeSrc,
+	preambleSrc,
+	documentProps = {},
+}) => {
 	const title = head?.title || 'react-islands';
 	const refreshImport = preambleSrc ? new URL('/@react-refresh', preambleSrc).toString() : null;
+	const htmlAttrs = { lang: 'en', ...(documentProps.htmlAttrs || {}) };
+	const bodyAttrs = { ...(documentProps.bodyAttrs || {}) };
+	const metaTags = [...(head?.meta || []), ...(documentProps.meta || [])];
+	const linkTags = [...(head?.links || []), ...(documentProps.links || [])];
+	const styleTags = documentProps.styles || [];
+	const headPrefix = documentProps.headPrefix || [];
+	const headSuffix = documentProps.headSuffix || [];
 
 	return React.createElement(
 		'html',
-		{ lang: 'en' },
+		htmlAttrs,
 		React.createElement(
 			'head',
 			null,
+			...headPrefix,
 			React.createElement('meta', { charSet: 'utf-8' }),
 			React.createElement('meta', {
 				name: 'viewport',
@@ -26,6 +57,9 @@ export const HtmlDocument = ({ head, children, manifestJson, manifestIntegrity, 
 				href: '/icons/icon.png',
 				type: 'image/png',
 			}),
+			...metaTags.map((tag, idx) => renderHeadTag(tag, idx, 'meta')),
+			...linkTags.map((tag, idx) => renderHeadTag(tag, idx, 'link')),
+			...styleTags.map((style, idx) => renderStyleTag(style, idx)),
 			preambleSrc ? React.createElement('script', { type: 'module', src: preambleSrc }) : null,
 			refreshImport
 				? React.createElement('script', {
@@ -50,7 +84,8 @@ window.__vite_plugin_react_preamble_installed__ = true;`,
 				type: 'module',
 				src: '/pwa-register.js',
 			}),
+			...headSuffix,
 		),
-		React.createElement('body', null, React.createElement('div', { id: 'app' }, children)),
+		React.createElement('body', bodyAttrs, React.createElement('div', { id: 'app' }, children)),
 	);
 };

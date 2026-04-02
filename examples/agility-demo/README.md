@@ -1,45 +1,68 @@
-# React Islands Agility Demo
+# Agility Demo
 
-This demo showcases integration of SSR, React Server Components (RSC), and React Islands using Agility CMS instead of Contentstack. Product and cart data use the shared surf shop demo data.
+This example is the Agility-flavored CMS demo for `react-islands-runtime`.
 
-## Features
+It uses:
 
-- **SSR**: Server-side rendering using the SSR package
-- **RSC**: (Placeholder) React Server Components integration
-- **Islands**: Hydration and mounting of interactive islands
-- **Agility CMS**: Demo content endpoints backed by Agility (mock fallback)
+- Agility-style content models from `models/agility.model.js`
+- local surf-shop fixture data for search and cart
+- the shared demo shell and design system from `examples/_shared`
 
-## Usage
+## Run It
 
-1. Install dependencies:
-    ```sh
-    npm install
-    ```
-2. Run the demo app:
-    ```sh
-    yarn dev:agility
-    ```
-3. Open http://localhost:3002
+From `examples/`:
 
-## Environment overrides
+```bash
+yarn dev:agility
+```
 
-This demo loads `.env` plus `.env.agility` if present.
+Open `http://localhost:3002`.
 
-## Example Integration
+## What This Demo Covers
 
-See the demo routes, controllers, and components for usage patterns:
-Controllers: `controllers/` (see `routes/apiRoutes.js` for wiring)
+- SSR page rendering
+- file-based routes
+- hydrated search and cart islands
+- CMS-style content loading without requiring commercetools
+- shared shell/theme integration
 
-API endpoints:
+## Main Routes
 
-- `/api/status` — Demo status endpoint
-- `/api/search` — Product search
-- `/api/search/suggestions` — Typeahead suggestions
-- `/api/cart` — Get cart contents
-- `/api/cart/add` — Add item to cart
-- `/api/content/home` — Agility demo landing page
-- `/api/content/hero` — Agility demo hero banners
+- `/`
+- `/content`
 
----
+## API Routes
 
-For more details, see the main project README.
+- `/api/status`
+- `/api/search`
+- `/api/search/suggestions`
+- `/api/cart`
+- `/api/content/home`
+- `/api/content/hero`
+
+## Files To Read
+
+- `server/index.js`
+- `routes/apiRoutes.js`
+- `models/agility.model.js`
+- `src/app/routes/_layout.route.jsx`
+- `src/app/routes/index.route.jsx`
+
+## Environment
+
+This demo loads:
+
+1. `examples/.env`
+2. `examples/.env.agility` if present
+
+No vendor credentials are required for the local fixture path.
+
+## When To Use This Demo
+
+Use this one when you want to verify:
+
+- a CMS-shaped integration
+- shared islands behavior
+- theme/document-props rendering
+
+without depending on a live commerce backend.
