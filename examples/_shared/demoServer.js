@@ -6,7 +6,6 @@ import fs from 'node:fs';
 import dotenv from 'dotenv';
 
 import { cspMiddleware, createFileRouter, loadAndCompose, renderPage } from 'react-islands-runtime/ssr';
-import { createDemoThemeFeature, createDemoThemeModeFeature } from './designSystem.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -44,9 +43,8 @@ if (process.env.NODE_ENV !== 'production') {
 
 const hasContentstackEnv = Boolean(process.env.CONTENTSTACK_API_KEY && process.env.CONTENTSTACK_DELIVERY_TOKEN);
 
-export const startDemoServer = async ({ routesDir, apiRouter, port = 3000, name = 'demo' }) => {
+export const startDemoServer = async ({ routesDir, apiRouter, features = [], port = 3000, name = 'demo' }) => {
 	const app = express();
-	const features = [createDemoThemeFeature(name), createDemoThemeModeFeature(name)];
 
 	app.use(express.json());
 	app.use(express.urlencoded({ extended: true }));
