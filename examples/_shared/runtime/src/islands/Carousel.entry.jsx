@@ -12,13 +12,49 @@ const useSlideCount = (slides, variant, freezeFirstFrame) =>
 
 const getSlideElements = (scroller) => Array.from(scroller?.querySelectorAll('[data-carousel-slide]') || []);
 
+const getSnapPaddingStart = (scroller) => {
+	if (!scroller || typeof window === 'undefined') return 0;
+	const scrollerStyles = window.getComputedStyle(scroller);
+	return Number.parseFloat(scrollerStyles.paddingInlineStart || '0') || 0;
+};
+
+const getMaxScrollLeft = (scroller) => Math.max(0, (scroller?.scrollWidth || 0) - (scroller?.clientWidth || 0));
+
+const getTargetScrollLeft = (scroller, slide) => {
+	if (!scroller || !slide) return 0;
+	const paddingStart = getSnapPaddingStart(scroller);
+	return Math.min(getMaxScrollLeft(scroller), Math.max(0, slide.offsetLeft - paddingStart));
+};
+
+const getNearestSlideIndex = (scroller) => {
+	const slides = getSlideElements(scroller);
+	if (!slides.length) return 0;
+
+	let nearestIndex = 0;
+	let nearestDistance = Number.POSITIVE_INFINITY;
+
+	for (const slide of slides) {
+		const slideIndex = Number(slide.getAttribute('data-carousel-index'));
+		if (!Number.isFinite(slideIndex)) continue;
+
+		const targetLeft = getTargetScrollLeft(scroller, slide);
+		const distance = Math.abs(scroller.scrollLeft - targetLeft);
+		if (distance < nearestDistance) {
+			nearestDistance = distance;
+			nearestIndex = slideIndex;
+		}
+	}
+
+	return nearestIndex;
+};
+
 const scrollToSlide = (scroller, nextIndex) => {
 	const slides = getSlideElements(scroller);
 	const target = slides[nextIndex];
 	if (!target) return;
 
 	scroller.scrollTo({
-		left: target.offsetLeft - scroller.offsetLeft,
+		left: getTargetScrollLeft(scroller, target),
 		behavior: 'smooth',
 	});
 };
@@ -26,6 +62,7 @@ const scrollToSlide = (scroller, nextIndex) => {
 const useCarouselState = ({ count, autoPlayMs, pauseOnHover, enabledDots, scrollerRef }) => {
 	const [index, setIndex] = useState(0);
 	const [paused, setPaused] = useState(false);
+	const [hasOverflow, setHasOverflow] = useState(() => count > 1);
 
 	useEffect(() => {
 		const scroller = scrollerRef.current;
@@ -63,21 +100,89 @@ const useCarouselState = ({ count, autoPlayMs, pauseOnHover, enabledDots, scroll
 		return () => window.clearInterval(timer);
 	}, [autoPlayMs, count, enabledDots, index, paused, scrollerRef]);
 
+	useEffect(() => {
+		const scroller = scrollerRef.current;
+		if (!scroller || count <= 1) {
+			setHasOverflow(false);
+			return undefined;
+		}
+
+		const updateOverflow = () => {
+			setHasOverflow(scroller.scrollWidth - scroller.clientWidth > 1);
+		};
+
+		updateOverflow();
+
+		if (typeof ResizeObserver === 'undefined') {
+			window.addEventListener('resize', updateOverflow);
+			return () => window.removeEventListener('resize', updateOverflow);
+		}
+
+		const observer = new ResizeObserver(updateOverflow);
+		observer.observe(scroller);
+		Array.from(scroller.children).forEach((child) => observer.observe(child));
+
+		return () => observer.disconnect();
+	}, [count, scrollerRef]);
+
+	useEffect(() => {
+		const scroller = scrollerRef.current;
+		if (!scroller) return undefined;
+
+		let isDragging = false;
+		let startX = 0;
+		let startScrollLeft = 0;
+
+		const handlePointerDown = (event) => {
+			if (event.pointerType === 'mouse' && event.button !== 0) return;
+			isDragging = true;
+			startX = event.clientX;
+			startScrollLeft = scroller.scrollLeft;
+			scroller.setPointerCapture?.(event.pointerId);
+			scroller.classList.add('is-dragging');
+		};
+
+		const handlePointerMove = (event) => {
+			if (!isDragging) return;
+			const delta = event.clientX - startX;
+			scroller.scrollLeft = startScrollLeft - delta;
+		};
+
+		const handlePointerEnd = (event) => {
+			if (!isDragging) return;
+			isDragging = false;
+			scroller.releasePointerCapture?.(event.pointerId);
+			scroller.classList.remove('is-dragging');
+			scrollToSlide(scroller, getNearestSlideIndex(scroller));
+		};
+
+		scroller.addEventListener('pointerdown', handlePointerDown);
+		scroller.addEventListener('pointermove', handlePointerMove);
+		scroller.addEventListener('pointerup', handlePointerEnd);
+		scroller.addEventListener('pointercancel', handlePointerEnd);
+		scroller.addEventListener('lostpointercapture', handlePointerEnd);
+
+		return () => {
+			scroller.removeEventListener('pointerdown', handlePointerDown);
+			scroller.removeEventListener('pointermove', handlePointerMove);
+			scroller.removeEventListener('pointerup', handlePointerEnd);
+			scroller.removeEventListener('pointercancel', handlePointerEnd);
+			scroller.removeEventListener('lostpointercapture', handlePointerEnd);
+		};
+	}, [scrollerRef]);
+
 	return {
 		index,
 		paused,
+		hasOverflow,
 		setPaused: pauseOnHover ? setPaused : () => {},
 	};
 };
 
 const SlideCard = ({ slide, index, cardClassName }) => (
-	<article
-		className={cx('demo-carousel__slide', cardClassName)}
-		data-carousel-slide=""
-		data-carousel-index={index}
-	>
+	<article className={cx('demo-carousel__slide', cardClassName)} data-carousel-slide="" data-carousel-index={index}>
 		<div className="demo-carousel__media">
-			<img src={slide.image} alt={slide.title} />
+			<img src={slide.image} alt={slide.title} draggable="false" />
 		</div>
 		<div className="demo-carousel__copy">
 			{slide.eyebrow ? <span className="demo-carousel__eyebrow">{slide.eyebrow}</span> : null}
@@ -87,17 +192,12 @@ const SlideCard = ({ slide, index, cardClassName }) => (
 	</article>
 );
 
-const Carousel = ({
-	title,
-	slides = [],
-	variant = 'peek-strip',
-	options = {},
-	accentIconSrc,
-}) => {
+const Carousel = ({ title, slides = [], variant = 'peek-strip', options = {}, accentIconSrc }) => {
 	const {
 		autoPlayMs = 3200,
 		showDots = false,
 		showArrows = true,
+		loopNavButtons = true,
 		pauseOnHover = true,
 		freezeFirstFrame = false,
 	} = options;
@@ -108,7 +208,7 @@ const Carousel = ({
 	const scrollSlides = useSlideCount(slides, variant, freezeFirstFrame);
 	const scrollerRef = useRef(null);
 	const count = scrollSlides.length;
-	const { index, paused, setPaused } = useCarouselState({
+	const { index, paused, hasOverflow, setPaused } = useCarouselState({
 		count,
 		autoPlayMs,
 		pauseOnHover,
@@ -118,14 +218,25 @@ const Carousel = ({
 
 	if (!slides.length) return null;
 
+	const canGoPrev = loopNavButtons ? count > 1 : index > 0;
+	const canGoNext = loopNavButtons ? count > 1 : index < count - 1;
+
 	const goPrev = () => {
-		if (count <= 1) return;
-		scrollToSlide(scrollerRef.current, (index - 1 + count) % count);
+		const scroller = scrollerRef.current;
+		if (!scroller || !canGoPrev) return;
+
+		const currentIndex = getNearestSlideIndex(scroller);
+		const nextIndex = loopNavButtons ? (currentIndex - 1 + count) % count : Math.max(0, currentIndex - 1);
+		scrollToSlide(scroller, nextIndex);
 	};
 
 	const goNext = () => {
-		if (count <= 1) return;
-		scrollToSlide(scrollerRef.current, (index + 1) % count);
+		const scroller = scrollerRef.current;
+		if (!scroller || !canGoNext) return;
+
+		const currentIndex = getNearestSlideIndex(scroller);
+		const nextIndex = loopNavButtons ? (currentIndex + 1) % count : Math.min(count - 1, currentIndex + 1);
+		scrollToSlide(scroller, nextIndex);
 	};
 
 	return (
@@ -136,12 +247,24 @@ const Carousel = ({
 		>
 			<div className="demo-carousel__header">
 				<h2 className="demo-carousel__title">{title}</h2>
-				{showArrows && count > 0 ? (
+				{showArrows && count > 1 && hasOverflow ? (
 					<div className="demo-carousel__controls">
-						<button type="button" className="demo-carousel__control" onClick={goPrev} aria-label="Previous slide">
+						<button
+							type="button"
+							className="demo-carousel__control"
+							onClick={goPrev}
+							disabled={count <= 1}
+							aria-label="Previous slide"
+						>
 							<span aria-hidden="true">‹</span>
 						</button>
-						<button type="button" className="demo-carousel__control" onClick={goNext} aria-label="Next slide">
+						<button
+							type="button"
+							className="demo-carousel__control"
+							onClick={goNext}
+							disabled={count <= 1}
+							aria-label="Next slide"
+						>
 							<span aria-hidden="true">›</span>
 						</button>
 					</div>

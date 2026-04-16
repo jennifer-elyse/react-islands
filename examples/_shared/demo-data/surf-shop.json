@@ -6,6 +6,11 @@
 		"description": "Transparent resin board with liquid-glass finish.",
 		"price": 18999,
 		"image": "/demo-images/liquid-glass-board.jpg",
+		"images": [
+			"/demo-images/liquid-glass-board.jpg",
+			"/demo-images/liquid-glass-fins.jpg",
+			"/demo-images/liquid-glass-goggles.jpg"
+		],
 		"tags": ["board", "glass", "aqua"]
 	},
 	{
@@ -15,6 +20,11 @@
 		"description": "Ice-clear fins for smooth turns.",
 		"price": 4999,
 		"image": "/demo-images/liquid-glass-fins.jpg",
+		"images": [
+			"/demo-images/liquid-glass-fins.jpg",
+			"/demo-images/liquid-glass-board.jpg",
+			"/demo-images/liquid-glass-goggles.jpg"
+		],
 		"tags": ["fins", "glass"]
 	},
 	{
@@ -24,6 +34,11 @@
 		"description": "Pearlescent leash with reinforced core.",
 		"price": 2999,
 		"image": "/demo-images/liquid-glass-leash.svg",
+		"images": [
+			"/demo-images/liquid-glass-leash.svg",
+			"/demo-images/liquid-glass-board.jpg",
+			"/demo-images/liquid-glass-fins.jpg"
+		],
 		"tags": ["leash", "pearl"]
 	},
 	{
@@ -33,6 +48,11 @@
 		"description": "Liquid-glass sheen with thermal lining.",
 		"price": 14999,
 		"image": "/demo-images/liquid-glass-wetsuit.svg",
+		"images": [
+			"/demo-images/liquid-glass-wetsuit.svg",
+			"/demo-images/liquid-glass-board.jpg",
+			"/demo-images/liquid-glass-goggles.jpg"
+		],
 		"tags": ["wetsuit", "thermal"]
 	},
 	{
@@ -42,6 +62,11 @@
 		"description": "Micro-crystal wax for glassy grip.",
 		"price": 1299,
 		"image": "/demo-images/liquid-glass-wax.svg",
+		"images": [
+			"/demo-images/liquid-glass-wax.svg",
+			"/demo-images/liquid-glass-fins.jpg",
+			"/demo-images/liquid-glass-board.jpg"
+		],
 		"tags": ["wax", "grip"]
 	},
 	{
@@ -51,6 +76,11 @@
 		"description": "Anti-fog goggles with liquid-glass lenses.",
 		"price": 3599,
 		"image": "/demo-images/liquid-glass-goggles.svg",
+		"images": [
+			"/demo-images/liquid-glass-goggles.svg",
+			"/demo-images/liquid-glass-goggles.jpg",
+			"/demo-images/liquid-glass-board.jpg"
+		],
 		"tags": ["goggles", "glass"]
 	}
 ]

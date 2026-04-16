@@ -36,10 +36,10 @@ const killPorts = async () => {
 
 const main = async () => {
 	await killPorts();
-	await runShell('yarn build:client');
+	await runShell('npm run build:client');
 
-	const client = run('yarn', ['dev:client']);
-	const server = run('yarn', [target.serverScript], { PORT: String(target.port) });
+	const client = run('npm', ['run', 'dev:client']);
+	const server = run('npm', ['run', target.serverScript], { PORT: String(target.port) });
 
 	const shutdown = () => {
 		if (client) client.kill('SIGTERM');

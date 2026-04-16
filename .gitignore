@@ -15,3 +15,5 @@
 # Local editor/workspace files
 .vscode/
 *.code-workspace
+/examples/.npm-cache
+/.npm-cache

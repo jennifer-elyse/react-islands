@@ -13,7 +13,7 @@ It uses:
 From `examples/`:
 
 ```bash
-yarn dev:agility
+npm run dev:agility
 ```
 
 Open `http://localhost:3002`.

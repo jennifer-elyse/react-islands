@@ -7,23 +7,16 @@ import { CarouselBlock } from '../../../../_shared/components/CarouselBlock.jsx'
 import { FeatureSplitBlock } from '../../../../_shared/components/FeatureSplitBlock.jsx';
 import { listSurfProducts } from '../../../../_shared/demo-data/surf-shop.js';
 import { normalizeHomepageBlocks } from '../../../../_shared/homepageBlocks.js';
-import { getLandingPage } from '../../../models/agility.model.js';
+import { getLandingPage } from '../../../models/content.model.js';
 
 export const loader = async () => {
-	const page = await getLandingPage('home');
-	const blocks = normalizeHomepageBlocks(Array.isArray(page?.blocks) ? page.blocks : [], 'agility-demo');
+	const page = await getLandingPage();
+	const blocks = normalizeHomepageBlocks(Array.isArray(page?.blocks) ? page.blocks : [], 'commercetools-demo');
 	const featuredProducts = listSurfProducts({ limit: 6 }).products;
-
-	return {
-		page: {
-			title: page?.title || 'Agility Demo',
-			blocks,
-			featuredProducts,
-		},
-	};
+	return { page: { ...page, blocks, featuredProducts } };
 };
 
-export const head = (props) => ({ title: props.page?.title || 'Agility Demo' });
+export const head = (props) => ({ title: props.page?.title || 'Commercetools Demo' });
 
 export const Page = ({ page }) => {
 	let featureIndex = 0;

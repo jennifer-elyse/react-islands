@@ -4,6 +4,35 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { createRoot } from 'react-dom/client';
 import { ProductSearchShell } from './ProductSearch.shell.jsx';
 
+const normalizeRecentTerm = (value) => {
+	if (typeof value === 'string') return value;
+	if (value && typeof value === 'object') {
+		if (typeof value.text === 'string') return value.text;
+		if (typeof value.label === 'string') return value.label;
+		if (typeof value.query === 'string') return value.query;
+	}
+	return '';
+};
+
+const normalizeSuggestion = (item, idx) => {
+	if (!item || typeof item !== 'object') {
+		return {
+			id: `suggestion-${idx}`,
+			text: String(item || ''),
+			type: 'product',
+			slug: null,
+			imageUrl: null,
+			price: null,
+		};
+	}
+
+	return {
+		...item,
+		id: item.id || item.slug || item.sku || `${item.type || 'suggestion'}-${idx}`,
+		text: item.text || item.label || item.query || '',
+	};
+};
+
 const ProductSearch = ({
 	endpoint = '/api/search/suggestions',
 	searchPageUrl = '/search',
@@ -33,7 +62,12 @@ const ProductSearch = ({
 		try {
 			const stored = localStorage.getItem('recentSearches');
 			if (stored) {
-				setRecentSearches(JSON.parse(stored).slice(0, 5));
+				const parsed = JSON.parse(stored);
+				const normalized = Array.isArray(parsed)
+					? parsed.map(normalizeRecentTerm).filter(Boolean).slice(0, 5)
+					: [];
+				setRecentSearches(normalized);
+				localStorage.setItem('recentSearches', JSON.stringify(normalized));
 			}
 		} catch (e) {
 			// ignore storage errors
@@ -49,10 +83,12 @@ const ProductSearch = ({
 	const saveRecentSearch = useCallback(
 		(term) => {
 			try {
-				const updated = [term, ...recentSearches.filter((s) => s.toLowerCase() !== term.toLowerCase())].slice(
-					0,
-					5,
-				);
+				const normalizedTerm = normalizeRecentTerm(term);
+				if (!normalizedTerm) return;
+				const updated = [
+					normalizedTerm,
+					...recentSearches.filter((s) => s.toLowerCase() !== normalizedTerm.toLowerCase()),
+				].slice(0, 5);
 				setRecentSearches(updated);
 				localStorage.setItem('recentSearches', JSON.stringify(updated));
 			} catch (e) {
@@ -91,7 +127,7 @@ const ProductSearch = ({
 				if (!res.ok) throw new Error('Search failed');
 				const data = await res.json();
 
-				const next = data?.success ? data.suggestions || [] : [];
+				const next = data?.success ? (data.suggestions || []).map(normalizeSuggestion) : [];
 				setSuggestions(next);
 				setIsOpen(true);
 			} catch (err) {
@@ -176,20 +212,22 @@ const ProductSearch = ({
 	};
 
 	const handleSuggestionClick = (suggestion) => {
+		const text = normalizeRecentTerm(suggestion?.text || suggestion?.label || suggestion?.query);
 		if (suggestion.type === 'product' && suggestion.slug) {
-			saveRecentSearch(suggestion.text);
+			saveRecentSearch(text);
 			window.location.href = `/products/${suggestion.slug}`;
 		} else if (suggestion.type === 'category' && suggestion.slug) {
 			window.location.href = `/category/${suggestion.slug}`;
 		} else {
-			saveRecentSearch(suggestion.text);
-			window.location.href = `${searchPageUrl}?q=${encodeURIComponent(suggestion.text)}`;
+			saveRecentSearch(text);
+			window.location.href = `${searchPageUrl}?q=${encodeURIComponent(text)}`;
 		}
 	};
 
 	const handleRecentClick = (term) => {
-		setQuery(term);
-		window.location.href = `${searchPageUrl}?q=${encodeURIComponent(term)}`;
+		const normalizedTerm = normalizeRecentTerm(term);
+		setQuery(normalizedTerm);
+		window.location.href = `${searchPageUrl}?q=${encodeURIComponent(normalizedTerm)}`;
 	};
 
 	const clearRecentSearches = (e) => {
@@ -297,19 +335,19 @@ const ProductSearch = ({
 
 						{activeTab === 'suggestions' && suggestions.length > 0 && (
 							<ul className="search-island__list">
-								{suggestions.map((item, idx) => (
-									<li
-										key={item.id || idx}
+										{suggestions.map((item, idx) => (
+											<li
+												key={item.id || idx}
 										className={`search-island__item ${idx === selectedIndex ? 'search-island__item--selected' : ''}`}
 										onClick={() => handleSuggestionClick(item)}
 									>
 										{showImages && item.imageUrl && (
 											<img src={item.imageUrl} alt="" className="search-island__item-img" />
 										)}
-										<div className="search-island__item-content">
-											<span className="search-island__item-text">
-												{highlightMatch(item.text, query)}
-											</span>
+												<div className="search-island__item-content">
+													<span className="search-island__item-text">
+														{highlightMatch(item.text || '', query)}
+													</span>
 											{item.type === 'category' && (
 												<span className="search-island__item-badge">Category</span>
 											)}
@@ -335,11 +373,11 @@ const ProductSearch = ({
 									</button>
 								</div>
 								<ul className="search-island__list">
-									{recentSearches.map((term, idx) => (
-										<li
-											key={term}
-											className={`search-island__item ${idx === selectedIndex ? 'search-island__item--selected' : ''}`}
-											onClick={() => handleRecentClick(term)}
+										{recentSearches.map((term, idx) => (
+											<li
+												key={`${term}-${idx}`}
+												className={`search-island__item ${idx === selectedIndex ? 'search-island__item--selected' : ''}`}
+												onClick={() => handleRecentClick(term)}
 										>
 											<svg
 												className="search-island__item-icon"

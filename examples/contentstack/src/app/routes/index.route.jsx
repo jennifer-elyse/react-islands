@@ -7,23 +7,35 @@ import { CarouselBlock } from '../../../../_shared/components/CarouselBlock.jsx'
 import { FeatureSplitBlock } from '../../../../_shared/components/FeatureSplitBlock.jsx';
 import { listSurfProducts } from '../../../../_shared/demo-data/surf-shop.js';
 import { normalizeHomepageBlocks } from '../../../../_shared/homepageBlocks.js';
-import { getLandingPage } from '../../../models/agility.model.js';
+import { getLandingPage, getHeroBanners } from '../../../models/contentstack.model.js';
 
 export const loader = async () => {
 	const page = await getLandingPage('home');
-	const blocks = normalizeHomepageBlocks(Array.isArray(page?.blocks) ? page.blocks : [], 'agility-demo');
+	const rawBlocks = Array.isArray(page?.blocks) ? page.blocks : [];
+
+	let heroBlocks = [];
+	if (!rawBlocks.some((b) => b.type === 'hero')) {
+		const heroes = await getHeroBanners();
+		heroBlocks = (heroes || []).map((hero) => ({
+			type: 'hero',
+			title: hero?.title || hero?.heading || hero?.name || 'Weekly Ad',
+			subtitle: hero?.subtitle || hero?.tagline || hero?.description || '',
+		}));
+	}
+
+	const blocks = normalizeHomepageBlocks([...rawBlocks, ...heroBlocks], 'contentstack-demo');
 	const featuredProducts = listSurfProducts({ limit: 6 }).products;
 
 	return {
 		page: {
-			title: page?.title || 'Agility Demo',
+			title: page?.title || 'Contentstack Demo',
 			blocks,
 			featuredProducts,
 		},
 	};
 };
 
-export const head = (props) => ({ title: props.page?.title || 'Agility Demo' });
+export const head = (props) => ({ title: props.page?.title || 'Contentstack Demo' });
 
 export const Page = ({ page }) => {
 	let featureIndex = 0;

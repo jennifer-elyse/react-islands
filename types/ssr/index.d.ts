@@ -219,6 +219,7 @@ export interface ResolveIslandModule {
 export interface IslandProps<TProps = unknown> {
 	islandKey: string;
 	hydrate?: HydrateMode;
+	renderStrategy?: 'hydrate' | 'replace';
 	props?: TProps;
 	resolveIslandModule: ResolveIslandModule;
 	children?: React.ReactNode;

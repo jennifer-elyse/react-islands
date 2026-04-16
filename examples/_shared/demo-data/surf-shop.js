@@ -35,7 +35,7 @@ export const listSurfProducts = ({ query = '', limit = 20, offset = 0, currencyC
 			name: item.name,
 			description: item.description,
 			imageUrl: item.image,
-			images: [item.image],
+			images: Array.isArray(item.images) && item.images.length ? item.images : [item.image],
 			price: toPrice(item.price, currencyCode),
 			tags: item.tags || [],
 		})),
@@ -55,7 +55,7 @@ export const getSurfProductBySku = (sku, currencyCode = 'USD') => {
 		name: item.name,
 		description: item.description,
 		imageUrl: item.image,
-		images: [item.image],
+		images: Array.isArray(item.images) && item.images.length ? item.images : [item.image],
 		price: toPrice(item.price, currencyCode),
 		tags: item.tags || [],
 	};

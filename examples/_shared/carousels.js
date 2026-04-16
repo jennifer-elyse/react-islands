@@ -17,9 +17,34 @@ const surfSlides = [
 		body: 'Soft OKLab highlights and a glossy shell for quick carousel checks.',
 		image: '/demo-images/liquid-glass-goggles.jpg',
 	},
+	{
+		eyebrow: 'Leash',
+		title: 'Tide Leash',
+		body: 'Adds one more utility card so the pinned rail actually has room to scroll.',
+		image: '/demo-images/liquid-glass-board.jpg',
+	},
+	{
+		eyebrow: 'Wax kit',
+		title: 'Mist Wax Set',
+		body: 'A fifth frame gives the test-data carousel a real next and previous state.',
+		image: '/demo-images/liquid-glass-fins.jpg',
+	},
 ];
 
-export const getDemoCarouselBlock = (demo) => {
+export const getCarouselSlidesFromProducts = (products = [], { limit } = {}) => {
+	const sliced = (Array.isArray(products) ? products : []).filter(Boolean).slice(0, limit || products.length);
+
+	return sliced
+		.map((product) => ({
+			eyebrow: product?.tags?.[0] || product?.categories?.[0] || 'Product',
+			title: product?.name || 'Untitled product',
+			body: product?.description || '',
+			image: product?.imageUrl || product?.images?.[0] || null,
+		}))
+		.filter((slide) => slide.image);
+};
+
+export const getDemoCarouselBlock = (demo, { slides } = {}) => {
 	if (demo === 'test-data-demo') {
 		return {
 			type: 'carousel',
@@ -33,7 +58,7 @@ export const getDemoCarouselBlock = (demo) => {
 				showDots: false,
 				autoPlayMs: 0,
 			},
-			slides: surfSlides,
+			slides: slides || surfSlides,
 		};
 	}
 
@@ -48,7 +73,7 @@ export const getDemoCarouselBlock = (demo) => {
 				autoPlayMs: 3200,
 				pauseOnHover: true,
 			},
-			slides: [
+			slides: slides || [
 				{
 					eyebrow: 'Contentstack',
 					title: 'Campaign Hero',
@@ -79,10 +104,10 @@ export const getDemoCarouselBlock = (demo) => {
 			options: {
 				showDots: false,
 				showArrows: true,
-				autoPlayMs: 3600,
+				autoPlayMs: 0,
 				pauseOnHover: true,
 			},
-			slides: [
+			slides: slides || [
 				{
 					eyebrow: 'Story',
 					title: 'Editorial Campaign',
@@ -101,6 +126,12 @@ export const getDemoCarouselBlock = (demo) => {
 					body: 'A softer third frame for homepage storytelling.',
 					image: '/demo-images/liquid-glass-goggles.jpg',
 				},
+				{
+					eyebrow: 'Follow-up',
+					title: 'After Story',
+					body: 'An extra editorial card ensures the story stack can actually advance.',
+					image: '/demo-images/liquid-glass-board.jpg',
+				},
 			],
 		};
 	}
@@ -113,10 +144,10 @@ export const getDemoCarouselBlock = (demo) => {
 			options: {
 				showDots: false,
 				showArrows: true,
-				autoPlayMs: 3400,
+				autoPlayMs: 0,
 				pauseOnHover: true,
 			},
-			slides: [
+			slides: slides || [
 				{
 					eyebrow: 'Agility',
 					title: 'Composable Content',
@@ -135,6 +166,12 @@ export const getDemoCarouselBlock = (demo) => {
 					body: 'Good for verifying CMS-friendly block rendering.',
 					image: '/demo-images/liquid-glass-goggles.jpg',
 				},
+				{
+					eyebrow: 'Pattern',
+					title: 'Nested Modules',
+					body: 'A fourth card gives the floating shelf a real lateral motion path.',
+					image: '/demo-images/liquid-glass-board.jpg',
+				},
 			],
 		};
 	}
@@ -146,10 +183,10 @@ export const getDemoCarouselBlock = (demo) => {
 		options: {
 			showDots: false,
 			showArrows: true,
-			autoPlayMs: 3000,
+			autoPlayMs: 0,
 			pauseOnHover: true,
 		},
-		slides: [
+		slides: slides || [
 			{
 				eyebrow: 'Board',
 				title: 'Aqua Driftboard',
@@ -167,6 +204,12 @@ export const getDemoCarouselBlock = (demo) => {
 				title: 'Pearl Goggles',
 				body: 'A simple product-focused strip for storefront validation.',
 				image: '/demo-images/liquid-glass-goggles.jpg',
+			},
+			{
+				eyebrow: 'Leash',
+				title: 'Tide Leash',
+				body: 'A fourth product card makes the commerce strip feel like a real carousel.',
+				image: '/demo-images/liquid-glass-board.jpg',
 			},
 		],
 	};

@@ -6,7 +6,13 @@ import CarouselSSR from '../runtime/src/islands/Carousel.ssr.jsx';
 export const CarouselBlock = ({ block, className, style }) => {
 	return (
 		<section className={className} style={style}>
-			<Island islandKey="carousel" hydrate="immediate" props={block} resolveIslandModule={resolveIslandModule}>
+			<Island
+				islandKey="carousel"
+				hydrate="immediate"
+				renderStrategy="replace"
+				props={block}
+				resolveIslandModule={resolveIslandModule}
+			>
 				<CarouselSSR {...block} />
 			</Island>
 		</section>

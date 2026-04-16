@@ -194,9 +194,10 @@ const mountIsland = async ({ el, moduleSpecifier, props, manifest }) => {
 	}
 
 	const hasSSRMarkup = el.childNodes && el.childNodes.length > 0;
+	const renderStrategy = el.getAttribute('data-render-strategy') || 'hydrate';
 
 	try {
-		if (hasSSRMarkup) hydrateRoot(el, React.createElement(Component, props));
+		if (hasSSRMarkup && renderStrategy !== 'replace') hydrateRoot(el, React.createElement(Component, props));
 		else createRoot(el).render(React.createElement(Component, props));
 	} catch (err) {
 		console.error('Island mount failed', { moduleSpecifier, resolved, err });

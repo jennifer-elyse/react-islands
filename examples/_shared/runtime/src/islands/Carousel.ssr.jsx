@@ -7,7 +7,7 @@ const SlideCard = ({ slide, index, cardClassName }) => (
 		data-carousel-index={index}
 	>
 		<div className="demo-carousel__media">
-			<img src={slide.image} alt={slide.title} />
+			<img src={slide.image} alt={slide.title} draggable="false" />
 		</div>
 		<div className="demo-carousel__copy">
 			{slide.eyebrow ? <span className="demo-carousel__eyebrow">{slide.eyebrow}</span> : null}
@@ -21,7 +21,11 @@ const CarouselSSR = ({ title, slides = [], variant = 'peek-strip', accentIconSrc
 	const pinnedPane = variant === 'pin-first-marquee' && options.freezeFirstFrame;
 	const pinnedSlide = pinnedPane ? slides[0] : null;
 	const scrollSlides = pinnedPane ? slides.slice(1) : slides;
-	const ssrSlides = variant === 'spotlight-dots' ? scrollSlides.slice(0, 1) : scrollSlides.slice(0, 3);
+	const spotlight = variant === 'spotlight-dots';
+	const ssrSlides = scrollSlides;
+	const loopNavButtons = options.loopNavButtons ?? true;
+	const canGoPrev = loopNavButtons ? scrollSlides.length > 1 : false;
+	const canGoNext = scrollSlides.length > 1;
 
 	return (
 		<div className={`demo-carousel demo-carousel--${variant}`}>
@@ -29,10 +33,20 @@ const CarouselSSR = ({ title, slides = [], variant = 'peek-strip', accentIconSrc
 				<h2 className="demo-carousel__title">{title}</h2>
 				{options.showArrows ? (
 					<div className="demo-carousel__controls">
-						<button type="button" className="demo-carousel__control" aria-label="Previous slide">
+						<button
+							type="button"
+							className="demo-carousel__control"
+							disabled={!canGoPrev}
+							aria-label="Previous slide"
+						>
 							<span aria-hidden="true">‹</span>
 						</button>
-						<button type="button" className="demo-carousel__control" aria-label="Next slide">
+						<button
+							type="button"
+							className="demo-carousel__control"
+							disabled={!canGoNext}
+							aria-label="Next slide"
+						>
 							<span aria-hidden="true">›</span>
 						</button>
 					</div>
@@ -60,7 +74,12 @@ const CarouselSSR = ({ title, slides = [], variant = 'peek-strip', accentIconSrc
 								key={`${slide.title}-${index}`}
 								slide={slide}
 								index={index}
-								cardClassName={variant === 'spotlight-dots' && index === 0 ? 'is-current' : ''}
+								cardClassName={[
+									`demo-carousel__slide--${variant}`,
+									spotlight && index === 0 ? 'is-current' : '',
+								]
+									.filter(Boolean)
+									.join(' ')}
 							/>
 						))}
 					</div>
