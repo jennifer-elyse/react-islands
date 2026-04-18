@@ -5,12 +5,7 @@
 		"name": "Aqua Driftboard",
 		"description": "Transparent resin board with liquid-glass finish.",
 		"price": 18999,
-		"image": "/demo-images/liquid-glass-board.jpg",
-		"images": [
-			"/demo-images/liquid-glass-board.jpg",
-			"/demo-images/liquid-glass-fins.jpg",
-			"/demo-images/liquid-glass-goggles.jpg"
-		],
+		"images": ["/demo-images/liquid-glass-board.jpg"],
 		"tags": ["board", "glass", "aqua"]
 	},
 	{
@@ -19,12 +14,7 @@
 		"name": "Glacier Fins",
 		"description": "Ice-clear fins for smooth turns.",
 		"price": 4999,
-		"image": "/demo-images/liquid-glass-fins.jpg",
-		"images": [
-			"/demo-images/liquid-glass-fins.jpg",
-			"/demo-images/liquid-glass-board.jpg",
-			"/demo-images/liquid-glass-goggles.jpg"
-		],
+		"images": ["/demo-images/liquid-glass-fins.png"],
 		"tags": ["fins", "glass"]
 	},
 	{
@@ -33,12 +23,7 @@
 		"name": "Pearl Leash",
 		"description": "Pearlescent leash with reinforced core.",
 		"price": 2999,
-		"image": "/demo-images/liquid-glass-leash.svg",
-		"images": [
-			"/demo-images/liquid-glass-leash.svg",
-			"/demo-images/liquid-glass-board.jpg",
-			"/demo-images/liquid-glass-fins.jpg"
-		],
+		"images": ["/demo-images/liquid-glass-leash.png"],
 		"tags": ["leash", "pearl"]
 	},
 	{
@@ -47,12 +32,7 @@
 		"name": "Ocean Prism Wetsuit",
 		"description": "Liquid-glass sheen with thermal lining.",
 		"price": 14999,
-		"image": "/demo-images/liquid-glass-wetsuit.svg",
-		"images": [
-			"/demo-images/liquid-glass-wetsuit.svg",
-			"/demo-images/liquid-glass-board.jpg",
-			"/demo-images/liquid-glass-goggles.jpg"
-		],
+		"images": ["/demo-images/liquid-glass-wetsuit.png"],
 		"tags": ["wetsuit", "thermal"]
 	},
 	{
@@ -61,12 +41,7 @@
 		"name": "Mist Spray Wax",
 		"description": "Micro-crystal wax for glassy grip.",
 		"price": 1299,
-		"image": "/demo-images/liquid-glass-wax.svg",
-		"images": [
-			"/demo-images/liquid-glass-wax.svg",
-			"/demo-images/liquid-glass-fins.jpg",
-			"/demo-images/liquid-glass-board.jpg"
-		],
+		"images": ["/demo-images/liquid-glass-wax.png", "/demo-images/liquid-glass-wax-2.png"],
 		"tags": ["wax", "grip"]
 	},
 	{
@@ -75,12 +50,16 @@
 		"name": "Clearview Goggles",
 		"description": "Anti-fog goggles with liquid-glass lenses.",
 		"price": 3599,
-		"image": "/demo-images/liquid-glass-goggles.svg",
-		"images": [
-			"/demo-images/liquid-glass-goggles.svg",
-			"/demo-images/liquid-glass-goggles.jpg",
-			"/demo-images/liquid-glass-board.jpg"
-		],
+		"images": ["/demo-images/liquid-glass-goggles.jpg"],
 		"tags": ["goggles", "glass"]
+	},
+	{
+		"id": "surf-007",
+		"sku": "surf-007",
+		"name": "Board Bag",
+		"description": "Liquid glass board bag",
+		"price": 3599,
+		"images": ["/demo-images/liquid-glass-board-bag.png"],
+		"tags": ["board", "bag", "glass"]
 	}
 ]

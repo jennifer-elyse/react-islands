@@ -1,6 +1,7 @@
 import { createDesignSystem, defineTheme } from 'react-islands-runtime/ssr';
 
 import { createSharedStyles } from '../../_shared/design-system/base.js';
+import { createExampleComponentDesignSystem } from '../../_shared/design-system/componentDesignSystem.js';
 
 const contentstackCommercetoolsStyles = `
 	[data-demo-theme="contentstack-commercetools"] {
@@ -559,4 +560,5 @@ const theme = defineTheme({
 	},
 });
 
+export const demoComponentDesignSystem = createExampleComponentDesignSystem('contentstack-commercetools');
 export const { features: demoFeatures } = createDesignSystem(theme);

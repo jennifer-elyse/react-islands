@@ -1,6 +1,7 @@
 import { createDesignSystem, defineTheme } from 'react-islands-runtime/ssr';
 
 import { createSharedStyles } from '../../_shared/design-system/base.js';
+import { createExampleComponentDesignSystem } from '../../_shared/design-system/componentDesignSystem.js';
 
 const theme = defineTheme({
 	name: 'agility',
@@ -58,4 +59,5 @@ const theme = defineTheme({
 	},
 });
 
+export const demoComponentDesignSystem = createExampleComponentDesignSystem('agility');
 export const { features: demoFeatures } = createDesignSystem(theme);

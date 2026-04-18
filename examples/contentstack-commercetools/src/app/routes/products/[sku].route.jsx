@@ -1,6 +1,7 @@
 import React from 'react';
 import { ProductDetailBlock } from 'react-islands';
 import { createProductDetailBlock } from '../../../../../_shared/productDetailBlock.js';
+import { demoComponentDesignSystem } from '../../../../server/designSystem.js';
 import { getLocalProductFallbackImage, getPreferredProductImage } from '../../../../models/localImages.js';
 import { getProductBySlug } from '../../../../models/product.model.js';
 
@@ -20,7 +21,7 @@ export const Page = ({ product }) => {
 
 	return (
 		<main>
-			<ProductDetailBlock block={block} />
+			<ProductDetailBlock block={block} designSystem={demoComponentDesignSystem} />
 		</main>
 	);
 };

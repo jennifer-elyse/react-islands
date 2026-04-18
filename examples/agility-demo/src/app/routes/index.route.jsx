@@ -5,6 +5,7 @@ import CartSSR from '../../../../_shared/runtime/src/islands/Cart.ssr.jsx';
 import { CarouselBlock, FeatureSplitBlock, ProductSearchSSR } from 'react-islands';
 import { listSurfProducts } from '../../../../_shared/demo-data/surf-shop.js';
 import { normalizeHomepageBlocks } from '../../../../_shared/homepageBlocks.js';
+import { demoComponentDesignSystem } from '../../../server/designSystem.js';
 import { getLandingPage } from '../../../models/agility.model.js';
 
 export const loader = async () => {
@@ -44,6 +45,7 @@ export const Page = ({ page }) => {
 							block={b}
 							layoutIndex={featureIndex}
 							products={page?.featuredProducts || []}
+							designSystem={demoComponentDesignSystem}
 						/>
 					);
 					featureIndex += 1;
@@ -51,14 +53,14 @@ export const Page = ({ page }) => {
 				}
 
 				if (b.type === 'carousel') {
-					return <CarouselBlock key={i} block={b} style={{ marginBottom: 24 }} />;
+					return <CarouselBlock key={i} block={b} style={{ marginBottom: 24 }} designSystem={demoComponentDesignSystem} />;
 				}
 
 				if (b.type === 'product_search') {
 					return (
 						<section key={i} style={{ marginBottom: 24 }}>
 							<h2>Search</h2>
-							<ProductSearchSSR placeholder="Search products..." searchPageUrl="/products" />
+							<ProductSearchSSR placeholder="Search products..." searchPageUrl="/products" designSystem={demoComponentDesignSystem} />
 						</section>
 					);
 				}

@@ -2,6 +2,7 @@ import React from 'react';
 import { PlpProductsBlock } from 'react-islands';
 import { createPlpProductsBlock } from '../../../../_shared/productGridBlock.js';
 import { filterProductsByQuery, getSearchQuery } from '../../../../_shared/productSearch.js';
+import { demoComponentDesignSystem } from '../../../server/designSystem.js';
 import { getProducts } from '../../../models/commercetools.client.js';
 
 const normalizeProducts = (products = []) =>
@@ -33,7 +34,7 @@ export const Page = ({ products, query }) => {
 	return (
 		<main>
 			<h1 style={{ marginTop: 0 }}>Products</h1>
-			<PlpProductsBlock block={block} />
+			<PlpProductsBlock block={block} designSystem={demoComponentDesignSystem} />
 		</main>
 	);
 };

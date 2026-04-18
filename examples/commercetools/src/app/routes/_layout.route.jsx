@@ -1,5 +1,6 @@
 import React from 'react';
 import { ThemeModeSwitch } from 'react-islands';
+import { demoComponentDesignSystem } from '../../../server/designSystem.js';
 
 export const loader = async () => ({ siteName: 'commercetools-demo' });
 
@@ -20,7 +21,7 @@ export const Layout = ({ children, siteName }) => {
 					<a href="/products">Products</a>
 				</nav>
 				<div className="demo-shell__actions">
-					<ThemeModeSwitch />
+					<ThemeModeSwitch designSystem={demoComponentDesignSystem} />
 				</div>
 			</header>
 
