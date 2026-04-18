@@ -1,4 +1,6 @@
 import React from 'react';
+import { ProductDetailBlock } from 'react-islands';
+import { createProductDetailBlock } from '../../../../../_shared/productDetailBlock.js';
 import { getProductBySku } from '../../../../models/commercetools.client.js';
 
 export const loader = async ({ params }) => {
@@ -17,26 +19,23 @@ export const loader = async ({ params }) => {
 export const head = (props) => ({ title: props.product?.name || 'Product' });
 
 export const Page = ({ product }) => {
-	const priceValue = product?.price;
-	let priceText = '$—';
-	if (typeof priceValue === 'number') {
-		priceText = `$${priceValue.toFixed(2)}`;
-	} else if (typeof priceValue === 'string') {
-		priceText = priceValue;
-	} else if (priceValue && typeof priceValue === 'object') {
-		if (typeof priceValue.display === 'string') {
-			priceText = priceValue.display;
-		} else if (typeof priceValue.centAmount === 'number') {
-			priceText = `$${(priceValue.centAmount / 100).toFixed(2)}`;
-		}
-	}
+	const block = createProductDetailBlock({
+		product,
+		resolvePrice: (item) => {
+			const priceValue = item?.price;
+			if (typeof priceValue === 'number') return `$${priceValue.toFixed(2)}`;
+			if (typeof priceValue === 'string') return priceValue;
+			if (priceValue && typeof priceValue === 'object') {
+				if (typeof priceValue.display === 'string') return priceValue.display;
+				if (typeof priceValue.centAmount === 'number') return `$${(priceValue.centAmount / 100).toFixed(2)}`;
+			}
+			return '$—';
+		},
+	});
 
 	return (
 		<main>
-			<h1 style={{ marginTop: 0 }}>{product.name}</h1>
-			<div style={{ opacity: 0.7, marginBottom: 8 }}>SKU: {product.sku}</div>
-			<p>{product.description || 'No description.'}</p>
-			<div style={{ fontSize: 20, fontWeight: 700 }}>{priceText}</div>
+			<ProductDetailBlock block={block} />
 		</main>
 	);
 };

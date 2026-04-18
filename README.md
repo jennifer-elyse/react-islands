@@ -95,6 +95,25 @@ export const { features } = createDesignSystem(theme, {
 
 That `features` array can be passed straight into `loadAndCompose(...)` or `createRenderRequest(...)`.
 
+## Shared Carousel Scrollbar
+
+The shared carousel rail now uses a visible styled horizontal scrollbar with a glassy thumb treatment in:
+
+- [examples/_shared/design-system/base.js](/Users/jkirchne/node_projects/react-islands-runtime/examples/_shared/design-system/base.js:750)
+
+That styling is applied to `.demo-carousel__scroller`, which means it is inherited by every demo homepage carousel rendered through:
+
+- [packages/react-islands/src/components/CarouselBlock.jsx](/Users/jkirchne/node_projects/react-islands-runtime/packages/react-islands/src/components/CarouselBlock.jsx:1)
+- [examples/_shared/homepageBlocks.js](/Users/jkirchne/node_projects/react-islands-runtime/examples/_shared/homepageBlocks.js:45)
+
+Current demo routes using that shared carousel path:
+
+- [examples/commercetools/src/app/routes/index.route.jsx](/Users/jkirchne/node_projects/react-islands-runtime/examples/commercetools/src/app/routes/index.route.jsx:48)
+- [examples/contentstack/src/app/routes/index.route.jsx](/Users/jkirchne/node_projects/react-islands-runtime/examples/contentstack/src/app/routes/index.route.jsx:67)
+- [examples/agility-demo/src/app/routes/index.route.jsx](/Users/jkirchne/node_projects/react-islands-runtime/examples/agility-demo/src/app/routes/index.route.jsx:55)
+- [examples/contentstack-commercetools/src/app/routes/index.route.jsx](/Users/jkirchne/node_projects/react-islands-runtime/examples/contentstack-commercetools/src/app/routes/index.route.jsx:163)
+- [examples/test-data/src/app/routes/index.route.jsx](/Users/jkirchne/node_projects/react-islands-runtime/examples/test-data/src/app/routes/index.route.jsx:79)
+
 TypeScript usage guide:
 
 - [docs/typescript.md](/Users/jkirchne/node_projects/react-islands-runtime/docs/typescript.md)

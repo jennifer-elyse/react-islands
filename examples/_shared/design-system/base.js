@@ -422,6 +422,7 @@ export const sharedShellStyles = `
 		display: flex;
 		align-items: stretch;
 		gap: 10px;
+		min-height: 168px;
 		min-width: 0;
 		padding: 12px;
 		border-radius: calc(var(--radius-card, 22px) - 4px);
@@ -439,7 +440,7 @@ export const sharedShellStyles = `
 	.plp-products__media {
 		flex: 0 0 68px;
 		inline-size: 68px;
-		block-size: 84px;
+		block-size: 156px;
 		overflow: clip;
 		border-radius: 14px;
 		background: color-mix(in srgb, var(--surface-muted) 72%, white);
@@ -495,6 +496,90 @@ export const sharedShellStyles = `
 		-webkit-line-clamp: 2;
 		-webkit-box-orient: vertical;
 		overflow: hidden;
+	}
+
+	.product-detail {
+		display: grid;
+	}
+
+	.product-detail__layout {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(22rem, 1fr));
+		gap: 24px;
+		align-items: start;
+	}
+
+	.product-detail__media-column {
+		display: grid;
+	}
+
+	.product-detail__media-frame {
+		display: grid;
+		place-items: center;
+		min-height: 28rem;
+		border-radius: calc(var(--radius-card, 22px) + 2px);
+		border: 1px solid color-mix(in srgb, var(--border-subtle) 84%, white);
+		background:
+			linear-gradient(180deg, color-mix(in srgb, white 18%, transparent), transparent 50%),
+			color-mix(in srgb, var(--surface-panel) 86%, white);
+		box-shadow:
+			0 18px 36px color-mix(in srgb, var(--surface-shadow) 10%, transparent),
+			inset 0 1px 0 color-mix(in srgb, white 58%, transparent);
+		overflow: clip;
+	}
+
+	.product-detail__image {
+		width: 100%;
+		height: 100%;
+		display: block;
+		object-fit: cover;
+	}
+
+	.product-detail__empty {
+		display: grid;
+		place-items: center;
+		width: 100%;
+		height: 100%;
+		padding: 24px;
+		color: color-mix(in srgb, var(--text-muted) 76%, white);
+		font-size: clamp(1.4rem, 2.2vw, 2.2rem);
+	}
+
+	.product-detail__content {
+		display: grid;
+		align-content: start;
+		gap: 16px;
+		padding-top: 8px;
+	}
+
+	.product-detail__title {
+		margin: 0;
+		font-size: clamp(2.25rem, 4.4vw, 4.1rem);
+		line-height: 0.96;
+		letter-spacing: -0.05em;
+		font-family: "Avenir Next", "Segoe UI", sans-serif;
+	}
+
+	.product-detail__sku {
+		font-size: 1rem;
+		line-height: 1.4;
+		color: var(--text-muted);
+	}
+
+	.product-detail__subtitle,
+	.product-detail__description {
+		margin: 0;
+		font-size: 1rem;
+		line-height: 1.65;
+		color: color-mix(in srgb, var(--text-primary) 82%, white);
+	}
+
+	.product-detail__price {
+		font-size: clamp(1.85rem, 3vw, 2.7rem);
+		font-weight: 800;
+		line-height: 1;
+		letter-spacing: -0.04em;
+		font-family: "Avenir Next", "Segoe UI", sans-serif;
 	}
 
 	.demo-shell__footer {
@@ -643,8 +728,8 @@ export const sharedShellStyles = `
 
 	.demo-carousel__viewport {
 		position: relative;
-		overflow: clip;
-		padding: 0;
+		overflow: hidden;
+		padding: 6px 18px 24px;
 	}
 
 	.demo-carousel__layout {
@@ -666,15 +751,21 @@ export const sharedShellStyles = `
 		display: grid;
 		grid-auto-flow: column;
 		grid-auto-columns: clamp(18rem, 84cqi, 22rem);
+		grid-auto-rows: max-content;
 		gap: 18px;
-		padding: 0 24px 12px 24px;
+		padding: 0;
 		overflow-x: auto;
-		overflow-y: clip;
+		overflow-y: hidden;
 		overscroll-behavior-inline: contain;
 		scroll-snap-type: inline mandatory;
-		scroll-padding-inline: 24px;
+		scroll-padding-inline: 0;
 		scroll-behavior: smooth;
-		scrollbar-width: none;
+		scrollbar-width: thin;
+		scrollbar-color: color-mix(in oklab, var(--surface-accent) 74%, white) color-mix(
+			in oklab,
+			var(--surface-muted) 84%,
+			transparent
+		);
 		scrollbar-gutter: stable;
 		align-items: start;
 		cursor: grab;
@@ -687,7 +778,44 @@ export const sharedShellStyles = `
 	}
 
 	.demo-carousel__scroller::-webkit-scrollbar {
-		display: none;
+		height: 14px;
+	}
+
+	.demo-carousel__scroller::-webkit-scrollbar-track {
+		border-radius: 999px;
+		background:
+			linear-gradient(180deg, color-mix(in oklab, white 42%, transparent), transparent),
+			color-mix(in oklab, var(--surface-muted) 78%, transparent);
+		box-shadow:
+			inset 0 1px 0 color-mix(in oklab, white 58%, transparent),
+			inset 0 0 0 1px color-mix(in oklab, var(--border-subtle) 72%, transparent);
+	}
+
+	.demo-carousel__scroller::-webkit-scrollbar-thumb {
+		border: 3px solid transparent;
+		border-radius: 999px;
+		background:
+			linear-gradient(135deg, color-mix(in oklab, white 28%, transparent), transparent 52%) padding-box,
+			linear-gradient(
+					90deg,
+					color-mix(in oklab, var(--surface-accent) 82%, white),
+					color-mix(in oklab, var(--surface-accent) 48%, var(--text-primary))
+				)
+				border-box;
+		box-shadow:
+			0 8px 16px color-mix(in oklab, var(--surface-shadow) 18%, transparent),
+			inset 0 1px 0 color-mix(in oklab, white 48%, transparent);
+	}
+
+	.demo-carousel__scroller::-webkit-scrollbar-thumb:hover {
+		background:
+			linear-gradient(135deg, color-mix(in oklab, white 34%, transparent), transparent 52%) padding-box,
+			linear-gradient(
+					90deg,
+					color-mix(in oklab, var(--surface-accent) 88%, white),
+					color-mix(in oklab, var(--surface-accent) 56%, var(--text-primary))
+				)
+				border-box;
 	}
 
 	.demo-carousel__scroller--spotlight {
@@ -717,7 +845,8 @@ export const sharedShellStyles = `
 		box-shadow:
 			0 18px 36px color-mix(in srgb, var(--surface-shadow) 12%, transparent),
 			inset 0 1px 0 color-mix(in srgb, white 54%, transparent);
-		min-height: 100%;
+		min-height: 0;
+		align-self: start;
 		scroll-snap-align: start;
 		scroll-snap-stop: always;
 	}
@@ -786,6 +915,26 @@ export const sharedShellStyles = `
 		grid-auto-columns: clamp(17rem, 29vw, 20rem);
 	}
 
+	.demo-carousel--peek-strip .demo-carousel__slide {
+		gap: 12px;
+		padding: 12px;
+	}
+
+	.demo-carousel--peek-strip .demo-carousel__media {
+		aspect-ratio: 16 / 8.5;
+	}
+
+	.demo-carousel--peek-strip .demo-carousel__copy {
+		gap: 6px;
+	}
+
+	.demo-carousel--peek-strip .demo-carousel__slide-body {
+		display: -webkit-box;
+		-webkit-line-clamp: 2;
+		-webkit-box-orient: vertical;
+		overflow: hidden;
+	}
+
 	.demo-carousel--editorial-stack .demo-carousel__slide {
 		grid-template-columns: minmax(220px, 0.95fr) minmax(0, 1.05fr);
 		align-items: center;
@@ -834,15 +983,15 @@ export const sharedShellStyles = `
 
 	@media (min-width: 960px) {
 		.demo-carousel--peek-strip .demo-carousel__scroller {
-			grid-auto-columns: minmax(18rem, calc((100% - 52px) / 3.2));
+			grid-auto-columns: calc((100% - 36px) / 3);
 		}
 
 		.demo-carousel--floating-cards .demo-carousel__scroller {
-			grid-auto-columns: minmax(16.5rem, calc((100% - 52px) / 3.15));
+			grid-auto-columns: calc((100% - 36px) / 3);
 		}
 
 		.demo-carousel--editorial-stack .demo-carousel__scroller {
-			grid-auto-columns: minmax(20rem, calc((100% - 32px) / 1.9));
+			grid-auto-columns: 100%;
 		}
 	}
 

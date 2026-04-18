@@ -91,7 +91,7 @@ const contentstackCommercetoolsStyles = `
 	}
 
 	[data-demo-theme="contentstack-commercetools"] .demo-carousel__viewport {
-		padding: 6px;
+		padding: 6px 18px 24px;
 		border-radius: calc(var(--radius-card, 22px) - 2px);
 		background:
 			linear-gradient(180deg, color-mix(in srgb, white 16%, transparent), transparent 40%),
@@ -290,6 +290,7 @@ const contentstackCommercetoolsStyles = `
 	[data-demo-theme="contentstack-commercetools"] .plp-products__card {
 		display: flex;
 		align-items: stretch;
+		min-height: 168px;
 		padding: 12px;
 		background:
 			linear-gradient(180deg, color-mix(in srgb, white 20%, transparent), transparent 86%),
@@ -301,7 +302,7 @@ const contentstackCommercetoolsStyles = `
 	[data-demo-theme="contentstack-commercetools"] .plp-products__media {
 		flex: 0 0 64px;
 		inline-size: 64px;
-		block-size: 80px;
+		block-size: 152px;
 		border-radius: 14px;
 		box-shadow: inset 0 1px 0 color-mix(in srgb, white 42%, transparent);
 	}
@@ -328,6 +329,61 @@ const contentstackCommercetoolsStyles = `
 		font-size: 0.8rem;
 		line-height: 1.35;
 		color: var(--grid-items-card-muted);
+	}
+
+	[data-demo-theme="contentstack-commercetools"] .product-detail__layout {
+		grid-template-columns: minmax(18rem, 0.9fr) minmax(0, 1.55fr);
+		gap: 28px;
+	}
+
+	[data-demo-theme="contentstack-commercetools"] .product-detail__media-frame {
+		min-height: 29rem;
+		border-radius: 22px;
+		border: 1px dashed color-mix(in srgb, var(--border-subtle) 86%, #cfc7cd);
+		background:
+			linear-gradient(180deg, color-mix(in srgb, white 30%, transparent), transparent 66%),
+			color-mix(in srgb, var(--surface-panel) 96%, white);
+		box-shadow:
+			0 18px 42px color-mix(in srgb, var(--surface-shadow) 8%, transparent),
+			inset 0 1px 0 color-mix(in srgb, white 66%, transparent);
+	}
+
+	[data-demo-theme="contentstack-commercetools"] .product-detail__empty {
+		font-family: var(--font-body);
+		font-size: clamp(1.25rem, 2.4vw, 1.95rem);
+		color: color-mix(in srgb, var(--text-muted) 76%, white);
+	}
+
+	[data-demo-theme="contentstack-commercetools"] .product-detail__content {
+		padding-top: 14px;
+		gap: 18px;
+	}
+
+	[data-demo-theme="contentstack-commercetools"] .product-detail__title {
+		font-family: var(--font-heading);
+		font-size: clamp(2.4rem, 4.6vw, 4.15rem);
+		line-height: 0.94;
+		letter-spacing: -0.055em;
+	}
+
+	[data-demo-theme="contentstack-commercetools"] .product-detail__sku {
+		font-family: var(--font-body);
+		font-size: 1rem;
+	}
+
+	[data-demo-theme="contentstack-commercetools"] .product-detail__subtitle,
+	[data-demo-theme="contentstack-commercetools"] .product-detail__description {
+		font-family: var(--font-body);
+		font-size: 1rem;
+		line-height: 1.6;
+		color: color-mix(in srgb, var(--text-primary) 88%, white);
+	}
+
+	[data-demo-theme="contentstack-commercetools"] .product-detail__price {
+		font-family: var(--font-heading);
+		font-size: clamp(2rem, 3vw, 2.8rem);
+		letter-spacing: -0.045em;
+		color: var(--text-primary);
 	}
 
 	@media (max-width: 900px) {

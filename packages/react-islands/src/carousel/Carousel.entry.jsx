@@ -22,8 +22,13 @@ const getMaxScrollLeft = (scroller) => Math.max(0, (scroller?.scrollWidth || 0) 
 
 const getTargetScrollLeft = (scroller, slide) => {
 	if (!scroller || !slide) return 0;
+
 	const paddingStart = getSnapPaddingStart(scroller);
-	return Math.min(getMaxScrollLeft(scroller), Math.max(0, slide.offsetLeft - paddingStart));
+	const scrollerRect = scroller.getBoundingClientRect();
+	const slideRect = slide.getBoundingClientRect();
+	const alignedLeft = scroller.scrollLeft + (slideRect.left - scrollerRect.left) - paddingStart;
+
+	return Math.min(getMaxScrollLeft(scroller), Math.max(0, alignedLeft));
 };
 
 const getNearestSlideIndex = (scroller) => {
