@@ -2,8 +2,7 @@ import React from 'react';
 import { Island, resolveIslandModule } from 'react-islands-runtime/ssr';
 
 import CartSSR from '../../../../_shared/runtime/src/islands/Cart.ssr.jsx';
-import ProductSearchSSR from '../../../../_shared/runtime/src/islands/ProductSearch.ssr.jsx';
-import { CarouselBlock, FeatureSplitBlock } from 'react-islands';
+import { CarouselBlock, FeatureSplitBlock, ProductSearchSSR } from 'react-islands';
 import { listSurfProducts } from '../../../../_shared/demo-data/surf-shop.js';
 import { normalizeHomepageBlocks } from '../../../../_shared/homepageBlocks.js';
 import { getLandingPage, getHeroBanners } from '../../../models/content.model.js';
@@ -84,17 +83,10 @@ export const Page = ({ page }) => {
 						<section key={i} className="test-data-search-card">
 							<h2 className="test-data-card-title">Search Local Surf Gear</h2>
 							<p className="test-data-card-copy">
-								Type anything from “glass” to “fins” and the island will query the checked-in product
-								fixtures.
+								Type anything from “glass” to “fins” for live suggestions, then submit into the
+								server-rendered PLP.
 							</p>
-							<Island
-								islandKey={b.islandKey}
-								hydrate={b.hydrate || 'immediate'}
-								props={{ placeholder: 'Search local test products...' }}
-								resolveIslandModule={resolveIslandModule}
-							>
-								<ProductSearchSSR placeholder="Search local test products..." />
-							</Island>
+							<ProductSearchSSR placeholder="Search local test products..." searchPageUrl="/products" />
 						</section>
 					);
 				}

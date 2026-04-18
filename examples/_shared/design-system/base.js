@@ -413,7 +413,7 @@ export const sharedShellStyles = `
 
 	.plp-products__layout {
 		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+		grid-template-columns: repeat(auto-fit, minmax(13.75rem, 1fr));
 		gap: 14px;
 		align-items: stretch;
 	}
@@ -421,7 +421,7 @@ export const sharedShellStyles = `
 	.plp-products__card {
 		display: flex;
 		align-items: stretch;
-		gap: 10px;
+		gap: 12px;
 		min-height: 168px;
 		min-width: 0;
 		padding: 12px;
@@ -438,8 +438,8 @@ export const sharedShellStyles = `
 	}
 
 	.plp-products__media {
-		flex: 0 0 123px;
-		inline-size: 123px;
+		flex: 0 0 112px;
+		inline-size: 112px;
 		block-size: 156px;
 		overflow: clip;
 		border-radius: 14px;
@@ -492,8 +492,8 @@ export const sharedShellStyles = `
 
 	.plp-products__item-title {
 		margin: 0;
-		font-size: 0.95rem;
-		line-height: 1.06;
+		font-size: 0.92rem;
+		line-height: 1.08;
 		letter-spacing: -0.02em;
 		overflow: hidden;
 		display: -webkit-box;

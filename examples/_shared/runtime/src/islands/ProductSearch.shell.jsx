@@ -38,6 +38,10 @@ const styles = {
 export const ProductSearchShell = ({
 	placeholder,
 	value = '',
+	action = '/products',
+	method = 'get',
+	inputName = 'q',
+	rootProps = {},
 	onChange,
 	onKeyDown,
 	onFocus,
@@ -51,12 +55,13 @@ export const ProductSearchShell = ({
 
 	return (
 		<>
-			<div className="search-island__root" style={styles.form}>
-				<form onSubmit={onSubmit} className="search-island" role="search">
+			<div className="search-island__root" style={styles.form} {...rootProps}>
+				<form action={action} method={method} onSubmit={onSubmit} className="search-island" role="search">
 					<div className="search-island__input-wrapper" style={styles.wrapper}>
 						<input
 							ref={inputRef}
 							type="search"
+							name={inputName}
 							value={isControlled ? value : undefined}
 							defaultValue={!isControlled ? value : undefined}
 							onChange={onChange}

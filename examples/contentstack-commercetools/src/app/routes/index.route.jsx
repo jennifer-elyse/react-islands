@@ -2,9 +2,8 @@ import React from 'react';
 import { Island, resolveIslandModule } from 'react-islands-runtime/ssr';
 
 import CartSSR from '../../../../_shared/runtime/src/islands/Cart.ssr.jsx';
-import ProductSearchSSR from '../../../../_shared/runtime/src/islands/ProductSearch.ssr.jsx';
 import { getCarouselSlidesFromProducts, getDemoCarouselBlock } from '../../../../_shared/carousels.js';
-import { CarouselBlock, FeatureSplitBlock, GridItemsBlock } from 'react-islands';
+import { CarouselBlock, FeatureSplitBlock, GridItemsBlock, ProductSearchSSR } from 'react-islands';
 import { normalizeHomepageBlocks } from '../../../../_shared/homepageBlocks.js';
 import { getLandingPage, getHeroBanners } from '../../../models/contentstack.model.js';
 import { getLocalProductFallbackImage, getPreferredProductImage } from '../../../models/localImages.js';
@@ -167,14 +166,7 @@ export const Page = ({ page }) => {
 					return (
 						<section key={i} style={{ marginBottom: 24 }}>
 							<h2>Search</h2>
-							<Island
-								islandKey={b.islandKey}
-								hydrate={b.hydrate || 'immediate'}
-								props={{ placeholder: 'Search products...' }}
-								resolveIslandModule={resolveIslandModule}
-							>
-								<ProductSearchSSR placeholder="Search products..." />
-							</Island>
+							<ProductSearchSSR placeholder="Search products..." searchPageUrl="/products" />
 						</section>
 					);
 				}

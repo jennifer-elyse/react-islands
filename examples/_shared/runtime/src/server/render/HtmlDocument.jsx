@@ -1,8 +1,43 @@
 import React from 'react';
 
-export const HtmlDocument = ({ head, children, manifestJson, manifestIntegrity, runtimeSrc, preambleSrc }) => {
+export const HtmlDocument = ({
+	head,
+	children,
+	manifestJson,
+	manifestIntegrity,
+	runtimeSrc,
+	preambleSrc,
+	serverBootId,
+}) => {
 	const title = head?.title || 'react-islands';
 	const refreshImport = preambleSrc ? new URL('/@react-refresh', preambleSrc).toString() : null;
+	const devServerReloadScript =
+		preambleSrc && serverBootId
+			? `{
+	const bootId = ${JSON.stringify(serverBootId)};
+	let lastSeenBootId = bootId;
+
+	const poll = async () => {
+		try {
+			const response = await fetch('/__server_reload__', {
+				cache: 'no-store',
+				headers: { 'cache-control': 'no-cache' },
+			});
+			if (!response.ok) return;
+			const payload = await response.json();
+			if (payload?.bootId && payload.bootId !== lastSeenBootId) {
+				window.location.reload();
+				return;
+			}
+			lastSeenBootId = payload?.bootId || lastSeenBootId;
+		} catch (_error) {
+			// Ignore transient disconnects while the server is restarting.
+		}
+	};
+
+	window.setInterval(poll, 1000);
+}`
+			: null;
 
 	return React.createElement(
 		'html',
@@ -50,6 +85,12 @@ window.__vite_plugin_react_preamble_installed__ = true;`,
 				type: 'module',
 				src: '/pwa-register.js',
 			}),
+			devServerReloadScript
+				? React.createElement('script', {
+						type: 'module',
+						dangerouslySetInnerHTML: { __html: devServerReloadScript },
+					})
+				: null,
 		),
 		React.createElement('body', null, React.createElement('div', { id: 'app' }, children)),
 	);
