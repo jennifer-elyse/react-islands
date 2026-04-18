@@ -25,6 +25,12 @@ Each `dev:*` command does three things:
 2. Builds the client bundle and islands manifest
 3. Starts Vite plus the matching Express demo server
 
+In development, server-side changes now live reload too:
+
+- `nodemon` watches both the active demo folder and `examples/_shared`
+- the Express demo server exposes a dev-only boot id endpoint at `/__server_reload__`
+- the HTML document polls that endpoint and refreshes the browser when the server process restarts
+
 ## Quick Start
 
 ```bash

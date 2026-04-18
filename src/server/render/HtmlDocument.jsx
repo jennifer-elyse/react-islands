@@ -23,9 +23,10 @@ export const HtmlDocument = ({
 	runtimeSrc,
 	preambleSrc,
 	documentProps = {},
+	hasIslands = false,
 }) => {
 	const title = head?.title || 'react-islands';
-	const refreshImport = preambleSrc ? new URL('/@react-refresh', preambleSrc).toString() : null;
+	const refreshImport = hasIslands && preambleSrc ? new URL('/@react-refresh', preambleSrc).toString() : null;
 	const htmlAttrs = { lang: 'en', ...(documentProps.htmlAttrs || {}) };
 	const bodyAttrs = { ...(documentProps.bodyAttrs || {}) };
 	const metaTags = [...(head?.meta || []), ...(documentProps.meta || [])];
@@ -61,7 +62,7 @@ export const HtmlDocument = ({
 			...metaTags.map((tag, idx) => renderHeadTag(tag, idx, 'meta')),
 			...linkTags.map((tag, idx) => renderHeadTag(tag, idx, 'link')),
 			...styleTags.map((style, idx) => renderStyleTag(style, idx)),
-			preambleSrc ? React.createElement('script', { type: 'module', src: preambleSrc }) : null,
+			hasIslands && preambleSrc ? React.createElement('script', { type: 'module', src: preambleSrc }) : null,
 			refreshImport
 				? React.createElement('script', {
 						type: 'module',
@@ -74,13 +75,15 @@ window.__vite_plugin_react_preamble_installed__ = true;`,
 						},
 					})
 				: null,
-			React.createElement('script', {
-				id: 'islands-manifest',
-				type: 'application/json',
-				'data-integrity': manifestIntegrity,
-				dangerouslySetInnerHTML: { __html: manifestJson },
-			}),
-			React.createElement('script', { type: 'module', src: runtimeSrc }),
+			hasIslands
+				? React.createElement('script', {
+						id: 'islands-manifest',
+						type: 'application/json',
+						'data-integrity': manifestIntegrity,
+						dangerouslySetInnerHTML: { __html: manifestJson },
+					})
+				: null,
+			hasIslands ? React.createElement('script', { type: 'module', src: runtimeSrc }) : null,
 			React.createElement('script', {
 				type: 'module',
 				src: '/pwa-register.js',
