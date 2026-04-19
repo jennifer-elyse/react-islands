@@ -5,13 +5,24 @@ const mergeStyles = (...styles) => {
 	return Object.keys(merged).length ? merged : undefined;
 };
 
+const varsToStyles = (...vars) => {
+	const merged = Object.assign({}, ...vars.filter(Boolean));
+	const entries = Object.entries(merged).filter(([, value]) => value !== undefined && value !== null && value !== '');
+	if (!entries.length) return undefined;
+	return Object.fromEntries(
+		entries.map(([key, value]) => [key.startsWith('--') ? key : `--${key}`, value]),
+	);
+};
+
 export const resolveComponentDesignSystem = ({
 	componentName,
 	designSystem,
 	className,
 	style,
+	vars,
 	defaultClassName = '',
 	defaultAttrs = {},
+	defaultVars,
 }) => {
 	const globalConfig = designSystem?.components?.all || {};
 	const componentConfig = designSystem?.components?.[componentName] || {};
@@ -38,7 +49,13 @@ export const resolveComponentDesignSystem = ({
 			componentConfig.className,
 			className,
 		),
-		style: mergeStyles(designSystem?.style, globalConfig.style, componentConfig.style, style),
+		style: mergeStyles(
+			varsToStyles(designSystem?.vars, globalConfig.vars, componentConfig.vars, defaultVars, vars),
+			designSystem?.style,
+			globalConfig.style,
+			componentConfig.style,
+			style,
+		),
 		attrs,
 	};
 };

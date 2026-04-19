@@ -3,17 +3,17 @@ import { resolveComponentDesignSystem } from '../designSystem/resolveComponentDe
 
 const SlideCard = ({ slide, index, cardClassName }) => (
 	<article
-		className={['demo-carousel__slide', cardClassName].filter(Boolean).join(' ')}
+		className={['carousel__slide', cardClassName].filter(Boolean).join(' ')}
 		data-carousel-slide=""
 		data-carousel-index={index}
 	>
-		<div className="demo-carousel__media">
+		<div className="carousel__media">
 			<img src={slide.image} alt={slide.title} draggable="false" />
 		</div>
-		<div className="demo-carousel__copy">
-			{slide.eyebrow ? <span className="demo-carousel__eyebrow">{slide.eyebrow}</span> : null}
-			<h3 className="demo-carousel__slide-title">{slide.title}</h3>
-			<p className="demo-carousel__slide-body">{slide.body}</p>
+		<div className="carousel__copy">
+			{slide.eyebrow ? <span className="carousel__eyebrow">{slide.eyebrow}</span> : null}
+			<h3 className="carousel__slide-title">{slide.title}</h3>
+			<p className="carousel__slide-body">{slide.body}</p>
 		</div>
 	</article>
 );
@@ -31,20 +31,20 @@ const CarouselSSR = ({ title, slides = [], variant = 'peek-strip', accentIconSrc
 	const rootDesign = resolveComponentDesignSystem({
 		componentName: 'carousel',
 		designSystem,
-		className: `demo-carousel--${variant}`,
-		defaultClassName: 'demo-carousel',
+		className: `carousel--${variant}`,
+		defaultClassName: 'carousel',
 		defaultAttrs: { 'data-carousel-variant': variant },
 	});
 
 	return (
 		<div className={rootDesign.className} style={rootDesign.style} {...rootDesign.attrs}>
-			<div className="demo-carousel__header">
-				<h2 className="demo-carousel__title">{title}</h2>
+			<div className="carousel__header">
+				<h2 className="carousel__title">{title}</h2>
 				{options.showArrows ? (
-					<div className="demo-carousel__controls">
+					<div className="carousel__controls">
 						<button
 							type="button"
-							className="demo-carousel__control"
+							className="carousel__control"
 							disabled={!canGoPrev}
 							aria-label="Previous slide"
 						>
@@ -52,7 +52,7 @@ const CarouselSSR = ({ title, slides = [], variant = 'peek-strip', accentIconSrc
 						</button>
 						<button
 							type="button"
-							className="demo-carousel__control"
+							className="carousel__control"
 							disabled={!canGoNext}
 							aria-label="Next slide"
 						>
@@ -61,22 +61,22 @@ const CarouselSSR = ({ title, slides = [], variant = 'peek-strip', accentIconSrc
 					</div>
 				) : null}
 			</div>
-			<div className="demo-carousel__viewport">
+			<div className="carousel__viewport">
 				{accentIconSrc ? (
-					<div className="demo-carousel__accent">
+					<div className="carousel__accent">
 						<img src={accentIconSrc} alt="" />
 					</div>
 				) : null}
-				<div className={`demo-carousel__layout${pinnedPane ? ' demo-carousel__layout--pinned' : ''}`}>
+				<div className={`carousel__layout${pinnedPane ? ' carousel__layout--pinned' : ''}`}>
 					{pinnedSlide ? (
-						<div className="demo-carousel__pinned">
-							<SlideCard slide={pinnedSlide} index={0} cardClassName="demo-carousel__slide--pinned" />
+						<div className="carousel__pinned">
+							<SlideCard slide={pinnedSlide} index={0} cardClassName="carousel__slide--pinned" />
 						</div>
 					) : null}
 					<div
-						className={`demo-carousel__scroller${
-							variant === 'spotlight-dots' ? ' demo-carousel__scroller--spotlight' : ''
-						}${pinnedPane ? ' demo-carousel__scroller--rail' : ''}`}
+						className={`carousel__scroller${
+							variant === 'spotlight-dots' ? ' carousel__scroller--spotlight' : ''
+						}${pinnedPane ? ' carousel__scroller--rail' : ''}`}
 					>
 						{ssrSlides.map((slide, index) => (
 							<SlideCard
@@ -84,7 +84,7 @@ const CarouselSSR = ({ title, slides = [], variant = 'peek-strip', accentIconSrc
 								slide={slide}
 								index={index}
 								cardClassName={[
-									`demo-carousel__slide--${variant}`,
+									`carousel__slide--${variant}`,
 									spotlight && index === 0 ? 'is-current' : '',
 								]
 									.filter(Boolean)
@@ -95,12 +95,12 @@ const CarouselSSR = ({ title, slides = [], variant = 'peek-strip', accentIconSrc
 				</div>
 			</div>
 			{options.showDots && scrollSlides.length > 1 ? (
-				<div className="demo-carousel__dots" aria-label="Carousel pagination">
+				<div className="carousel__dots" aria-label="Carousel pagination">
 					{scrollSlides.map((slide, index) => (
 						<button
 							key={`${slide.title}-dot`}
 							type="button"
-							className="demo-carousel__dot"
+							className="carousel__dot"
 							data-active={index === 0 ? 'true' : 'false'}
 							aria-label={`Go to slide ${index + 1}`}
 						/>

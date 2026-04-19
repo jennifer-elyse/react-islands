@@ -186,14 +186,14 @@ const useCarouselState = ({ count, autoPlayMs, pauseOnHover, enabledDots, scroll
 };
 
 const SlideCard = ({ slide, index, cardClassName }) => (
-	<article className={cx('demo-carousel__slide', cardClassName)} data-carousel-slide="" data-carousel-index={index}>
-		<div className="demo-carousel__media">
+	<article className={cx('carousel__slide', cardClassName)} data-carousel-slide="" data-carousel-index={index}>
+		<div className="carousel__media">
 			<img src={slide.image} alt={slide.title} draggable="false" />
 		</div>
-		<div className="demo-carousel__copy">
-			{slide.eyebrow ? <span className="demo-carousel__eyebrow">{slide.eyebrow}</span> : null}
-			<h3 className="demo-carousel__slide-title">{slide.title}</h3>
-			<p className="demo-carousel__slide-body">{slide.body}</p>
+		<div className="carousel__copy">
+			{slide.eyebrow ? <span className="carousel__eyebrow">{slide.eyebrow}</span> : null}
+			<h3 className="carousel__slide-title">{slide.title}</h3>
+			<p className="carousel__slide-body">{slide.body}</p>
 		</div>
 	</article>
 );
@@ -248,8 +248,8 @@ const Carousel = ({ title, slides = [], variant = 'peek-strip', options = {}, ac
 	const rootDesign = resolveComponentDesignSystem({
 		componentName: 'carousel',
 		designSystem,
-		className: cx(`demo-carousel--${variant}`, paused && 'is-paused'),
-		defaultClassName: 'demo-carousel',
+		className: cx(`carousel--${variant}`, paused && 'is-paused'),
+		defaultClassName: 'carousel',
 		defaultAttrs: { 'data-carousel-variant': variant },
 	});
 
@@ -261,13 +261,13 @@ const Carousel = ({ title, slides = [], variant = 'peek-strip', options = {}, ac
 			onMouseEnter={pauseOnHover ? () => setPaused(true) : undefined}
 			onMouseLeave={pauseOnHover ? () => setPaused(false) : undefined}
 		>
-			<div className="demo-carousel__header">
-				<h2 className="demo-carousel__title">{title}</h2>
+			<div className="carousel__header">
+				<h2 className="carousel__title">{title}</h2>
 				{showArrows && count > 1 && hasOverflow ? (
-					<div className="demo-carousel__controls">
+					<div className="carousel__controls">
 						<button
 							type="button"
-							className="demo-carousel__control"
+							className="carousel__control"
 							onClick={goPrev}
 							disabled={count <= 1}
 							aria-label="Previous slide"
@@ -276,7 +276,7 @@ const Carousel = ({ title, slides = [], variant = 'peek-strip', options = {}, ac
 						</button>
 						<button
 							type="button"
-							className="demo-carousel__control"
+							className="carousel__control"
 							onClick={goNext}
 							disabled={count <= 1}
 							aria-label="Next slide"
@@ -286,24 +286,24 @@ const Carousel = ({ title, slides = [], variant = 'peek-strip', options = {}, ac
 					</div>
 				) : null}
 			</div>
-			<div className="demo-carousel__viewport">
+			<div className="carousel__viewport">
 				{accentIconSrc ? (
-					<div className="demo-carousel__accent">
+					<div className="carousel__accent">
 						<img src={accentIconSrc} alt="" />
 					</div>
 				) : null}
-				<div className={cx('demo-carousel__layout', pinnedPane && 'demo-carousel__layout--pinned')}>
+				<div className={cx('carousel__layout', pinnedPane && 'carousel__layout--pinned')}>
 					{pinnedSlide ? (
-						<div className="demo-carousel__pinned">
-							<SlideCard slide={pinnedSlide} index={0} cardClassName="demo-carousel__slide--pinned" />
+						<div className="carousel__pinned">
+							<SlideCard slide={pinnedSlide} index={0} cardClassName="carousel__slide--pinned" />
 						</div>
 					) : null}
 					<div
 						ref={scrollerRef}
 						className={cx(
-							'demo-carousel__scroller',
-							spotlight && 'demo-carousel__scroller--spotlight',
-							pinnedPane && 'demo-carousel__scroller--rail',
+							'carousel__scroller',
+							spotlight && 'carousel__scroller--spotlight',
+							pinnedPane && 'carousel__scroller--rail',
 						)}
 					>
 						{scrollSlides.map((slide, slideIndex) => (
@@ -312,7 +312,7 @@ const Carousel = ({ title, slides = [], variant = 'peek-strip', options = {}, ac
 								slide={slide}
 								index={slideIndex}
 								cardClassName={cx(
-									`demo-carousel__slide--${variant}`,
+									`carousel__slide--${variant}`,
 									spotlight && slideIndex === index && 'is-current',
 								)}
 							/>
@@ -321,12 +321,12 @@ const Carousel = ({ title, slides = [], variant = 'peek-strip', options = {}, ac
 				</div>
 			</div>
 			{showDots && count > 1 ? (
-				<div className="demo-carousel__dots" aria-label="Carousel pagination">
+				<div className="carousel__dots" aria-label="Carousel pagination">
 					{scrollSlides.map((slide, slideIndex) => (
 						<button
 							key={`${slide.title}-dot`}
 							type="button"
-							className="demo-carousel__dot"
+							className="carousel__dot"
 							data-active={slideIndex === index ? 'true' : 'false'}
 							aria-label={`Go to slide ${slideIndex + 1}`}
 							onClick={() => scrollToSlide(scrollerRef.current, slideIndex)}

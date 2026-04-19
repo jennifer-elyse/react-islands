@@ -5,9 +5,9 @@ const fallbackProducts = [
 	{
 		name: 'Surf Shop Fixture',
 		description: 'Shared fixture content for homepage layout checks.',
-		imageUrl: '/demo-images/liquid-glass-board.jpg',
+		imageUrl: '/images/liquid-glass-board.jpg',
 		price: { display: '$0.00' },
-		tags: ['demo'],
+		tags: ['example'],
 	},
 ];
 
@@ -43,43 +43,47 @@ export const FeatureSplitBlock = ({ block, products = [], layoutIndex = 0, class
 	const rootDesign = resolveComponentDesignSystem({
 		componentName: 'featureSplitBlock',
 		designSystem,
-		className: [reverse ? 'demo-feature--reverse' : '', className].filter(Boolean).join(' '),
-		defaultClassName: 'demo-feature',
+		className: [reverse ? 'feature--reverse' : '', className].filter(Boolean).join(' '),
+		defaultClassName: 'feature',
 		defaultAttrs: { 'data-feature-layout': reverse ? 'reverse' : 'default' },
 	});
 
 	return (
 		<section className={rootDesign.className} style={rootDesign.style} {...rootDesign.attrs}>
-			<div className="demo-feature__content">
-				<span className="demo-feature__eyebrow">{block?.eyebrow || leadProduct?.tags?.[0] || 'Featured Layout'}</span>
-				<h2 className="demo-feature__title">{block?.title || 'Featured Products'}</h2>
-				<p className="demo-feature__body">{block?.body || block?.subtitle || 'Shared merchandising layout block.'}</p>
-				<div className="demo-feature__chips">
+			<div className="feature__content">
+				<span className="feature__eyebrow">
+					{block?.eyebrow || leadProduct?.tags?.[0] || 'Featured Layout'}
+				</span>
+				<h2 className="feature__title">{block?.title || 'Featured Products'}</h2>
+				<p className="feature__body">
+					{block?.body || block?.subtitle || 'Shared merchandising layout block.'}
+				</p>
+				<div className="feature__chips">
 					{selected.map((product) => (
-						<span key={product.sku || product.id || product.name} className="demo-feature__chip">
+						<span key={product.sku || product.id || product.name} className="feature__chip">
 							{product.name}
 						</span>
 					))}
 				</div>
 			</div>
 
-			<div className="demo-feature__visual" aria-hidden="true">
-				<article className="demo-feature__lead-card">
-					<div className="demo-feature__lead-media">
+			<div className="feature__visual" aria-hidden="true">
+				<article className="feature__lead-card">
+					<div className="feature__lead-media">
 						<img src={leadProduct?.imageUrl} alt="" />
 					</div>
-					<div className="demo-feature__lead-copy">
-						<div className="demo-feature__product-kicker">{leadProduct?.tags?.[0] || 'Product'}</div>
-						<div className="demo-feature__product-name">{leadProduct?.name}</div>
-						<div className="demo-feature__product-price">{leadProduct?.price?.display || ''}</div>
+					<div className="feature__lead-copy">
+						<div className="feature__product-kicker">{leadProduct?.tags?.[0] || 'Product'}</div>
+						<div className="feature__product-name">{leadProduct?.name}</div>
+						<div className="feature__product-price">{leadProduct?.price?.display || ''}</div>
 						{galleryImages.length > 1 ? (
-							<div className="demo-feature__thumbs">
+							<div className="feature__thumbs">
 								{galleryImages.map((image, index) => (
 									<img
 										key={`${leadProduct?.sku || leadProduct?.name || 'feature'}-${index}-${image}`}
 										src={image}
 										alt=""
-										className="demo-feature__thumb"
+										className="feature__thumb"
 									/>
 								))}
 							</div>
@@ -87,13 +91,13 @@ export const FeatureSplitBlock = ({ block, products = [], layoutIndex = 0, class
 					</div>
 				</article>
 
-				<div className="demo-feature__supporting">
+				<div className="feature__supporting">
 					{[supportingProduct, detailProduct].filter(Boolean).map((product) => (
-						<article key={product.sku || product.id || product.name} className="demo-feature__support-card">
-							<img src={product.imageUrl} alt="" className="demo-feature__support-media" />
-							<div className="demo-feature__support-copy">
-								<div className="demo-feature__product-name">{product.name}</div>
-								<div className="demo-feature__support-body">{product.description}</div>
+						<article key={product.sku || product.id || product.name} className="feature__support-card">
+							<img src={product.imageUrl} alt="" className="feature__support-media" />
+							<div className="feature__support-copy">
+								<div className="feature__product-name">{product.name}</div>
+								<div className="feature__support-body">{product.description}</div>
 							</div>
 						</article>
 					))}

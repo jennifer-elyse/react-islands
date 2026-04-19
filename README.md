@@ -9,7 +9,7 @@ This repo has two jobs:
 
 ## What You Can Run
 
-From `examples/`, these are the current demo commands:
+From `examples/`, these are the current examplecommands:
 
 ```bash
 yarn dev:commercetools              # http://localhost:3000
@@ -21,14 +21,14 @@ yarn dev:test-data                  # http://localhost:3004
 
 Each `dev:*` command does three things:
 
-1. Kills any old server using the demo port or Vite port `5173`
+1. Kills any old server using the exampleport or Vite port `5173`
 2. Builds the client bundle and islands manifest
-3. Starts Vite plus the matching Express demo server
+3. Starts Vite plus the matching Express exampleserver
 
 In development, server-side changes now live reload too:
 
-- `nodemon` watches both the active demo folder and `examples/_shared`
-- the Express demo server exposes a dev-only boot id endpoint at `/__server_reload__`
+- `nodemon` watches both the active examplefolder and `examples/_shared`
+- the Express exampleserver exposes a dev-only boot id endpoint at `/__server_reload__`
 - the HTML document polls that endpoint and refreshes the browser when the server process restarts
 
 ## Quick Start
@@ -44,7 +44,7 @@ yarn dev:test-data
 
 Open `http://localhost:3004`.
 
-`test-data-demo` is the best first run because it needs no vendor credentials.
+`test-data` is the best first run because it needs no vendor credentials.
 
 ## Repo Layout
 
@@ -55,8 +55,8 @@ Open `http://localhost:3004`.
 - `packages/rsc` public RSC-facing entrypoint
 - `packages/react-islands` reusable components package
 - `types` TypeScript declarations for the published package
-- `examples/_shared` shared demo server, design system, runtime helpers, and fixture data
-- `examples/*-demo` concrete example apps
+- `examples/_shared` shared exampleserver, design system, runtime helpers, and fixture data
+- `examples/*` concrete example apps
 
 ## Runtime Entry Points
 
@@ -105,18 +105,18 @@ That `features` array can be passed straight into `loadAndCompose(...)` or `crea
 
 The shared carousel rail now uses a visible styled horizontal scrollbar with a glassy thumb treatment in:
 
-- [examples/_shared/design-system/base.js](/Users/jkirchne/node_projects/react-islands-runtime/examples/_shared/design-system/base.js:750)
+- [examples/\_shared/design-system/base.js](/Users/jkirchne/node_projects/react-islands-runtime/examples/_shared/design-system/base.js:750)
 
-That styling is applied to `.demo-carousel__scroller`, which means it is inherited by every demo homepage carousel rendered through:
+That styling is applied to `.carousel__scroller`, which means it is inherited by every examplehomepage carousel rendered through:
 
 - [packages/react-islands/src/components/CarouselBlock.jsx](/Users/jkirchne/node_projects/react-islands-runtime/packages/react-islands/src/components/CarouselBlock.jsx:1)
-- [examples/_shared/homepageBlocks.js](/Users/jkirchne/node_projects/react-islands-runtime/examples/_shared/homepageBlocks.js:45)
+- [examples/\_shared/homepageBlocks.js](/Users/jkirchne/node_projects/react-islands-runtime/examples/_shared/homepageBlocks.js:45)
 
-Current demo routes using that shared carousel path:
+Current exampleroutes using that shared carousel path:
 
 - [examples/commercetools/src/app/routes/index.route.jsx](/Users/jkirchne/node_projects/react-islands-runtime/examples/commercetools/src/app/routes/index.route.jsx:48)
 - [examples/contentstack/src/app/routes/index.route.jsx](/Users/jkirchne/node_projects/react-islands-runtime/examples/contentstack/src/app/routes/index.route.jsx:67)
-- [examples/agility-demo/src/app/routes/index.route.jsx](/Users/jkirchne/node_projects/react-islands-runtime/examples/agility-demo/src/app/routes/index.route.jsx:55)
+- [examples/agility/src/app/routes/index.route.jsx](/Users/jkirchne/node_projects/react-islands-runtime/examples/agility/src/app/routes/index.route.jsx:55)
 - [examples/contentstack-commercetools/src/app/routes/index.route.jsx](/Users/jkirchne/node_projects/react-islands-runtime/examples/contentstack-commercetools/src/app/routes/index.route.jsx:163)
 - [examples/test-data/src/app/routes/index.route.jsx](/Users/jkirchne/node_projects/react-islands-runtime/examples/test-data/src/app/routes/index.route.jsx:79)
 
@@ -136,10 +136,10 @@ The examples in this repo currently consume both local packages:
 
 ## Environment Files
 
-The shared demo server loads env files in this order:
+The shared exampleserver loads env files in this order:
 
 1. `examples/.env`
-2. `examples/.env.<demo>` when `DEMO_TARGET` is set
+2. `examples/.env.<example>` when `EXAMPLE_TARGET` is set
 3. `./.env` from the current working directory
 
 That means `yarn dev:contentstack-commercetools` will try to load:
@@ -147,33 +147,33 @@ That means `yarn dev:contentstack-commercetools` will try to load:
 - `examples/.env`
 - `examples/.env.contentstack-commercetools`
 
-## Demo Summary
+## ExampleSummary
 
-### `commercetools-demo`
+### `commercetools`
 
 - Real commercetools product/search/cart path
 - Shared local content fixtures
 - Best for testing commerce integration
 
-### `contentstack-demo`
+### `contentstack`
 
 - Contentstack-backed content path
 - Shared local product/cart/search fixtures
-- Falls back to built-in demo content if Contentstack is missing or invalid
+- Falls back to built-in examplecontent if Contentstack is missing or invalid
 
-### `agility-demo`
+### `agility`
 
 - Agility-flavored content example
 - Shared local product/cart/search fixtures
 - Good for seeing a CMS-driven variant without external commerce
 
-### `contentstack-commercetools-demo`
+### `contentstack-commercetools`
 
 - Contentstack for content
 - commercetools for catalog/search/cart
 - Closest to a real multi-system storefront setup
 
-### `test-data-demo`
+### `test-data`
 
 - Local fixture content
 - Local fixture products
@@ -236,9 +236,9 @@ To pack the component library, run `npm pack` from `packages/react-islands/`.
 
 ## Recommended First Checks
 
-If a demo looks unstyled or broken:
+If a examplelooks unstyled or broken:
 
-1. restart the demo after any tarball/runtime change
+1. restart the exampleafter any tarball/runtime change
 2. rerun `cd examples && yarn build:client`
 3. verify the example is using the local tar in `examples/package.json`
 4. check the matching example README below for env and fallback behavior
