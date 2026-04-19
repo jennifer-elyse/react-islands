@@ -1,7 +1,7 @@
 {
 	"name": "react-islands-runtime",
 	"license": "MIT",
-	"version": "0.3.0",
+	"version": "0.3.7",
 	"type": "module",
 	"description": "SSR-first React islands runtime and server helpers",
 	"main": "dist/server/index.js",
@@ -68,6 +68,8 @@
 		"pack:patch": "mkdir -p builds && npm version patch --no-git-tag-version && node -e \"const v=require('./package.json').version;require('child_process').execSync('yarn pack --filename builds/react-islands-runtime-'+v+'.tgz',{stdio:'inherit'})\"",
 		"pack:minor": "mkdir -p builds && npm version minor --no-git-tag-version && node -e \"const v=require('./package.json').version;require('child_process').execSync('yarn pack --filename builds/react-islands-runtime-'+v+'.tgz',{stdio:'inherit'})\"",
 		"pack:major": "mkdir -p builds && npm version major --no-git-tag-version && node -e \"const v=require('./package.json').version;require('child_process').execSync('yarn pack --filename builds/react-islands-runtime-'+v+'.tgz',{stdio:'inherit'})\"",
+		"pack:components": "node -e \"const fs=require('fs'),p=require('path'),rv=require('./package.json').version,cp=p.resolve('packages/react-islands-ui/package.json'),pkg=JSON.parse(fs.readFileSync(cp,'utf8'));pkg.version=rv;fs.writeFileSync(cp,JSON.stringify(pkg,null,'\t')+'\\n');const out=p.resolve('builds','react-islands-ui-'+rv+'.tgz');require('child_process').execSync('yarn --cwd packages/react-islands-ui pack --filename '+out,{stdio:'inherit'})\"",
+		"pack:all": "npm run pack:patch && npm run pack:components",
 		"lint": "yarn lint:js && yarn lint:css",
 		"lint:js": "eslint .",
 		"lint:css": "stylelint \"**/*.{css,scss,sass,less}\" --allow-empty-input",
@@ -77,8 +79,8 @@
 	},
 	"dependencies": {
 		"path-to-regexp": "^6.2.2",
-		"react": "^19.0.0",
-		"react-dom": "^19.0.0"
+		"react": ">=19.0.0",
+		"react-dom": ">=19.0.0"
 	},
 	"devDependencies": {
 		"@eslint/js": "^9.17.0",
@@ -92,6 +94,8 @@
 		"globals": "^17.3.0",
 		"nodemon": "^3.1.0",
 		"prettier": "^3.8.1",
+		"react": "^19.2.5",
+		"react-dom": "^19.2.5",
 		"stylelint": "^17.2.0",
 		"stylelint-config-standard": "^40.0.0",
 		"typescript": "^5.8.2",

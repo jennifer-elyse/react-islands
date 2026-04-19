@@ -1,10 +1,18 @@
 import React from 'react';
 import { Island, resolveIslandModule } from 'react-islands-runtime/ssr';
 
+<<<<<<< Updated upstream
 import CartSSR from '../../../../_shared/runtime/src/islands/Cart.ssr.jsx';
 import { CarouselBlock, FeatureSplitBlock, GridItemsBlock, ProductSearchSSR } from 'react-islands';
 import { normalizeHomepageBlocks } from '../../../../_shared/homepageBlocks.js';
 import { demoComponentDesignSystem } from '../../../server/designSystem.js';
+=======
+import { CartSSR, ProductSearchSSR } from 'react-islands-ui';
+import { getCarouselBlock, getCarouselSlidesFromProducts } from '../../../../_shared/carousels.js';
+import { CarouselBlock } from '../../../../_shared/components/CarouselBlock.jsx';
+import { GridItemsBlock } from '../../../../_shared/components/GridItemsBlock.jsx';
+import { ensureBlock, moveBlockAfter, moveBlockToFront } from '../../../../_shared/homepageBlocks.js';
+>>>>>>> Stashed changes
 import { getLandingPage, getHeroBanners } from '../../../models/contentstack.model.js';
 import { getLocalProductFallbackImage, getPreferredProductImage } from '../../../models/localImages.js';
 import { listProducts } from '../../../models/product.model.js';

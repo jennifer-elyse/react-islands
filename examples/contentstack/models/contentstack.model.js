@@ -1,5 +1,10 @@
+<<<<<<< Updated upstream
 // ExampleContentstack model (SDK-backed, matches main app auth behavior)
 import { createCmsClient } from '../../_shared/runtime/src/server/sdk/contentstack.js';
+=======
+// Contentstack model (SDK-backed, matches main app auth behavior)
+import { createCmsClient } from '../../_shared/contentstack-sdk.js';
+>>>>>>> Stashed changes
 
 const isConfiguredValue = (value) => {
 	const normalized = String(value || '').trim();

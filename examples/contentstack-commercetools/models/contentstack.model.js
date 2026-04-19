@@ -1,4 +1,4 @@
-import { createCmsClient } from '../../_shared/runtime/src/server/sdk/contentstack.js';
+import { createCmsClient } from '../../_shared/contentstack-sdk.js';
 
 const isConfiguredValue = (value) => {
 	const normalized = String(value || '').trim();

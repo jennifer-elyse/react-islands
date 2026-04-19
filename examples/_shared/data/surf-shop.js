@@ -87,3 +87,21 @@ export const listSurfSuggestions = ({ query = '', limit = 8 } = {}) => {
 		})),
 	};
 };
+<<<<<<< Updated upstream:examples/_shared/data/surf-shop.js
+=======
+
+export const getSurfCarouselSlides = ({ skus } = {}) => {
+	const items = readData();
+	const source =
+		Array.isArray(skus) && skus.length
+			? skus.map((sku) => items.find((item) => item.sku === sku)).filter(Boolean)
+			: items;
+
+	return source.map((item) => ({
+		eyebrow: item.sku.toUpperCase(),
+		title: item.name,
+		body: item.description,
+		image: resolveImage(item),
+	}));
+};
+>>>>>>> Stashed changes:examples/_shared/app-data/surf-shop.js

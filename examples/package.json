@@ -28,8 +28,13 @@
 		"path-to-regexp": "^6.2.2",
 		"react": "^19.0.0",
 		"react-dom": "^19.0.0",
+<<<<<<< Updated upstream
 		"react-islands": "file:../builds/react-islands-0.3.0.tgz",
 		"react-islands-runtime": "file:../builds/react-islands-runtime-0.3.0.tgz"
+=======
+		"react-islands-ui": "file:../builds/react-islands-ui-0.3.7.tgz",
+		"react-islands-runtime": "file:../builds/react-islands-runtime-0.3.7.tgz"
+>>>>>>> Stashed changes
 	},
 	"devDependencies": {
 		"@vitejs/plugin-react": "^4.3.4",

@@ -1,4 +1,8 @@
 import { spawn } from 'node:child_process';
+import path from 'node:path';
+
+const examplesRoot = path.dirname(new URL(import.meta.url).pathname).replace(/\/scripts$/, '');
+const runtimeEntryPath = path.resolve(examplesRoot, '../packages/react-islands-ui/src/client/islands-runtime.entry.js');
 
 const targets = [
 	{ port: 3000, serverScript: 'dev:commercetools-server' },
@@ -31,8 +35,15 @@ const main = async () => {
 	await runShell('npm run build:client');
 
 	const children = [
+<<<<<<< Updated upstream
 		run('npm', ['run', 'dev:client']),
 		...targets.map((target) => run('npm', ['run', target.serverScript], { PORT: String(target.port) })),
+=======
+		run('yarn', ['dev:client']),
+		...targets.map((target) =>
+			run('yarn', [target.serverScript], { PORT: String(target.port), RUNTIME_ENTRY_PATH: runtimeEntryPath }),
+		),
+>>>>>>> Stashed changes
 	];
 
 	const shutdown = () => {

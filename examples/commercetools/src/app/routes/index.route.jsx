@@ -1,20 +1,34 @@
 import React from 'react';
 import { Island, resolveIslandModule } from 'react-islands-runtime/ssr';
 
+<<<<<<< Updated upstream
 import CartSSR from '../../../../_shared/runtime/src/islands/Cart.ssr.jsx';
 import { CarouselBlock, FeatureSplitBlock, ProductSearchSSR } from 'react-islands';
 import { listSurfProducts } from '../../../../_shared/data/surf-shop.js';
 import { normalizeHomepageBlocks } from '../../../../_shared/homepageBlocks.js';
 import { demoComponentDesignSystem } from '../../../server/designSystem.js';
+=======
+import { CartSSR, ProductSearchSSR } from 'react-islands-ui';
+import { getCarouselBlock } from '../../../../_shared/carousels.js';
+import { CarouselBlock } from '../../../../_shared/components/CarouselBlock.jsx';
+>>>>>>> Stashed changes
 import { getLandingPage } from '../../../models/content.model.js';
 
 export const loader = async () => {
 	const page = await getLandingPage();
+<<<<<<< Updated upstream
 	const featuredProducts = listSurfProducts({ limit: 6 }).products;
 	const blocks = normalizeHomepageBlocks(Array.isArray(page?.blocks) ? page.blocks : [], 'commercetools', {
 		products: featuredProducts,
 	});
 	return { page: { ...page, blocks, featuredProducts } };
+=======
+	const blocks = (Array.isArray(page?.blocks) ? [...page.blocks] : []).map((block) =>
+		block?.type === 'carousel' ? getCarouselBlock('commercetools') : block,
+	);
+
+	return { page: { ...page, blocks } };
+>>>>>>> Stashed changes
 };
 
 export const head = (props) => ({ title: props.page?.title || 'Commercetools ' });
@@ -33,6 +47,7 @@ export const Page = ({ page }) => {
 					);
 				}
 
+<<<<<<< Updated upstream
 				if (b.type === 'promo') {
 					const node = (
 						<FeatureSplitBlock
@@ -42,6 +57,47 @@ export const Page = ({ page }) => {
 							products={page?.featuredProducts || []}
 							designSystem={demoComponentDesignSystem}
 						/>
+=======
+				if (b.type === 'product_grid') {
+					return (
+						<section key={i} style={{ marginBottom: 24 }}>
+							<h2>{b.title}</h2>
+							<div
+								style={{
+									display: 'grid',
+									gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))',
+									gap: 'var(--spacing-md, 16px)',
+								}}
+							>
+								{(b.products || []).map((p) => (
+									<div
+										key={p.id}
+										style={{
+											padding: 'var(--spacing-md, 16px)',
+											border: '1px solid var(--border-subtle)',
+											borderRadius: 'var(--radius-surface, 24px)',
+											textAlign: 'center',
+										}}
+									>
+										{p.imageUrl && (
+											<img
+												src={p.imageUrl}
+												alt={p.name}
+												style={{
+													width: '100%',
+													aspectRatio: '1',
+													objectFit: 'cover',
+													borderRadius: 'var(--radius-surface, 24px)',
+												}}
+											/>
+										)}
+										<h3 style={{ margin: '8px 0 4px', fontSize: '1rem' }}>{p.name}</h3>
+										<p style={{ margin: 0, color: 'var(--text-muted)' }}>{p.price?.display}</p>
+									</div>
+								))}
+							</div>
+						</section>
+>>>>>>> Stashed changes
 					);
 					featureIndex += 1;
 					return node;

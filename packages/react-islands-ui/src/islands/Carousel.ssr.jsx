@@ -25,7 +25,13 @@ const CarouselSSR = ({ title, slides = [], variant = 'peek-strip', accentIconSrc
 	const ssrSlides = scrollSlides;
 	const loopNavButtons = options.loopNavButtons ?? true;
 	const canGoPrev = loopNavButtons ? scrollSlides.length > 1 : false;
+<<<<<<< Updated upstream:examples/_shared/runtime/src/islands/Carousel.ssr.jsx
 	const canGoNext = scrollSlides.length > 1;
+=======
+	const canGoNext = loopNavButtons ? scrollSlides.length > 1 : pageIndexes.length > 1;
+	const showDots = options.showDots;
+	const showPlayPause = options.showPlayPause;
+>>>>>>> Stashed changes:packages/react-islands-ui/src/islands/Carousel.ssr.jsx
 
 	return (
 		<div className={`carousel carousel--${variant}`}>
@@ -85,17 +91,52 @@ const CarouselSSR = ({ title, slides = [], variant = 'peek-strip', accentIconSrc
 					</div>
 				</div>
 			</div>
+<<<<<<< Updated upstream:examples/_shared/runtime/src/islands/Carousel.ssr.jsx
 			{options.showDots && scrollSlides.length > 1 ? (
 				<div className="carousel__dots" aria-label="Carousel pagination">
 					{scrollSlides.map((slide, index) => (
+=======
+			{arrowPosition === 'bottom'
+				? renderControls({
+						showArrows: options.showArrows,
+						canGoPrev,
+						canGoNext,
+						className: 'carousel__controls carousel__controls--bottom',
+					})
+				: null}
+			{showDots && pageIndexes.length > 1 ? (
+				<div className={['carousel__footer', showPlayPause && 'carousel__footer--has-play-pause'].filter(Boolean).join(' ')}>
+					<div className="carousel__dots" aria-label="Carousel pagination">
+						{pageIndexes.map((pageIdx, dotIndex) => (
+							<button
+								key={`page-${dotIndex}-dot`}
+								type="button"
+								className="carousel__dot"
+								data-active={dotIndex === 0 ? 'true' : 'false'}
+								aria-label={`Go to page ${dotIndex + 1}`}
+							/>
+						))}
+					</div>
+					{showPlayPause ? (
+>>>>>>> Stashed changes:packages/react-islands-ui/src/islands/Carousel.ssr.jsx
 						<button
-							key={`${slide.title}-dot`}
 							type="button"
-							className="carousel__dot"
-							data-active={index === 0 ? 'true' : 'false'}
-							aria-label={`Go to slide ${index + 1}`}
-						/>
-					))}
+							className="carousel__play-pause"
+							aria-label="Pause carousel"
+						>
+							<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+						</button>
+					) : null}
+				</div>
+			) : showPlayPause ? (
+				<div className="carousel__footer carousel__footer--play-only">
+					<button
+						type="button"
+						className="carousel__play-pause"
+						aria-label="Pause carousel"
+					>
+						<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+					</button>
 				</div>
 			) : null}
 		</div>

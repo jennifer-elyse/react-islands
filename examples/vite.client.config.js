@@ -4,24 +4,35 @@ import path from 'node:path';
 import { globSync } from 'glob';
 
 const examplesRoot = process.cwd();
-const runtimeRoot = path.resolve(examplesRoot, '_shared/runtime');
-// const runtimeSrc = path.join(runtimeRoot, 'src');
+const repoRoot = path.resolve(examplesRoot, '..');
+const componentsRoot = path.resolve(examplesRoot, '../packages/react-islands-ui');
 
-const islands = globSync('src/islands/*.entry.@(js|jsx)', { cwd: runtimeRoot });
+const islands = globSync('src/islands/*.entry.@(js|jsx)', { cwd: componentsRoot });
 
 const input = {
-	'islands-runtime': path.resolve(runtimeRoot, 'src/client/islands-runtime.entry.js'),
+	'islands-runtime': path.resolve(componentsRoot, 'src/client/islands-runtime.entry.js'),
 };
 
 for (const rel of islands) {
 	const base = rel.replace(/^src\/islands\//, 'islands/').replace(/\.entry\.(js|jsx)$/, '');
-	input[base] = path.resolve(runtimeRoot, rel);
+	input[base] = path.resolve(componentsRoot, rel);
 }
 
 export default defineConfig({
-	root: runtimeRoot,
+	root: componentsRoot,
 	plugins: [react()],
 	publicDir: path.resolve(examplesRoot, '_shared/public'),
+	resolve: {
+		alias: {
+			react: path.resolve(examplesRoot, 'node_modules/react'),
+			'react-dom': path.resolve(examplesRoot, 'node_modules/react-dom'),
+		},
+	},
+	server: {
+		fs: {
+			allow: [repoRoot],
+		},
+	},
 	build: {
 		outDir: path.resolve(examplesRoot, 'dist/client'),
 		emptyOutDir: true,

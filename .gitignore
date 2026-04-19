@@ -1,8 +1,8 @@
 .DS_Store
 /node_modules
-/packages/react-islands/node_modules
+/packages/react-islands-ui/node_modules
 *.tgz
-/packages/react-islands/dist
+/packages/react-islands-ui/dist
 /dist
 /package
 .env
@@ -16,4 +16,9 @@
 .vscode/
 *.code-workspace
 /examples/.npm-cache
+<<<<<<< Updated upstream
 /.npm-cache
+=======
+examples/yarn.lock
+yarn.lock
+>>>>>>> Stashed changes
