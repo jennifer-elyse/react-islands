@@ -1,6 +1,7 @@
 import { createDesignSystem, defineTheme } from 'react-islands-runtime/ssr';
 
 import { createSharedStyles } from './baseStyles.js';
+import { carouselStyles, productSearchStyles } from './componentStyles.js';
 import { createExampleComponentDesignSystem } from '../../_shared/design-system/componentDesignSystem.js';
 
 const contentstackCommercetoolsStyles = `
@@ -1275,7 +1276,7 @@ const theme = defineTheme({
 	},
 	documentProps: {
 		htmlAttrs: { 'data-theme': 'contentstack-commercetools' },
-		styles: createSharedStyles(contentstackCommercetoolsStyles),
+		styles: createSharedStyles(contentstackCommercetoolsStyles, carouselStyles, productSearchStyles),
 	},
 	modes: {
 		dark: {

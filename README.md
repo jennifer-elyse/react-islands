@@ -9,14 +9,14 @@ This repo has two jobs:
 
 ## What You Can Run
 
-From `examples/`, these are the current examplecommands:
+From `examples/`, these are the current example commands:
 
 ```bash
-yarn dev:commercetools              # http://localhost:3000
-yarn dev:contentstack               # http://localhost:3001
-yarn dev:agility                    # http://localhost:3002
-yarn dev:contentstack-commercetools # http://localhost:3003
-yarn dev:test-data                  # http://localhost:3004
+npm run dev:commercetools              # http://localhost:3000
+npm run dev:contentstack               # http://localhost:3001
+npm run dev:agility                    # http://localhost:3002
+npm run dev:contentstack-commercetools # http://localhost:3003
+npm run dev:test-data                  # http://localhost:3004
 ```
 
 Each `dev:*` command does three things:
@@ -36,10 +36,10 @@ In development, server-side changes now live reload too:
 ```bash
 git clone <repo>
 cd react-islands-runtime
-yarn install
+npm install
 cd examples
-yarn install
-yarn dev:test-data
+npm install
+npm run dev:test-data
 ```
 
 Open `http://localhost:3004`.
@@ -131,8 +131,8 @@ This repo now has two package surfaces:
 
 The examples in this repo currently consume both local packages:
 
-- `react-islands-runtime` from `file:../builds/react-islands-runtime-0.3.0.tgz`
-- `react-islands` from `file:../packages/react-islands`
+- `react-islands-runtime` from `file:../builds/react-islands-runtime-0.3.9.tgz`
+- `react-islands-ui` from `file:../builds/react-islands-ui-0.3.9.tgz`
 
 ## Environment Files
 
@@ -142,7 +142,7 @@ The shared exampleserver loads env files in this order:
 2. `examples/.env.<example>` when `EXAMPLE_TARGET` is set
 3. `./.env` from the current working directory
 
-That means `yarn dev:contentstack-commercetools` will try to load:
+That means `npm run dev:contentstack-commercetools` will try to load:
 
 - `examples/.env`
 - `examples/.env.contentstack-commercetools`
@@ -207,7 +207,7 @@ The examples client build is:
 
 ```bash
 cd examples
-yarn build:client
+npm run build:client
 ```
 
 That script:
@@ -221,17 +221,17 @@ That script:
 To rebuild the local tarball used by the examples:
 
 ```bash
-yarn pack --filename builds/react-islands-runtime-0.3.0.tgz
+npm pack --pack-destination builds
 ```
 
 If you refresh the tarball, also refresh the examples install so the demos pick up the new runtime code.
 
-To pack the component library, run `npm pack` from `packages/react-islands/`.
+To pack the component library, run `npm run pack:components` from the repo root.
 
 ## Current Expectations
 
 - Node `>= 22`
-- Yarn classic works for the examples in this repo
+- npm is the default package manager in this repo
 - The examples are intentionally JS-first, even though the runtime ships TypeScript declarations
 
 ## Recommended First Checks
@@ -239,6 +239,6 @@ To pack the component library, run `npm pack` from `packages/react-islands/`.
 If a examplelooks unstyled or broken:
 
 1. restart the exampleafter any tarball/runtime change
-2. rerun `cd examples && yarn build:client`
+2. rerun `cd examples && npm run build:client`
 3. verify the example is using the local tar in `examples/package.json`
 4. check the matching example README below for env and fallback behavior

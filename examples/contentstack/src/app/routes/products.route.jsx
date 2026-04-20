@@ -1,5 +1,5 @@
 import React from 'react';
-import { PlpProductsBlock } from 'react-islands';
+import { PlpProductsBlock } from 'react-islands-ui';
 import { createPlpProductsBlock } from '../../../../_shared/productGridBlock.js';
 import { filterProductsByQuery, getSearchQuery } from '../../../../_shared/productSearch.js';
 import { demoComponentDesignSystem } from '../../../server/designSystem.js';

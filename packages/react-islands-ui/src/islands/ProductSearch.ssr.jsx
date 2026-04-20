@@ -10,6 +10,7 @@ const ProductSearchSSR = ({
 	minChars = 2,
 	debounceMs = 180,
 	maxSuggestions = 8,
+	autoFocus = true,
 }) => {
 	const enhanceScript = `(() => {
 		if (window.__riProductSearchEnhanced) return;
@@ -137,6 +138,7 @@ const ProductSearchSSR = ({
 				action={searchPageUrl}
 				method="get"
 				inputName={queryName}
+				autoFocus={autoFocus}
 				ariaExpanded={false}
 				rootProps={{
 					'data-search-enhanced': 'true',

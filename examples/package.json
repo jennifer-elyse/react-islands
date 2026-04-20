@@ -3,7 +3,7 @@
 	"private": true,
 	"version": "0.0.0",
 	"type": "module",
-	"packageManager": "npm@11.9.0",
+	"packageManager": "npm@11.12.1",
 	"scripts": {
 		"dev:client": "vite --config vite.client.config.js",
 		"dev:all": "node scripts/dev-all.mjs",
@@ -28,13 +28,8 @@
 		"path-to-regexp": "^6.2.2",
 		"react": "^19.0.0",
 		"react-dom": "^19.0.0",
-<<<<<<< Updated upstream
-		"react-islands": "file:../builds/react-islands-0.3.0.tgz",
-		"react-islands-runtime": "file:../builds/react-islands-runtime-0.3.0.tgz"
-=======
-		"react-islands-ui": "file:../builds/react-islands-ui-0.3.7.tgz",
-		"react-islands-runtime": "file:../builds/react-islands-runtime-0.3.7.tgz"
->>>>>>> Stashed changes
+		"react-islands-runtime": "file:../builds/react-islands-runtime-0.3.15.tgz",
+		"react-islands-ui": "file:../builds/react-islands-ui-0.3.15.tgz"
 	},
 	"devDependencies": {
 		"@vitejs/plugin-react": "^4.3.4",

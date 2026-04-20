@@ -35,15 +35,13 @@ const main = async () => {
 	await runShell('npm run build:client');
 
 	const children = [
-<<<<<<< Updated upstream
 		run('npm', ['run', 'dev:client']),
-		...targets.map((target) => run('npm', ['run', target.serverScript], { PORT: String(target.port) })),
-=======
-		run('yarn', ['dev:client']),
 		...targets.map((target) =>
-			run('yarn', [target.serverScript], { PORT: String(target.port), RUNTIME_ENTRY_PATH: runtimeEntryPath }),
+			run('npm', ['run', target.serverScript], {
+				PORT: String(target.port),
+				RUNTIME_ENTRY_PATH: runtimeEntryPath,
+			}),
 		),
->>>>>>> Stashed changes
 	];
 
 	const shutdown = () => {

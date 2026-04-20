@@ -1,5 +1,5 @@
 import React from 'react';
-import { ThemeModeSwitch } from 'react-islands';
+import { ThemeModeSwitch } from 'react-islands-ui';
 import { demoComponentDesignSystem } from '../../../server/designSystem.js';
 
 export const loader = async () => ({ siteName: 'test-data' });

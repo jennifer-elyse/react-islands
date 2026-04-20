@@ -1,19 +1,11 @@
 import React from 'react';
 import { Island, resolveIslandModule } from 'react-islands-runtime/ssr';
 
-<<<<<<< Updated upstream
-import CartSSR from '../../../../_shared/runtime/src/islands/Cart.ssr.jsx';
-import { CarouselBlock, FeatureSplitBlock, ProductSearchSSR } from 'react-islands';
-import { listSurfProducts } from '../../../../_shared/data/surf-shop.js';
+import { CarouselBlock, CartSSR, FeatureSplitBlock, ProductSearchSSR } from 'react-islands-ui';
 import { normalizeHomepageBlocks } from '../../../../_shared/homepageBlocks.js';
-import { demoComponentDesignSystem } from '../../../server/designSystem.js';
-=======
-import { CartSSR, ProductSearchSSR } from 'react-islands-ui';
-import { getCarouselBlock } from '../../../../_shared/carousels.js';
-import { CarouselBlock } from '../../../../_shared/components/CarouselBlock.jsx';
-import { ensureBlock, moveBlockAfter, moveBlockToFront } from '../../../../_shared/homepageBlocks.js';
->>>>>>> Stashed changes
+import { listSurfProducts } from '../../../../_shared/data/surf-shop.js';
 import { getLandingPage, getHeroBanners } from '../../../models/contentstack.model.js';
+import { demoComponentDesignSystem } from '../../../server/designSystem.js';
 
 export const loader = async () => {
 	const page = await getLandingPage('home');

@@ -1,4 +1,4 @@
-import { getSurfCarouselSlides } from './app-data/surf-shop.js';
+import { getSurfCarouselSlides } from './data/surf-shop.js';
 
 export const getCarouselSlidesFromProducts = (products = [], { limit } = {}) => {
 	const sliced = (Array.isArray(products) ? products : []).filter(Boolean).slice(0, limit || products.length);
@@ -18,10 +18,11 @@ export const getCarouselBlock = (experience, { slides } = {}) => {
 			variant: 'pin-first-marquee',
 			options: {
 				pauseOnHover: true,
-				stickyPaneCount: 1,
-				visibleScrollPanes: 2,
+				stickySlideCount: 1,
+				visibleSlides: 2,
 				stickySlideSizeRatio: '2:1',
 				minHeight: 400,
+				maxHeight: 400,
 				slideImageTextRatio: [3, 2],
 				showArrows: true,
 				showDots: false,
@@ -86,11 +87,9 @@ export const getCarouselBlock = (experience, { slides } = {}) => {
 				autoPlayMs: 3400,
 				pauseOnHover: true,
 				loopNavButtons: true,
-				visibleScrollPanes: 2,
+				visibleSlides: 2,
 			},
-			slides:
-				slides ||
-				getSurfCarouselSlides(),
+			slides: slides || getSurfCarouselSlides(),
 		};
 	}
 
@@ -104,7 +103,7 @@ export const getCarouselBlock = (experience, { slides } = {}) => {
 			showPlayPause: true,
 			autoPlayMs: 3000,
 			pauseOnHover: true,
-			visibleScrollPanes: 2,
+			visibleSlides: 2,
 		},
 		slides:
 			slides ||

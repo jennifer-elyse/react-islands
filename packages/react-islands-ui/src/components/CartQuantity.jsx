@@ -1,7 +1,6 @@
 import React from 'react';
 import { Island, resolveIslandModule } from 'react-islands-runtime/ssr';
-
-import { CartQuantitySSR } from 'react-islands-ui';
+import CartQuantitySSR from '../islands/CartQuantity.ssr.jsx';
 
 export const CartQuantity = ({ sku, label = 'In cart', hydrate = 'immediate' }) => {
 	return (

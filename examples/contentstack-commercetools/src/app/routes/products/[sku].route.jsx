@@ -1,5 +1,5 @@
 import React from 'react';
-import { ProductDetailBlock } from 'react-islands';
+import { ProductDetailBlock } from 'react-islands-ui';
 import { createProductDetailBlock } from '../../../../../_shared/productDetailBlock.js';
 import { demoComponentDesignSystem } from '../../../../server/designSystem.js';
 import { getLocalProductFallbackImage, getPreferredProductImage } from '../../../../models/localImages.js';

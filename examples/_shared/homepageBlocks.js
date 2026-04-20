@@ -1,3 +1,5 @@
+import { getCarouselBlock } from './carousels.js';
+
 const slidesFromProducts = (products = [], limit = 5) =>
 	(Array.isArray(products) ? products : [])
 		.filter(Boolean)
@@ -10,11 +12,11 @@ const slidesFromProducts = (products = [], limit = 5) =>
 		}))
 		.filter((s) => s.image);
 
-const ensureBlock = (blocks, type, factory) => {
+export const ensureBlock = (blocks, type, factory) => {
 	if (!blocks.some((block) => block.type === type)) blocks.push(factory());
 };
 
-const moveBlockAfter = (blocks, type, anchorType) => {
+export const moveBlockAfter = (blocks, type, anchorType) => {
 	const blockIndex = blocks.findIndex((block) => block.type === type);
 	if (blockIndex === -1) return blocks;
 
@@ -29,7 +31,7 @@ const moveBlockAfter = (blocks, type, anchorType) => {
 	return next;
 };
 
-const moveBlockToFront = (blocks, type) => {
+export const moveBlockToFront = (blocks, type) => {
 	const blockIndex = blocks.findIndex((block) => block.type === type);
 	if (blockIndex <= 0) return blocks;
 
@@ -53,12 +55,33 @@ export const normalizeHomepageBlocks = (blocks = [], demoName, { products = [] }
 		hydrate: 'immediate',
 	}));
 	ensureBlock(next, 'carousel', () => ({
-		type: 'carousel',
-		title: 'Featured',
-		variant: 'peek-strip',
-		options: { showDots: false, showArrows: true, autoPlayMs: 0, pauseOnHover: true },
-		slides: slidesFromProducts(products, 5),
+		...getCarouselBlock(demoName, {
+			slides: slidesFromProducts(products, 6),
+		}),
 	}));
+
+	if (demoName === 'test-data') {
+		const fallbackSlides = slidesFromProducts(products, 6);
+		for (let index = 0; index < next.length; index += 1) {
+			const block = next[index];
+			if (block?.type !== 'carousel') continue;
+
+			const preset = getCarouselBlock('test-data', {
+				slides: Array.isArray(block?.slides) && block.slides.length ? block.slides : fallbackSlides,
+			});
+
+			next[index] = {
+				...block,
+				...preset,
+				type: 'carousel',
+				slides: preset.slides,
+				options: {
+					...(block?.options || {}),
+					...(preset.options || {}),
+				},
+			};
+		}
+	}
 
 	if (next.some((block) => block.type === 'hero')) {
 		const searchAfterHero = moveBlockAfter(next, 'product_search', 'hero');

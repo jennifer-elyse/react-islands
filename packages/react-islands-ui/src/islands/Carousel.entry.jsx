@@ -1,9 +1,8 @@
-<<<<<<< Updated upstream:examples/_shared/runtime/src/islands/Carousel.entry.jsx
-export { default } from 'react-islands/carousel';
-=======
 'use client';
 
 import React, { useEffect, useRef, useState } from 'react';
+import { carouselBaseCss } from '../designSystem/carouselBaseCss.js';
+import { resolveComponentDesignSystem } from '../designSystem/resolveComponentDesignSystem.js';
 
 const cx = (...values) => values.filter(Boolean).join(' ');
 const toCssSize = (value) => {
@@ -49,6 +48,28 @@ const parseSlideImageTextRatio = (value) => {
 const parseStickySlideSizeRatio = (value) => {
 	const ratio = parseRatioPair(value, 'sticky', 'slide');
 	return ratio ? { sticky: ratio.first, slide: ratio.second } : undefined;
+};
+
+const toWholeCount = (value) => {
+	const parsed = Number(value);
+	if (!Number.isFinite(parsed)) return undefined;
+	return Math.max(0, Math.trunc(parsed));
+};
+
+const resolvePinnedPaneCount = (variant, options, slideCount) => {
+	const configuredCount = toWholeCount(
+		options?.stickyPaneCount ?? options?.stickySlideCount ?? options?.stickySlides,
+	);
+	if (configuredCount !== undefined) {
+		return Math.min(configuredCount, slideCount);
+	}
+
+	// Backward compatibility for older carousel payloads.
+	if (variant === 'pin-first-marquee' && options?.freezeFirstFrame) {
+		return Math.min(1, slideCount);
+	}
+
+	return 0;
 };
 
 const getSlideElements = (scroller) => Array.from(scroller?.querySelectorAll('[data-carousel-slide]') || []);
@@ -195,7 +216,14 @@ const SlideCard = ({ slide, index, cardClassName }) => (
 	</article>
 );
 
-const renderControls = ({ showArrows, prevDisabled, nextDisabled, onPrev, onNext, className = 'carousel__controls' }) => {
+const renderControls = ({
+	showArrows,
+	prevDisabled,
+	nextDisabled,
+	onPrev,
+	onNext,
+	className = 'carousel__controls',
+}) => {
 	if (!showArrows) return null;
 
 	return (
@@ -222,22 +250,26 @@ const renderControls = ({ showArrows, prevDisabled, nextDisabled, onPrev, onNext
 	);
 };
 
-const Carousel = ({ title, slides = [], variant = 'peek-strip', options = {}, accentIconSrc }) => {
+const CarouselStyleTag = () => <style data-react-islands-ui="carousel">{carouselBaseCss}</style>;
+
+const Carousel = ({ title, slides = [], variant = 'peek-strip', options = {}, accentIconSrc, designSystem }) => {
 	const {
 		autoPlayMs = 3200,
 		showDots = false,
 		showArrows = true,
 		showPlayPause = false,
-		loopNavButtons = false,
+		loopNavButtons = true,
 		arrowPosition: rawArrowPosition = 'top',
 		pauseOnHover = true,
-		stickyPaneCount = 0,
-		visibleScrollPanes = 1,
 	} = options;
 	const arrowPosition = ['top', 'bottom', 'outer-sides'].includes(rawArrowPosition) ? rawArrowPosition : 'top';
+	const configuredVisibleSlides = toPositiveNumber(options?.visibleSlides ?? options?.visibleScrollPanes);
+	const visibleSlides = Math.max(1, configuredVisibleSlides || 1);
+	const configuredScrollStep = toWholeCount(options?.scrollStep ?? options?.pageStep);
+	const scrollStep = Math.max(1, configuredScrollStep || 1);
 
 	const spotlight = variant === 'spotlight-dots';
-	const pinnedPaneCount = Math.max(0, Math.min(stickyPaneCount, slides.length));
+	const pinnedPaneCount = resolvePinnedPaneCount(variant, options, slides.length);
 	const hasPinnedPane = pinnedPaneCount > 0;
 	const pinnedSlides = slides.slice(0, pinnedPaneCount);
 	const scrollSlides = slides.slice(pinnedPaneCount);
@@ -247,9 +279,10 @@ const Carousel = ({ title, slides = [], variant = 'peek-strip', options = {}, ac
 	const stickySlideSizeRatio = parseStickySlideSizeRatio(options.stickySlideSizeRatio);
 	const scrollerRef = useRef(null);
 	const count = scrollSlides.length;
-	const maxVisiblePanes = spotlight ? 1 : Math.max(1, visibleScrollPanes);
-	const pageStep = maxVisiblePanes;
-	const maxIndex = Math.max(0, count - maxVisiblePanes);
+	const effectiveVisibleSlides = spotlight ? 1 : visibleSlides;
+	const [isScrollable, setIsScrollable] = useState(() => count > 1);
+	const pageStep = spotlight ? 1 : scrollStep;
+	const maxIndex = Math.max(0, count - 1);
 	const { index, paused, userPaused, enableAutoPlay, setIndex, setHoverPaused, toggleUserPaused } = useCarouselState({
 		count,
 		maxIndex,
@@ -259,6 +292,31 @@ const Carousel = ({ title, slides = [], variant = 'peek-strip', options = {}, ac
 		enableAutoPlay: autoPlayMs > 0,
 		scrollerRef,
 	});
+
+	useEffect(() => {
+		const scroller = scrollerRef.current;
+		if (!scroller) return undefined;
+
+		const syncScrollableState = () => {
+			setIsScrollable(scroller.scrollWidth - scroller.clientWidth > 1);
+		};
+
+		syncScrollableState();
+
+		if (typeof ResizeObserver !== 'undefined') {
+			const resizeObserver = new ResizeObserver(() => {
+				syncScrollableState();
+			});
+			resizeObserver.observe(scroller);
+			for (const slide of getSlideElements(scroller)) {
+				resizeObserver.observe(slide);
+			}
+			return () => resizeObserver.disconnect();
+		}
+
+		window.addEventListener('resize', syncScrollableState);
+		return () => window.removeEventListener('resize', syncScrollableState);
+	}, [count, variant]);
 
 	if (!slides.length) return null;
 
@@ -295,19 +353,32 @@ const Carousel = ({ title, slides = [], variant = 'peek-strip', options = {}, ac
 
 	const prevDisabled = loopNavButtons ? count <= 1 : !canGoPrev;
 	const nextDisabled = loopNavButtons ? count <= 1 : !canGoNext;
+	const shouldShowArrows = showArrows && count > 0 && isScrollable;
+	const shouldShowDots = showDots && pageIndexes.length > 1 && isScrollable;
+	const rootDesign = resolveComponentDesignSystem({
+		componentName: 'carousel',
+		designSystem,
+		className: `carousel--${variant}`,
+		defaultClassName: 'carousel',
+		defaultAttrs: { 'data-carousel-variant': variant },
+	});
 
 	return (
 		<div
-			className={cx('carousel', `carousel--${variant}`, paused && 'is-paused')}
+			className={cx(rootDesign.className, paused && 'is-paused')}
+			style={rootDesign.style}
 			data-carousel-arrow-position={arrowPosition}
+			data-carousel-has-pinned={hasPinnedPane ? 'true' : 'false'}
+			{...rootDesign.attrs}
 			onMouseEnter={pauseOnHover ? () => setHoverPaused(true) : undefined}
 			onMouseLeave={pauseOnHover ? () => setHoverPaused(false) : undefined}
 		>
+			<CarouselStyleTag />
 			<div className="carousel__header">
 				<h2 className="carousel__title">{title}</h2>
 				{arrowPosition === 'top'
 					? renderControls({
-							showArrows: showArrows && count > 0,
+							showArrows: shouldShowArrows,
 							prevDisabled,
 							nextDisabled,
 							onPrev: goPrev,
@@ -318,7 +389,7 @@ const Carousel = ({ title, slides = [], variant = 'peek-strip', options = {}, ac
 			<div className="carousel__viewport">
 				{arrowPosition === 'outer-sides'
 					? renderControls({
-							showArrows: showArrows && count > 0,
+							showArrows: shouldShowArrows,
 							prevDisabled,
 							nextDisabled,
 							onPrev: goPrev,
@@ -335,7 +406,7 @@ const Carousel = ({ title, slides = [], variant = 'peek-strip', options = {}, ac
 				<div
 					className={cx('carousel__layout', hasPinnedPane && 'carousel__layout--pinned')}
 					style={{
-						'--carousel-visible-slides': `${Math.max(1, visibleScrollPanes)}`,
+						'--carousel-visible-slides': `${effectiveVisibleSlides}`,
 						...(minHeight ? { '--carousel-min-height': minHeight } : {}),
 						...(maxHeight ? { '--carousel-max-height': maxHeight } : {}),
 						...(slideImageTextRatio
@@ -347,7 +418,7 @@ const Carousel = ({ title, slides = [], variant = 'peek-strip', options = {}, ac
 						...(stickySlideSizeRatio
 							? {
 									'--carousel-sticky-pane-width': `${stickySlideSizeRatio.sticky}fr`,
-									'--carousel-scroll-pane-width': `${stickySlideSizeRatio.slide * Math.max(1, visibleScrollPanes)}fr`,
+									'--carousel-scroll-pane-width': `${stickySlideSizeRatio.slide * effectiveVisibleSlides}fr`,
 								}
 							: {}),
 					}}
@@ -394,7 +465,7 @@ const Carousel = ({ title, slides = [], variant = 'peek-strip', options = {}, ac
 			</div>
 			{arrowPosition === 'bottom'
 				? renderControls({
-						showArrows: showArrows && count > 0,
+						showArrows: shouldShowArrows,
 						prevDisabled,
 						nextDisabled,
 						onPrev: goPrev,
@@ -402,7 +473,7 @@ const Carousel = ({ title, slides = [], variant = 'peek-strip', options = {}, ac
 						className: 'carousel__controls carousel__controls--bottom',
 					})
 				: null}
-			{showDots && pageIndexes.length > 1 ? (
+			{shouldShowDots ? (
 				<div className={cx('carousel__footer', showPlayPause && 'carousel__footer--has-play-pause')}>
 					<div className="carousel__dots" aria-label="Carousel pagination">
 						{pageIndexes.map((pageIdx, dotIndex) => (
@@ -414,7 +485,9 @@ const Carousel = ({ title, slides = [], variant = 'peek-strip', options = {}, ac
 								aria-label={`Go to page ${dotIndex + 1}`}
 								onClick={() => {
 									const scroller = scrollerRef.current;
-									if (scrollToPosition(scroller, getScrollLeftForIndex(scroller, pageIdx, maxIndex))) {
+									if (
+										scrollToPosition(scroller, getScrollLeftForIndex(scroller, pageIdx, maxIndex))
+									) {
 										setIndex(pageIdx);
 									}
 								}}
@@ -429,9 +502,14 @@ const Carousel = ({ title, slides = [], variant = 'peek-strip', options = {}, ac
 							onClick={toggleUserPaused}
 						>
 							{userPaused ? (
-								<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+								<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+									<path d="M8 5v14l11-7z" />
+								</svg>
 							) : (
-								<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+								<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+									<rect x="6" y="4" width="4" height="16" />
+									<rect x="14" y="4" width="4" height="16" />
+								</svg>
 							)}
 						</button>
 					) : null}
@@ -445,9 +523,14 @@ const Carousel = ({ title, slides = [], variant = 'peek-strip', options = {}, ac
 						onClick={toggleUserPaused}
 					>
 						{userPaused ? (
-							<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+							<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+								<path d="M8 5v14l11-7z" />
+							</svg>
 						) : (
-							<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+							<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+								<rect x="6" y="4" width="4" height="16" />
+								<rect x="14" y="4" width="4" height="16" />
+							</svg>
 						)}
 					</button>
 				</div>
@@ -457,4 +540,3 @@ const Carousel = ({ title, slides = [], variant = 'peek-strip', options = {}, ac
 };
 
 export default Carousel;
->>>>>>> Stashed changes:packages/react-islands-ui/src/islands/Carousel.entry.jsx

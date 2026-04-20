@@ -1,28 +1,14 @@
 import React from 'react';
 import { Island, resolveIslandModule } from 'react-islands-runtime/ssr';
 
-<<<<<<< Updated upstream
-import CartSSR from '../../../../_shared/runtime/src/islands/Cart.ssr.jsx';
-import { CarouselBlock, FeatureSplitBlock, ProductSearchSSR } from 'react-islands';
-import { listSurfProducts } from '../../../../_shared/data/surf-shop.js';
-import { normalizeHomepageBlocks } from '../../../../_shared/homepageBlocks.js';
-import { demoComponentDesignSystem } from '../../../server/designSystem.js';
-=======
-import { ProductSearchSSR } from 'react-islands-ui';
+import { CarouselBlock, FeatureSplitBlock, ProductSearchSSR } from 'react-islands-ui';
 import { getCarouselBlock } from '../../../../_shared/carousels.js';
-import { CarouselBlock } from '../../../../_shared/components/CarouselBlock.jsx';
 import { ensureBlock, moveBlockAfter, moveBlockToFront } from '../../../../_shared/homepageBlocks.js';
->>>>>>> Stashed changes
+import { demoComponentDesignSystem } from '../../../server/designSystem.js';
 import { getLandingPage } from '../../../models/agility.model.js';
 
 export const loader = async () => {
 	const page = await getLandingPage('home');
-<<<<<<< Updated upstream
-	const featuredProducts = listSurfProducts({ limit: 6 }).products;
-	const blocks = normalizeHomepageBlocks(Array.isArray(page?.blocks) ? page.blocks : [], 'agility', {
-		products: featuredProducts,
-	});
-=======
 	const blocks = Array.isArray(page?.blocks) ? [...page.blocks] : [];
 
 	ensureBlock(blocks, 'product_search', () => ({
@@ -35,13 +21,11 @@ export const loader = async () => {
 	const arrangedBlocks = blocks.some((block) => block.type === 'hero')
 		? moveBlockAfter(moveBlockAfter(blocks, 'product_search', 'hero'), 'carousel', 'product_search')
 		: moveBlockAfter(moveBlockToFront(blocks, 'product_search'), 'carousel', 'product_search');
->>>>>>> Stashed changes
 
 	return {
 		page: {
 			title: page?.title || 'Agility ',
-			blocks,
-			featuredProducts,
+			blocks: arrangedBlocks,
 		},
 	};
 };

@@ -1,7 +1,6 @@
 import React from 'react';
 import { Island, resolveIslandModule } from 'react-islands-runtime/ssr';
-
-import { AddToCartSSR } from 'react-islands-ui';
+import AddToCartSSR from '../islands/AddToCart.ssr.jsx';
 
 export const AddToCartButton = ({ product, label = 'Add to cart', quantity = 1, hydrate = 'immediate' }) => {
 	if (!product?.sku) return null;

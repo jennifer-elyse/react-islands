@@ -1,6 +1,7 @@
 import { createDesignSystem, defineTheme } from 'react-islands-runtime/ssr';
 
 import { createSharedStyles } from './baseStyles.js';
+import { carouselStyles, productSearchStyles } from './componentStyles.js';
 import { createExampleComponentDesignSystem } from '../../_shared/design-system/componentDesignSystem.js';
 
 const testDataStyles = `
@@ -314,7 +315,7 @@ const theme = defineTheme({
 	},
 	documentProps: {
 		htmlAttrs: { 'data-theme': 'test-data' },
-		styles: createSharedStyles(testDataStyles),
+		styles: createSharedStyles(testDataStyles, carouselStyles, productSearchStyles),
 	},
 	modes: {
 		dark: {

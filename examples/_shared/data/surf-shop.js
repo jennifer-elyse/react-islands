@@ -20,9 +20,15 @@ const pickPreferredImage = (item) => {
 };
 
 const buildImageList = (item) => {
-	const candidates = [pickPreferredImage(item), ...(Array.isArray(item?.images) ? item.images : []), item?.image].filter(Boolean);
+	const candidates = [
+		pickPreferredImage(item),
+		...(Array.isArray(item?.images) ? item.images : []),
+		item?.image,
+	].filter(Boolean);
 	return [...new Set(candidates)];
 };
+
+const resolveImage = (item) => pickPreferredImage(item) || buildImageList(item)[0] || null;
 
 const matchesQuery = (item, query) => {
 	if (!query) return true;
@@ -87,8 +93,6 @@ export const listSurfSuggestions = ({ query = '', limit = 8 } = {}) => {
 		})),
 	};
 };
-<<<<<<< Updated upstream:examples/_shared/data/surf-shop.js
-=======
 
 export const getSurfCarouselSlides = ({ skus } = {}) => {
 	const items = readData();
@@ -104,4 +108,3 @@ export const getSurfCarouselSlides = ({ skus } = {}) => {
 		image: resolveImage(item),
 	}));
 };
->>>>>>> Stashed changes:examples/_shared/app-data/surf-shop.js

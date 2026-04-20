@@ -1,40 +1,23 @@
 import React from 'react';
 import { Island, resolveIslandModule } from 'react-islands-runtime/ssr';
 
-<<<<<<< Updated upstream
-import CartSSR from '../../../../_shared/runtime/src/islands/Cart.ssr.jsx';
-import { CarouselBlock, FeatureSplitBlock, ProductSearchSSR } from 'react-islands';
-import { listSurfProducts } from '../../../../_shared/data/surf-shop.js';
-import { normalizeHomepageBlocks } from '../../../../_shared/homepageBlocks.js';
-import { demoComponentDesignSystem } from '../../../server/designSystem.js';
-=======
-import { CartSSR, ProductSearchSSR } from 'react-islands-ui';
+import { CarouselBlock, CartSSR, ProductSearchSSR } from 'react-islands-ui';
 import { getCarouselBlock } from '../../../../_shared/carousels.js';
-import { CarouselBlock } from '../../../../_shared/components/CarouselBlock.jsx';
->>>>>>> Stashed changes
 import { getLandingPage } from '../../../models/content.model.js';
+import { demoComponentDesignSystem } from '../../../server/designSystem.js';
 
 export const loader = async () => {
 	const page = await getLandingPage();
-<<<<<<< Updated upstream
-	const featuredProducts = listSurfProducts({ limit: 6 }).products;
-	const blocks = normalizeHomepageBlocks(Array.isArray(page?.blocks) ? page.blocks : [], 'commercetools', {
-		products: featuredProducts,
-	});
-	return { page: { ...page, blocks, featuredProducts } };
-=======
 	const blocks = (Array.isArray(page?.blocks) ? [...page.blocks] : []).map((block) =>
 		block?.type === 'carousel' ? getCarouselBlock('commercetools') : block,
 	);
 
 	return { page: { ...page, blocks } };
->>>>>>> Stashed changes
 };
 
 export const head = (props) => ({ title: props.page?.title || 'Commercetools ' });
 
 export const Page = ({ page }) => {
-	let featureIndex = 0;
 	return (
 		<main>
 			{(page?.blocks || []).map((b, i) => {
@@ -47,17 +30,6 @@ export const Page = ({ page }) => {
 					);
 				}
 
-<<<<<<< Updated upstream
-				if (b.type === 'promo') {
-					const node = (
-						<FeatureSplitBlock
-							key={i}
-							block={b}
-							layoutIndex={featureIndex}
-							products={page?.featuredProducts || []}
-							designSystem={demoComponentDesignSystem}
-						/>
-=======
 				if (b.type === 'product_grid') {
 					return (
 						<section key={i} style={{ marginBottom: 24 }}>
@@ -97,10 +69,7 @@ export const Page = ({ page }) => {
 								))}
 							</div>
 						</section>
->>>>>>> Stashed changes
 					);
-					featureIndex += 1;
-					return node;
 				}
 
 				if (b.type === 'carousel') {
