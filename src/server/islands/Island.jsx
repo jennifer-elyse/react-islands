@@ -11,6 +11,8 @@ import { serializePropsForAttr } from '../../shared/serialize.js';
  * @param {object} opts
  * @param {string} opts.islandKey - Lookup key for resolveIslandModule.
  * @param {"visible"|"idle"|"interaction"|"immediate"} [opts.hydrate="visible"] - When the client should hydrate.
+ * @param {"hydrate"|"replace"} [opts.renderStrategy="hydrate"] - Whether the client should hydrate the SSR markup
+ * or replace it with a fresh client render.
  * @param {any} [opts.props] - Props to JSON-serialize and pass to the island entry.
  * @param {Function} opts.resolveIslandModule - (islandKey) => module specifier or null to stay SSR-only.
  * @param {React.ReactNode} [opts.children] - SSR fallback markup used before hydration.
@@ -18,6 +20,7 @@ import { serializePropsForAttr } from '../../shared/serialize.js';
 export const Island = ({
 	islandKey,
 	hydrate = 'visible', // "idle" | "interaction" | "immediate"
+	renderStrategy = 'hydrate',
 	props,
 	children,
 	resolveIslandModule, // (islandKey) => moduleSpecifier|null
@@ -39,6 +42,7 @@ export const Island = ({
 		<div
 			data-island-module={moduleSpecifier}
 			data-hydrate={hydrate}
+			data-render-strategy={renderStrategy}
 			data-props={serialized}
 			suppressHydrationWarning={true}
 		>

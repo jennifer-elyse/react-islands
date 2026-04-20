@@ -2,6 +2,7 @@ import React from 'react';
 import { renderToPipeableStream } from 'react-dom/server';
 import { createManifestProvider } from './manifest.js';
 import { escapeJsonForInlineScript } from './serialize.js';
+import { mergeDocumentProps } from './css/mergeDocumentProps.js';
 
 const mergeHeads = (heads) => {
 	const out = { title: null, meta: [], links: [] };
@@ -22,6 +23,8 @@ export const createRenderRequest = ({
 	getAllIslandModuleSpecifiers,
 	devOrigin = 'http://localhost:5173',
 	manifestPath = 'dist/client/islands-manifest.json',
+	features = [],
+	getDocumentProps,
 }) => {
 	const createProvider = () => {
 		const isProd = process.env.NODE_ENV === 'production';
@@ -55,29 +58,47 @@ export const createRenderRequest = ({
 		}
 
 		const ctx = { req, params: match.params };
+		let context = ctx;
+
+		for (const feature of features) {
+			if (typeof feature?.extendRequestContext !== 'function') continue;
+			const extension = await feature.extendRequestContext({ req, res, match });
+			if (extension && typeof extension === 'object') context = { ...context, ...extension };
+		}
 
 		let props = {};
 		const heads = [];
 
 		for (const layout of match.layouts) {
 			if (layout && typeof layout === 'object' && layout?.loader) {
-				const add = await layout?.loader?.(ctx);
+				const add = await layout?.loader?.(context);
 				if (add && typeof add === 'object') props = { ...props, ...add };
 			}
 			if (layout && typeof layout === 'object' && layout?.head) {
-				heads.push(await layout?.head?.(props, ctx));
+				heads.push(await layout?.head?.(props, context));
 			}
 		}
 
 		if (match.page?.loader) {
-			const add = await match.page?.loader?.(ctx);
+			const add = await match.page?.loader?.(context);
 			if (add && typeof add === 'object') props = { ...props, ...add };
 		}
 		if (match.page?.head) {
-			heads.push(await match.page?.head?.(props, ctx));
+			heads.push(await match.page?.head?.(props, context));
 		}
 
 		const head = mergeHeads(heads);
+		let documentProps = {};
+
+		for (const feature of features) {
+			if (typeof feature?.getDocumentProps !== 'function') continue;
+			const patch = await feature.getDocumentProps({ req, res, match, props, head, context });
+			if (patch) documentProps = mergeDocumentProps(documentProps, patch);
+		}
+		if (typeof getDocumentProps === 'function') {
+			const patch = await getDocumentProps({ req, res, match, props, head, context });
+			if (patch) documentProps = mergeDocumentProps(documentProps, patch);
+		}
 
 		const provider = createProvider();
 		const manifest = provider.getManifest();
@@ -98,6 +119,7 @@ export const createRenderRequest = ({
 			HtmlDocument,
 			{
 				head,
+				documentProps,
 				manifestJson,
 				manifestIntegrity,
 				runtimeSrc,

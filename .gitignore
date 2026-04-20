@@ -1,8 +1,8 @@
 .DS_Store
 /node_modules
-/packages/react-islands/node_modules
+/packages/react-islands-ui/node_modules
 *.tgz
-/packages/react-islands/dist
+/packages/react-islands-ui/dist
 /dist
 /package
 .env
@@ -11,3 +11,12 @@
 !/\.env\..*\.example
 /examples/node_modules
 /examples/dist
+
+# Local editor/workspace files
+.vscode/
+*.code-workspace
+/examples/.npm-cache
+/.npm-cache
+examples/yarn.lock
+yarn.lock
+*.lock

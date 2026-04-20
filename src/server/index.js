@@ -94,5 +94,4 @@ app.get('*', async (req, res) => {
 const port = process.env.PORT || 3000;
 app.listen(port, () => {
 	console.log(`react-islands listening on http://localhost:${port}`);
-
 });

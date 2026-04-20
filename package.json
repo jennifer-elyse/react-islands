@@ -1,10 +1,12 @@
 {
 	"name": "react-islands-runtime",
 	"license": "MIT",
-	"version": "0.1.25",
+	"version": "0.3.15",
 	"type": "module",
+	"packageManager": "npm@11.12.1",
 	"description": "SSR-first React islands runtime and server helpers",
 	"main": "dist/server/index.js",
+	"types": "./types/ssr/index.d.ts",
 	"sideEffects": false,
 	"engines": {
 		"node": ">=22.0.0"
@@ -14,6 +16,8 @@
 		"src/server/router/**",
 		"src/server/islands/**",
 		"src/server/security/**",
+		"src/server/css/**",
+		"src/server/theme/**",
 		"src/server/manifest.js",
 		"src/server/renderRequest.js",
 		"src/server/genManifest.js",
@@ -25,15 +29,34 @@
 		"dist",
 		"packages/ssr/index.js",
 		"packages/islands/index.js",
-		"packages/rsc/index.js"
+		"packages/rsc/index.js",
+		"types/**"
 	],
 	"exports": {
-		".": "./dist/server/index.js",
-		"./server": "./dist/server/index.js",
-		"./client/runtime": "./dist/client/islands-runtime.js",
-		"./ssr": "./packages/ssr/index.js",
-		"./islands": "./packages/islands/index.js",
-		"./rsc": "./packages/rsc/index.js"
+		".": {
+			"types": "./types/ssr/index.d.ts",
+			"default": "./dist/server/index.js"
+		},
+		"./server": {
+			"types": "./types/ssr/index.d.ts",
+			"default": "./dist/server/index.js"
+		},
+		"./client/runtime": {
+			"types": "./types/islands/index.d.ts",
+			"default": "./dist/client/islands-runtime.js"
+		},
+		"./ssr": {
+			"types": "./types/ssr/index.d.ts",
+			"default": "./packages/ssr/index.js"
+		},
+		"./islands": {
+			"types": "./types/islands/index.d.ts",
+			"default": "./packages/islands/index.js"
+		},
+		"./rsc": {
+			"types": "./types/rsc/index.d.ts",
+			"default": "./packages/rsc/index.js"
+		}
 	},
 	"bin": {
 		"react-islands-gen-manifest": "src/server/genManifest.js"
@@ -43,19 +66,23 @@
 		"react-dom": ">=19.0.0"
 	},
 	"scripts": {
-		"pack:patch": "npm version patch --no-git-tag-version && node -e \"const v=require('./package.json').version;require('child_process').execSync('yarn pack --filename builds/react-islands-runtime-'+v+'.tgz',{stdio:'inherit'})\"",
-		"pack:minor": "npm version minor --no-git-tag-version && node -e \"const v=require('./package.json').version;require('child_process').execSync('yarn pack --filename builds/react-islands-runtime-'+v+'.tgz',{stdio:'inherit'})\"",
-		"pack:major": "npm version major --no-git-tag-version && node -e \"const v=require('./package.json').version;require('child_process').execSync('yarn pack --filename builds/react-islands-runtime-'+v+'.tgz',{stdio:'inherit'})\"",
-		"lint": "yarn lint:js && yarn lint:css",
+		"pack:patch": "mkdir -p builds && npm version patch --no-git-tag-version && npm pack --pack-destination builds --cache /tmp/react-islands-runtime-npm-cache",
+		"pack:minor": "mkdir -p builds && npm version minor --no-git-tag-version && npm pack --pack-destination builds --cache /tmp/react-islands-runtime-npm-cache",
+		"pack:major": "mkdir -p builds && npm version major --no-git-tag-version && npm pack --pack-destination builds --cache /tmp/react-islands-runtime-npm-cache",
+		"pack:components:raw": "node -e \"const fs=require('fs'),cp=require('child_process'),p=require('path'),rv=require('./package.json').version,uiDir=p.resolve('packages/react-islands-ui'),uiPkgPath=p.resolve(uiDir,'package.json'),uiPkg=JSON.parse(fs.readFileSync(uiPkgPath,'utf8'));uiPkg.version=rv;fs.writeFileSync(uiPkgPath,JSON.stringify(uiPkg,null,'\\t')+'\\n');cp.execSync('npm pack --pack-destination '+JSON.stringify(p.resolve('builds'))+' --cache /tmp/react-islands-runtime-npm-cache',{stdio:'inherit',cwd:uiDir})\"",
+		"pack:components": "npm run pack:patch && npm run pack:components:raw",
+		"pack:all": "npm run pack:components",
+		"lint": "npm run lint:js && npm run lint:css",
 		"lint:js": "eslint .",
 		"lint:css": "stylelint \"**/*.{css,scss,sass,less}\" --allow-empty-input",
 		"lint:fix": "eslint . --fix && stylelint \"**/*.{css,scss,sass,less}\" --fix --allow-empty-input",
-		"format:fix": "prettier --write ."
+		"format:fix": "prettier --write .",
+		"typecheck": "tsc -p tsconfig.typecheck.json --noEmit"
 	},
 	"dependencies": {
 		"path-to-regexp": "^6.2.2",
-		"react": "^19.0.0",
-		"react-dom": "^19.0.0"
+		"react": ">=19.0.0",
+		"react-dom": ">=19.0.0"
 	},
 	"devDependencies": {
 		"@eslint/js": "^9.17.0",
@@ -69,8 +96,11 @@
 		"globals": "^17.3.0",
 		"nodemon": "^3.1.0",
 		"prettier": "^3.8.1",
+		"react": "^19.2.5",
+		"react-dom": "^19.2.5",
 		"stylelint": "^17.2.0",
 		"stylelint-config-standard": "^40.0.0",
+		"typescript": "^5.8.2",
 		"vite": "^6.1.0"
 	}
 }

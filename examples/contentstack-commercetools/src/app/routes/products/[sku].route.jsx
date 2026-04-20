@@ -1,0 +1,27 @@
+import React from 'react';
+import { ProductDetailBlock } from 'react-islands-ui';
+import { createProductDetailBlock } from '../../../../../_shared/productDetailBlock.js';
+import { demoComponentDesignSystem } from '../../../../server/designSystem.js';
+import { getLocalProductFallbackImage, getPreferredProductImage } from '../../../../models/localImages.js';
+import { getProductBySlug } from '../../../../models/product.model.js';
+
+export const loader = async ({ params }) => {
+	const product = await getProductBySlug(params.sku);
+	return { product };
+};
+
+export const head = (props) => ({ title: props.product?.name || 'Product' });
+
+export const Page = ({ product }) => {
+	const block = createProductDetailBlock({
+		product,
+		resolveFallbackImage: (item) => getLocalProductFallbackImage(item),
+		resolveImage: (item, fallbackImage) => getPreferredProductImage({ ...item, localFallbackImage: fallbackImage }),
+	});
+
+	return (
+		<main>
+			<ProductDetailBlock block={block} designSystem={demoComponentDesignSystem} />
+		</main>
+	);
+};

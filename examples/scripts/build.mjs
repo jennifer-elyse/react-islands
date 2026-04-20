@@ -42,7 +42,7 @@ const updateServiceWorkerCacheName = (version) => {
 const runViteBuild = () => {
 	const viteBin = path.resolve('node_modules/.bin/vite');
 	if (!fs.existsSync(viteBin)) {
-		throw new Error('Local Vite binary not found. Run yarn install inside examples first.');
+		throw new Error('Local Vite binary not found. Run npm install inside examples first.');
 	}
 
 	execSync(`"${viteBin}" build --config vite.client.config.js`, {
@@ -54,7 +54,7 @@ const runIslandsManifestCli = () => {
 	const cliBin = path.resolve('node_modules/.bin/react-islands-gen-manifest');
 	if (!fs.existsSync(cliBin)) {
 		throw new Error(
-			'Local react-islands-gen-manifest binary not found. Run yarn install inside examples first.',
+			'Local react-islands-gen-manifest binary not found. Run npm install inside examples first.',
 		);
 	}
 

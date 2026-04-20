@@ -1,0 +1,30 @@
+{
+	"name": "react-islands-ui",
+	"license": "MIT",
+	"version": "0.3.15",
+	"type": "module",
+	"description": "Island UI components for react-islands-runtime: Carousel, Cart, ProductSearch, and more",
+	"sideEffects": false,
+	"engines": {
+		"node": ">=22.0.0"
+	},
+	"files": [
+		"src/islands/**",
+		"src/client/**",
+		"src/components/**",
+		"src/designSystem/**",
+		"index.js",
+		"carousel.js"
+	],
+	"exports": {
+		".": "./index.js",
+		"./carousel": "./carousel.js",
+		"./islands/*": "./src/islands/*",
+		"./client/*": "./src/client/*"
+	},
+	"peerDependencies": {
+		"react": ">=19.0.0",
+		"react-dom": ">=19.0.0",
+		"react-islands-runtime": ">=0.3.9"
+	}
+}

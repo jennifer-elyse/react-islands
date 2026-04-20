@@ -98,7 +98,8 @@ const onIdle = (cb) => {
 	setTimeout(cb, 250);
 };
 
-const onVisible = (el, cb) => {
+const onVisible = (el, cb, options = {}) => {
+	const { rootMargin = '0px' } = options;
 	if (!('IntersectionObserver' in window)) {
 		cb();
 		return;
@@ -112,7 +113,7 @@ const onVisible = (el, cb) => {
 				return;
 			}
 		}
-	});
+	}, { rootMargin });
 	io.observe(el);
 };
 
@@ -193,9 +194,10 @@ const mountIsland = async ({ el, moduleSpecifier, props, manifest }) => {
 	}
 
 	const hasSSRMarkup = el.childNodes && el.childNodes.length > 0;
+	const renderStrategy = el.getAttribute('data-render-strategy') || 'hydrate';
 
 	try {
-		if (hasSSRMarkup) hydrateRoot(el, React.createElement(Component, props));
+		if (hasSSRMarkup && renderStrategy !== 'replace') hydrateRoot(el, React.createElement(Component, props));
 		else createRoot(el).render(React.createElement(Component, props));
 	} catch (err) {
 		console.error('Island mount failed', { moduleSpecifier, resolved, err });
@@ -208,6 +210,41 @@ const mountIsland = async ({ el, moduleSpecifier, props, manifest }) => {
 			},
 		});
 	}
+};
+
+const classifyHydrationBand = (el, {
+	nearFoldOffsetPx = 800,
+} = {}) => {
+	if (!el || typeof el.getBoundingClientRect !== 'function') return 'rest';
+
+	const rect = el.getBoundingClientRect();
+	const viewportHeight = window.innerHeight || document.documentElement?.clientHeight || 0;
+	const isAboveFold = rect.top < viewportHeight && rect.bottom > 0;
+
+	if (isAboveFold) return 'immediate';
+	if (rect.top <= viewportHeight + nearFoldOffsetPx) return 'near';
+	return 'rest';
+};
+
+const scheduleVisibleIsland = (el, cb, options = {}) => {
+	const {
+		nearFoldOffsetPx = 800,
+		restRootMarginPx = 900,
+	} = options;
+
+	const band = classifyHydrationBand(el, { nearFoldOffsetPx });
+
+	if (band === 'immediate') {
+		cb();
+		return;
+	}
+
+	if (band === 'near') {
+		onIdle(cb);
+		return;
+	}
+
+	onVisible(el, cb, { rootMargin: `${restRootMarginPx}px 0px` });
 };
 
 /**
@@ -225,6 +262,8 @@ export const bootIslands = async ({
 	selector = '[data-island-module]',
 	onError,
 	reportEvent: reportEventInput,
+	nearFoldOffsetPx = 800,
+	restRootMarginPx = 900,
 } = {}) => {
 	const reportEvent = typeof reportEventInput === 'function' ? reportEventInput : noop;
 	const manifest = await parseManifest({ elId: manifestElId, reportEvent });
@@ -262,7 +301,7 @@ export const bootIslands = async ({
 		if (hydrate === 'immediate') start();
 		else if (hydrate === 'idle') onIdle(start);
 		else if (hydrate === 'interaction') onInteraction(el, start);
-		else onVisible(el, start);
+		else scheduleVisibleIsland(el, start, { nearFoldOffsetPx, restRootMarginPx });
 	}
 };
 // Auto-boot

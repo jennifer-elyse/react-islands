@@ -1,5 +1,5 @@
-import { apiRoot, isDemoMode } from './commercetools.client.js';
-import { listSurfProducts, getSurfProductBySku } from '../demo-data/surf-shop.js';
+import { apiRoot, isMode } from './commercetools.client.js';
+import { listSurfProducts, getSurfProductBySku } from '../data/surf-shop.js';
 
 const DEFAULT_LOCALE = process.env.DEFAULT_LOCALE || 'en-US';
 const DEFAULT_CURRENCY = process.env.CART_CURRENCY || 'USD';
@@ -46,7 +46,7 @@ export const listProducts = async ({
 	locale = DEFAULT_LOCALE,
 	currency = DEFAULT_CURRENCY,
 } = {}) => {
-	if (isDemoMode || !apiRoot) {
+	if (isMode || !apiRoot) {
 		return listSurfProducts({ limit, offset, currencyCode: currency });
 	}
 
@@ -94,7 +94,7 @@ const getProductByWhere = async ({ where, locale, currency }) => {
 };
 
 export const getProductBySlug = async (slugOrSku, { locale = DEFAULT_LOCALE, currency = DEFAULT_CURRENCY } = {}) => {
-	if (isDemoMode || !apiRoot) {
+	if (isMode || !apiRoot) {
 		return getSurfProductBySku(slugOrSku, currency);
 	}
 
@@ -113,7 +113,7 @@ export const getProductBySlug = async (slugOrSku, { locale = DEFAULT_LOCALE, cur
 };
 
 export const getProductById = async (id, { locale = DEFAULT_LOCALE, currency = DEFAULT_CURRENCY } = {}) => {
-	if (isDemoMode || !apiRoot) {
+	if (isMode || !apiRoot) {
 		return null;
 	}
 

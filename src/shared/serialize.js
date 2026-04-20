@@ -1,16 +1,13 @@
-export const serializePropsForAttr = (value) => {
-	const json = JSON.stringify(value ?? null);
-
-	// Escape characters that could break out of an HTML attribute or enable injection.
+export function escapeJsonForInlineScript(json) {
 	return json
-		.replaceAll('&', '\\u0026')
-		.replaceAll('<', '\\u003c')
-		.replaceAll('>', '\\u003e')
-		.replaceAll('"', '\\u0022')
-		.replaceAll("'", '\\u0027');
-};
+		.replace(/</g, '\\u003c')
+		.replace(/>/g, '\\u003e')
+		.replace(/&/g, '\\u0026')
+		.replace(/\u2028/g, '\\u2028')
+		.replace(/\u2029/g, '\\u2029');
+}
 
-export const escapeJsonForInlineScript = (json) => {
-	// Prevent </script> and friends from being interpreted.
-	return json.replaceAll('&', '\\u0026').replaceAll('<', '\\u003c').replaceAll('>', '\\u003e');
-};
+export function serializePropsForAttr(props) {
+	// Use a safe JSON serializer for embedding in HTML attributes.
+	return escapeJsonForInlineScript(JSON.stringify(props ?? {}));
+}

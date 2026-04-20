@@ -1,0 +1,26 @@
+{
+	"name": "react-islands",
+	"version": "0.3.0",
+	"license": "MIT",
+	"type": "module",
+	"description": "Reusable React islands UI components built on react-islands-runtime",
+	"main": "./index.js",
+	"scripts": {
+		"pack:local": "mkdir -p ../../builds && npm pack --pack-destination ../../builds"
+	},
+	"exports": {
+		".": "./index.js",
+		"./carousel": "./carousel.js"
+	},
+	"files": [
+		"index.js",
+		"carousel.js",
+		"README.md",
+		"src/**"
+	],
+	"peerDependencies": {
+		"react": ">=19.0.0",
+		"react-dom": ">=19.0.0",
+		"react-islands-runtime": ">=0.3.0"
+	}
+}

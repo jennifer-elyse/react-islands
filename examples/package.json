@@ -3,17 +3,21 @@
 	"private": true,
 	"version": "0.0.0",
 	"type": "module",
+	"packageManager": "npm@11.12.1",
 	"scripts": {
 		"dev:client": "vite --config vite.client.config.js",
+		"dev:all": "node scripts/dev-all.mjs",
 		"build:client": "node scripts/build.mjs",
-		"dev:contentstack-demo": "cross-env NODE_ENV=development nodemon --watch contentstack-demo --ext js,jsx --exec \"node --loader @esbuild-kit/esm-loader contentstack-demo/server/index.js\"",
-		"dev:commercetools-demo": "cross-env NODE_ENV=development nodemon --watch commercetools-demo --ext js,jsx --exec \"node --loader @esbuild-kit/esm-loader commercetools-demo/server/index.js\"",
-		"dev:agility-demo": "cross-env NODE_ENV=development nodemon --watch agility-demo --ext js,jsx --exec \"node --loader @esbuild-kit/esm-loader agility-demo/server/index.js\"",
-		"dev:contentstack-commercetools-demo": "cross-env NODE_ENV=development nodemon --watch contentstack-commercetools-demo --ext js,jsx --exec \"node --loader @esbuild-kit/esm-loader contentstack-commercetools-demo/server/index.js\"",
-		"dev:contentstack": "cross-env DEMO_TARGET=contentstack node scripts/dev-run.mjs",
-		"dev:commercetools": "cross-env DEMO_TARGET=commercetools node scripts/dev-run.mjs",
-		"dev:agility": "cross-env DEMO_TARGET=agility node scripts/dev-run.mjs",
-		"dev:contentstack-commercetools": "cross-env DEMO_TARGET=contentstack-commercetools node scripts/dev-run.mjs"
+		"dev:contentstack": "cross-env EXAMPLE_TARGET=contentstack node scripts/dev-run.mjs",
+		"dev:commercetools": "cross-env EXAMPLE_TARGET=commercetools node scripts/dev-run.mjs",
+		"dev:agility": "cross-env EXAMPLE_TARGET=agility node scripts/dev-run.mjs",
+		"dev:test-data": "cross-env EXAMPLE_TARGET=test-data node scripts/dev-run.mjs",
+		"dev:contentstack-commercetools": "cross-env EXAMPLE_TARGET=contentstack-commercetools node scripts/dev-run.mjs",
+		"dev:contentstack-server": "cross-env NODE_ENV=development nodemon --watch contentstack --watch _shared --ext js,jsx,mjs --exec \"node --import tsx contentstack/server/index.js\"",
+		"dev:commercetools-server": "cross-env NODE_ENV=development nodemon --watch commercetools --watch _shared --ext js,jsx,mjs --exec \"node --import tsx commercetools/server/index.js\"",
+		"dev:agility-server": "cross-env NODE_ENV=development nodemon --watch agility --watch _shared --ext js,jsx,mjs --exec \"node --import tsx agility/server/index.js\"",
+		"dev:test-data-server": "cross-env NODE_ENV=development nodemon --watch test-data --watch _shared --ext js,jsx,mjs --exec \"node --import tsx test-data/server/index.js\"",
+		"dev:contentstack-commercetools-server": "cross-env NODE_ENV=development nodemon --watch contentstack-commercetools --watch _shared --ext js,jsx,mjs --exec \"node --import tsx contentstack-commercetools/server/index.js\""
 	},
 	"dependencies": {
 		"@commercetools/platform-sdk": "^8.24.0",
@@ -21,19 +25,19 @@
 		"contentstack": "^3.26.4",
 		"dotenv": "^16.4.5",
 		"express": "^4.19.2",
-		"node-fetch": "^3.3.2",
 		"path-to-regexp": "^6.2.2",
 		"react": "^19.0.0",
 		"react-dom": "^19.0.0",
-		"react-islands-runtime": "^0.1.25"
+		"react-islands-runtime": "file:../builds/react-islands-runtime-0.3.15.tgz",
+		"react-islands-ui": "file:../builds/react-islands-ui-0.3.15.tgz"
 	},
 	"devDependencies": {
-		"@esbuild-kit/esm-loader": "^2.6.5",
 		"@vitejs/plugin-react": "^4.3.4",
 		"cross-env": "^10.1.0",
 		"esbuild": "^0.27.3",
 		"glob": "^13.0.2",
 		"nodemon": "^3.1.0",
+		"tsx": "^4.20.5",
 		"vite": "^6.1.0"
 	}
 }

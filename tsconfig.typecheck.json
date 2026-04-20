@@ -1,0 +1,20 @@
+{
+	"compilerOptions": {
+		"allowJs": true,
+		"checkJs": true,
+		"declaration": false,
+		"emitDeclarationOnly": false,
+		"noEmit": true,
+		"jsx": "react-jsx",
+		"module": "NodeNext",
+		"moduleResolution": "NodeNext",
+		"target": "ES2022",
+		"strict": true,
+		"exactOptionalPropertyTypes": true,
+		"noImplicitOverride": true,
+		"noUncheckedIndexedAccess": true,
+		"skipLibCheck": true,
+		"lib": ["ES2022", "DOM"]
+	},
+	"include": ["src/**/*.js", "src/**/*.jsx", "packages/**/*.js"]
+}
